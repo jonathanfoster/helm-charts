@@ -109,13 +109,15 @@ resources:
 # -- This is to setup the liveness and readiness probes.
 # @section -- Hoppscotch common parameters
 livenessProbe:
-  httpGet:
-    path: /
-    port: http
+  {}
+  # httpGet:
+  #   path: /
+  #   port: http
 readinessProbe:
-  httpGet:
-    path: /
-    port: http
+  {}
+  # httpGet:
+  #   path: /
+  #   port: http
 
 # -- This section is for setting up autoscaling.
 # @section -- Hoppscotch common parameters
