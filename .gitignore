@@ -1,0 +1,4 @@
+.cr-release-packages/
+build/
+charts/*/charts/
+charts/*/tests/__snapshots/
