@@ -60,6 +60,9 @@ spec:
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          env:
+            - name: ENABLE_SUBPATH_BASED_ACCESS
+              value: "true"
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
