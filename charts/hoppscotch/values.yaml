@@ -149,6 +149,8 @@ tolerations: []
 
 affinity: {}
 
+topologySpreadConstraints: []
+
 # @section -- Database parameters
 
 # PostgreSQL chart configuration
