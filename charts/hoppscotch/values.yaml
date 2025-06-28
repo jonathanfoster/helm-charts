@@ -23,13 +23,13 @@ replicaCount: 1
 image:
   # -- This sets the image repository.
   # @section -- Hoppscotch common parameters
-  repository: nginx
+  repository: hoppscotch/hoppscotch
   # -- This sets the pull policy for images.
   # @section -- Hoppscotch common parameters
   pullPolicy: IfNotPresent
   # -- Overrides the image tag whose default is the chart appVersion.
   # @section -- Hoppscotch common parameters
-  tag: latest
+  tag: ""
 
 # This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
 serviceAccount:
