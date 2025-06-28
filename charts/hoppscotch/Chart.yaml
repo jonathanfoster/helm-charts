@@ -1,0 +1,10 @@
+apiVersion: v2
+name: hoppscotch
+description: Hoppscotch is a lightweight, web-based API development suite.
+type: application
+version: 0.1.0
+# dependencies:
+#   - name: postgresql
+#     version: 16.x.x
+#     condition: postgresql.enabled
+#     repository: oci://registry-1.docker.io/bitnamicharts
