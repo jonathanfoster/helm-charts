@@ -35,7 +35,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: hoppscotch
           {{- with .Values.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
@@ -71,6 +71,30 @@ spec:
                 name: {{ include "hoppscotch.fullname" . }}
             - secretRef:
                 name: {{ include "hoppscotch.fullname" . }}
+      {{- if .Values.waitForDb.enabled }}
+      initContainers:
+        - name: wait-for-db
+          image: postgres:16-alpine
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              end_time=$(($(date +%s) + $0))
+              until pg_isready -d $DATABASE_URL; do
+                if [ $(date +%s) -ge $end_time ]; then
+                  exit 1
+                fi
+                sleep 2
+              done
+            - {{ .Values.waitForDb.timeout | default 60 | quote}}
+          {{- with .Values.extraEnvs }}
+          env:
+            {{- tpl (toYaml .Values.extraEnvs) . | nindent 12 }}
+          {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ include "hoppscotch.fullname" . }}
+      {{- end }}
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
