@@ -1,0 +1,33 @@
+suite: deployment
+templates:
+  - configmap.yaml
+  - deployment.yaml
+values:
+  - ../values.yaml
+tests:
+  - it: "should have checksum config annotation"
+    template: deployment.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-hoppscotch
+      - notEqual:
+          path: spec.template.metadata.annotations.checksum/config
+          value: ""
+  - it: "should have env from configmap"
+    template: deployment.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-hoppscotch
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
+          value: RELEASE-NAME-hoppscotch

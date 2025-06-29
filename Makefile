@@ -1,6 +1,8 @@
 .DEFAULT_GOAL:=help
 
 BUILD_DIR:=build
+CHART_NAME?=hoppscotch
+CLUSTER_NAME?=helm-charts
 
 GREEN=\033[0;32m
 YELLOW=\033[0;33m
@@ -17,6 +19,11 @@ helm-docs: ## Generate Helm docs
 	@echo "${GREEN}Generating Helm docs...${RESET}"
 	helm-docs --sort-values-order=file
 
+.PHONY: helm-install
+helm-install: kind-create-cluster ## Install chart
+	@echo "${GREEN}Installing chart ${CHART_NAME}...${RESET}"
+	helm install ${CHART_NAME} charts/${CHART_NAME} -n ${CHART_NAME} --create-namespace --wait --debug
+
 .PHONY: helm-template
 helm-template: clean ## Render Helm templates
 	@echo "${GREEN}Rendering Helm templates...${RESET}"
@@ -28,6 +35,16 @@ helm-template: clean ## Render Helm templates
 			helm template "$${chart_name}" "$${chart}" > "${BUILD_DIR}/$${chart_name}.yaml"; \
 		fi; \
 	done
+
+.PHONY: helm-uninstall
+helm-uninstall: ## Uninstall chart
+	@echo "${GREEN}Uninstalling chart ${CHART_NAME}...${RESET}"
+	helm uninstall ${CHART_NAME} -n ${CHART_NAME}
+
+.PHONY: helm-upgrade
+helm-upgrade: ## Upgrade chart
+	@echo "${GREEN}Upgrading chart ${CHART_NAME}...${RESET}"
+	helm upgrade ${CHART_NAME} charts/${CHART_NAME} -n ${CHART_NAME} --wait --debug
 
 .PHONY: help
 help: ## Show this help message
@@ -68,6 +85,24 @@ install-deps-macos: ## Install dependencies for MacOS
 		helm plugin install https://github.com/helm-unittest/helm-unittest; \
 	else \
 		echo "${YELLOW}Warning:${RESET} helm-unittest plugin is already installed"; \
+	fi
+
+.PHONY: kind-create-cluster
+kind-create-cluster: ## Create a Kind cluster
+	@echo "${GREEN}Creating Kind cluster...${RESET}"
+	@if kind get clusters | grep -q "${CLUSTER_NAME}"; then \
+		echo "${YELLOW}Warning:${RESET} Kind cluster ${CLUSTER_NAME} already exists"; \
+	else \
+		kind create cluster --name ${CLUSTER_NAME}; \
+	fi
+
+.PHONY: kind-delete-cluster
+kind-delete-cluster: ## Delete the Kind cluster
+	@echo "${GREEN}Deleting Kind cluster...${RESET}"
+	@if kind get clusters | grep -q "${CLUSTER_NAME}"; then \
+		kind delete cluster --name ${CLUSTER_NAME}; \
+	else \
+		echo "${YELLOW}Warning:${RESET} Kind cluster ${CLUSTER_NAME} does not exist"; \
 	fi
 
 .PHONY: lint
