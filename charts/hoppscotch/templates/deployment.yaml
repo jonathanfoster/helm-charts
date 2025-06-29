@@ -62,9 +62,9 @@ spec:
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.extraEnvs }}
+          {{- with .Values.extraEnvs }}
           env:
-            {{- tpl (toYaml .Values.extraEnvs) . | nindent 12 }}
+            {{- tpl (toYaml .) . | nindent 12 }}
           {{- end }}
           envFrom:
             - configMapRef:
@@ -89,7 +89,7 @@ spec:
             - {{ .Values.waitForDb.timeout | default 60 | quote}}
           {{- with .Values.extraEnvs }}
           env:
-            {{- tpl (toYaml .Values.extraEnvs) . | nindent 12 }}
+            {{- tpl (toYaml .) . | nindent 12 }}
           {{- end }}
           envFrom:
             - secretRef:
