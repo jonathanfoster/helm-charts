@@ -59,6 +59,7 @@ helm install my-release jonathanfoster/hoppscotch
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | podAnnotations | object | `{}` | This is for setting Kubernetes Annotations to a Pod. |
 | podLabels | object | `{}` | This is for setting Kubernetes Labels to a Pod. |
+| extraEnvs | list | `[]` | This is for setting extra environment variables in the pod. |
 | service.type | string | `"ClusterIP"` | This sets the service type. |
 | service.port | int | `80` | This sets the ports. |
 | resources | object | `{}` | Resources for the pod. This is where you can set CPU and memory limits and requests. |
@@ -88,9 +89,9 @@ helm install my-release jonathanfoster/hoppscotch
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| backend.databaseUrl | string | `""` | This is where you add your Postgres database URL |
+| backend.databaseUrl | string | `"postgres://hoppscotch:password@localhost:5432/hoppscotch?sslmode=disable"` | This is where you add your Postgres database URL |
 | backend.aioAlternatePort | int | `80` | This is an optional variable that lets you specify an alternate port for the AIO container’s endpoint when operating in subpath access mode |
-| backend.jwtSecret | string | `""` | The secret used to sign the JWT tokens |
+| backend.jwtSecret | string | `"secret"` | The secret used to sign the JWT tokens |
 | backend.tokenSaltComplexity | int | `10` | Defines the complexity of the SALT that is used for hashing - a higher number implies a more complex salt |
 | backend.magicLinkTokenValidity | int | `3` | Duration of the validity of the magic link being sent to sign in to Hoppscotch (in days) |
 | backend.refreshTokenValidity | string | `"604800000"` | Validity of the refresh token for auth (in ms) |

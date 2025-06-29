@@ -62,6 +62,10 @@ spec:
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- if .Values.extraEnvs }}
+          env:
+            {{- tpl (toYaml .Values.extraEnvs) . | nindent 12 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ include "hoppscotch.fullname" . }}

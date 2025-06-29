@@ -6,7 +6,7 @@ templates:
 values:
   - ../values.yaml
 tests:
-  - it: "should have checksum config annotation"
+  - it: should have checksum config annotation
     template: deployment.yaml
     documentIndex: 0
     asserts:
@@ -18,7 +18,7 @@ tests:
           value: RELEASE-NAME-hoppscotch
       - isNotNullOrEmpty:
           path: spec.template.metadata.annotations.checksum/config
-  - it: "should have env from configmap"
+  - it: should have env from configmap
     template: deployment.yaml
     documentIndex: 0
     asserts:
@@ -31,7 +31,7 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
           value: RELEASE-NAME-hoppscotch
-  - it: "should have checksum secrets annotation"
+  - it: should have checksum secrets annotation
     template: deployment.yaml
     documentIndex: 0
     asserts:
@@ -43,7 +43,7 @@ tests:
           value: RELEASE-NAME-hoppscotch
       - isNotNullOrEmpty:
           path: spec.template.metadata.annotations.checksum/secrets
-  - it: "should have env from secrets"
+  - it: should have env from secrets
     template: deployment.yaml
     documentIndex: 0
     asserts:
@@ -56,3 +56,20 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].envFrom[1].secretRef.name
           value: RELEASE-NAME-hoppscotch
+  - it: should have extra environments
+    template: deployment.yaml
+    documentIndex: 0
+    set:
+      extraEnvs:
+        - name: FOO
+          value: BAR
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].env[0].name
+          value: FOO
+      - equal:
+          path: spec.template.spec.containers[0].env[0].value
+          value: BAR
