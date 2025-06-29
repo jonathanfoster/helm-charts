@@ -6,7 +6,7 @@ templates:
 values:
   - ../values.yaml
 tests:
-  - it: should have checksum config annotation
+  - it: should have checksum configmap annotation
     template: deployment.yaml
     documentIndex: 0
     asserts:
@@ -17,7 +17,7 @@ tests:
           path: metadata.name
           value: RELEASE-NAME-hoppscotch
       - isNotNullOrEmpty:
-          path: spec.template.metadata.annotations.checksum/config
+          path: spec.template.metadata.annotations.checksum/configmap-RELEASE-NAME-hoppscotch
   - it: should have env from configmap
     template: deployment.yaml
     documentIndex: 0
@@ -31,7 +31,7 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
           value: RELEASE-NAME-hoppscotch
-  - it: should have checksum secrets annotation
+  - it: should have checksum secret annotation
     template: deployment.yaml
     documentIndex: 0
     asserts:
@@ -42,7 +42,7 @@ tests:
           path: metadata.name
           value: RELEASE-NAME-hoppscotch
       - isNotNullOrEmpty:
-          path: spec.template.metadata.annotations.checksum/secrets
+          path: spec.template.metadata.annotations.checksum/secret-RELEASE-NAME-hoppscotch
   - it: should have env from secrets
     template: deployment.yaml
     documentIndex: 0
