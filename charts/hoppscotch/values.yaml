@@ -208,7 +208,7 @@ frontend:
 backend:
   # -- This is where you add your Postgres database URL
   # @section -- Hoppscotch backend parameters
-  databaseUrl: ""
+  databaseUrl: "postgres://hoppscotch:password@localhost:5432/hoppscotch?sslmode=disable"
 
   # -- This is an optional variable that lets you specify an alternate port for the AIO container’s endpoint when operating in subpath access mode
   # @section -- Hoppscotch backend parameters
@@ -216,7 +216,7 @@ backend:
 
   # -- The secret used to sign the JWT tokens
   # @section -- Hoppscotch backend parameters
-  jwtSecret: ""
+  jwtSecret: "secret"
   # -- Defines the complexity of the SALT that is used for hashing - a higher number implies a more complex salt
   # @section -- Hoppscotch backend parameters
   tokenSaltComplexity: 10
