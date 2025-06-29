@@ -30,7 +30,7 @@ helm install my-release jonathanfoster/hoppscotch
 
 ## Parameters
 
-<!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable MD013 MD034 -->
 
 ### Global parameters
 
@@ -75,20 +75,20 @@ helm install my-release jonathanfoster/hoppscotch
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| frontend.baseUrl | string | `"http://localhost:3000"` | This is the URL where your deployment will be accessible from |
-| frontend.shortcodeBaseUrl | string | `"http://localhost:3000"` | A URL to generate shortcodes for sharing, can be the same as `frontend.baseUrl` |
-| frontend.adminUrl | string | `"http://localhost:3000"` | This URL is used to connect to the admin dashboard |
-| frontend.backendGqlUrl | string | `"http://localhost:3000/graphql"` | The URL for GraphQL within the instance |
-| frontend.backendWsUrl | string | `"wss://localhost:3000/graphql"` | The URL for WebSockets within the instance |
-| frontend.backendApiUrl | string | `"http://localhost:3000/v1"` | The URL for REST APIs within the instance |
-| frontend.termsOfServiceUrl | string | `"https://docs.hoppscotch.io/support/terms"` | Optional links to the Terms & Conditions |
-| frontend.privacyPolicyUrl | string | `"https://docs.hoppscotch.io/support/privacy"` | Optional links to the Privacy Policy |
+| frontend.baseUrl | string | `""` | This is the URL where your deployment will be accessible from |
+| frontend.shortcodeBaseUrl | string | `""` | A URL to generate shortcodes for sharing, can be the same as `frontend.baseUrl` |
+| frontend.adminUrl | string | `""` | This URL is used to connect to the admin dashboard |
+| frontend.backendGqlUrl | string | `""` | The URL for GraphQL within the instance |
+| frontend.backendWsUrl | string | `""` | The URL for WebSockets within the instance |
+| frontend.backendApiUrl | string | `""` | The URL for REST APIs within the instance |
+| frontend.appTosLink | string | `""` | Optional links to the Terms & Conditions |
+| frontend.appPrivacyPolicyLink | string | `""` | Optional links to the Privacy Policy |
 
 ### Hoppscotch backend parameters
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| backend.databaseUrl | string | `"postgresql://hoppscotch:password@url:5432/hoppscotch"` | This is where you add your Postgres database URL |
+| backend.databaseUrl | string | `""` | This is where you add your Postgres database URL |
 | backend.aioAlternatePort | int | `80` | This is an optional variable that lets you specify an alternate port for the AIO container’s endpoint when operating in subpath access mode |
 | backend.jwtSecret | string | `""` | The secret used to sign the JWT tokens |
 | backend.tokenSaltComplexity | int | `10` | Defines the complexity of the SALT that is used for hashing - a higher number implies a more complex salt |
@@ -97,16 +97,16 @@ helm install my-release jonathanfoster/hoppscotch
 | backend.accessTokenValidity | int | `86400000` | Validity of the access token for auth (in ms) |
 | backend.allowSecureCookies | bool | `true` | If disabled users will be able to use Hoppscotch over HTTP connections as well. |
 | backend.dataEncryptionKey | string | `""` | A 32-character key used for encrypting sensitive data stored in the database |
-| backend.redirectUrl | string | `"http://localhost:3000"` | This is a fallback URL to debug when the actual redirects fail |
-| backend.whitelistedOrigins | list | `["http://localhost:3170","http://localhost:3000","http://localhost:3100","app://localhost_3200","app://hoppscotch"]` | URLs of Hoppscotch backend, admin dashboard, frontend app and the bundle server that are allowed to interact with the desktop app |
-| backend.allowedAuthProviders | list | `["GOOGLE","GITHUB","MICROSOFT","EMAIL"]` | Allows you to specify which auth providers you want to enable |
+| backend.redirectUrl | string | `""` | This is a fallback URL to debug when the actual redirects fail |
+| backend.whitelistedOrigins | list | `[]` | URLs of Hoppscotch backend, admin dashboard, frontend app and the bundle server that are allowed to interact with the desktop app |
+| backend.allowedAuthProviders | list | `["email"]` | Allows you to specify which auth providers you want to enable |
 | backend.mailer.smtpEnabled | bool | `true` | Enables the SMTP mailer configuration |
 | backend.mailer.useCustomConfigs | bool | `false` | When custom mailer configurations are used |
-| backend.mailer.addressFrom | string | `"<from@example.com>"` | The email address that you would be using |
-| backend.mailer.smtpUrl | string | `"smtps://user@domain.com:pass@smtp.domain.com"` | The SMTP URL for email delivery |
-| backend.mailer.smtpHost | string | `"smtp.domain.com"` | The SMTP host |
+| backend.mailer.addressFrom | string | `""` | The email address that you would be using |
+| backend.mailer.smtpUrl | string | `""` | The SMTP URL for email delivery |
+| backend.mailer.smtpHost | string | `""` | The SMTP host |
 | backend.mailer.smtpPort | int | `465` | The port to connect to the SMTP server |
-| backend.mailer.smtpUser | string | `"user@domain.com"` | The SMTP user or email for authentication |
+| backend.mailer.smtpUser | string | `""` | The SMTP user or email for authentication |
 | backend.rateLimit.ttl | int | `60` | The time it takes to refresh the maximum number of requests being received |
 | backend.rateLimit.max | int | `100` | The maximum number of requests that Hoppscotch can handle under `backend.rateLimit.ttl` |
 
@@ -117,9 +117,9 @@ helm install my-release jonathanfoster/hoppscotch
 | enterprise.licenseKey | string | `""` | The license key required to use Hoppscotch Enterprise |
 | enterprise.frontend.localProxyServerEnabled | bool | `false` | Enables a local proxy server for routing API requests. This will only work if `frontend.enableSubpathBasedAccess` is set to `true`. |
 | enterprise.frontend.proxyAppUrl | string | `""` | Route all API requests via a proxy server for added security |
-| enterprise.backend.githubEnterpriseAuth | object | `{"authorizationUrl":"https://{domain}/login/oauth/authorize","enabled":false,"tokenUrl":"https://{domain}/login/oauth/access_token","userEmailUrl":"https://{domain}/user/emails","userProfileUrl":"https://{domain}/users"}` | Github Enterprise authorization configuration |
-| enterprise.backend.samlAuth | object | `{"audience":"","callbackUrl":"http://localhost:3170/v1/auth/saml/callback","cert":"","entryPoint":"","issuer":"","wantAssertionSigned":true,"wantResponseSigned":false}` | SAML authorization configuration |
-| enterprise.backend.oidcAuth | object | `{"authorizationUrl":"","callbackUrl":"http://localhost:3170/v1/auth/oidc/callback","clientId":"","clientSecret":"","issuer":"","providerName":"","scope":"openid,email,profile","tokenUrl":"","userInfoUrl":""}` | OpenID Connect (OIDC) authorization configuration |
+| enterprise.backend.githubEnterpriseAuth | object | `{"authorizationUrl":"","tokenUrl":"","userEmailUrl":"","userProfileUrl":""}` | Github Enterprise authorization configuration |
+| enterprise.backend.samlAuth | object | `{"audience":"","callbackUrl":"","cert":"","entryPoint":"","issuer":"","wantAssertionsSigned":true,"wantResponseSigned":false}` | SAML authorization configuration |
+| enterprise.backend.oidcAuth | object | `{"authorizationUrl":"","callbackUrl":"","clientId":"","clientSecret":"","issuer":"","providerName":"","scope":[],"tokenUrl":"","userInfoUrl":""}` | OpenID Connect (OIDC) authorization configuration |
 | enterprise.backend.horizontalScalingEnabled | bool | `false` | Set to true to enable horizontal scaling, which uses Redis for managing pub-sub and state across instances |
 | enterprise.backend.redisUrl | string | `""` | The URL for the Redis instance used for horizontal scaling |
 
@@ -133,8 +133,8 @@ helm install my-release jonathanfoster/hoppscotch
 | postgresql.auth.password | string | `""` | Password for the custom user to create |
 | postgresql.auth.database | string | `"hoppscotch"` | Name for a custom database to create |
 | postgresql.architecture | string | `"standalone"` | PostgreSQL architecture (`standalone` or `replication`) |
-| postgresql.primary.resourcesPreset | string | `"nano"` | PostgreSQL Primary resource requests and limits ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/ Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production). More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15  |
-| postgresql.primary.resources | object | `{}` | Set container requests and limits for different resources like CPU or memory (essential for production workloads) Example: resources:   requests:     cpu: 2     memory: 512Mi   limits:     cpu: 3     memory: 1024Mi  |
+| postgresql.primary.resourcesPreset | string | `"nano"` | Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production). |
+| postgresql.primary.resources | object | `{}` | Set container requests and limits for different resources like CPU or memory (essential for production workloads) |
 | externalDatabase.host | string | `"localhost"` | Database host (ignored if externalDatabase.sqlConnection is set) |
 | externalDatabase.port | int | `5432` | Database port number (ignored if externalDatabase.sqlConnection is set) |
 | externalDatabase.user | string | `"hoppscotch"` | Non-root username for Hoppscotch (ignored if externalDatabase.sqlConnection is set) |
@@ -163,23 +163,23 @@ helm install my-release jonathanfoster/hoppscotch
 | backend.sessionSecret | string | `""` |  |
 | backend.googleAuth.clientId | string | `""` |  |
 | backend.googleAuth.clientSecret | string | `""` |  |
-| backend.googleAuth.callbackUrl | string | `"http://localhost:3000/auth/google/callback"` |  |
-| backend.googleAuth.scope | string | `"email,profile"` |  |
+| backend.googleAuth.callbackUrl | string | `""` |  |
+| backend.googleAuth.scope | list | `[]` |  |
 | backend.githubAuth.clientId | string | `""` |  |
 | backend.githubAuth.clientSecret | string | `""` |  |
-| backend.githubAuth.callbackUrl | string | `"http://localhost:3000/auth/github/callback"` |  |
-| backend.githubAuth.scope | string | `"user:email"` |  |
+| backend.githubAuth.callbackUrl | string | `""` |  |
+| backend.githubAuth.scope | list | `[]` |  |
 | backend.microsoftAuth.clientId | string | `""` |  |
 | backend.microsoftAuth.clientSecret | string | `""` |  |
-| backend.microsoftAuth.callbackUrl | string | `"http://localhost:3000/auth/microsoft/callback"` |  |
-| backend.microsoftAuth.scope | string | `"user.read"` |  |
-| backend.microsoftAuth.tenant | string | `"common"` |  |
+| backend.microsoftAuth.callbackUrl | string | `""` |  |
+| backend.microsoftAuth.scope | string | `""` |  |
+| backend.microsoftAuth.tenant | string | `""` |  |
 | backend.mailer.smtpSecure | bool | `true` |  |
-| backend.mailer.smtpPassword | string | `"pass"` | Provide the password set for the SMTP user |
+| backend.mailer.smtpPassword | string | `""` | Provide the password set for the SMTP user |
 | backend.mailer.tlsRejectUnauthorized | bool | `true` |  |
 | enterprise.backend.clickhouse.allowAuditLogs | bool | `false` |  |
 | enterprise.backend.clickhouse.host | string | `""` |  |
 | enterprise.backend.clickhouse.user | string | `""` |  |
 | enterprise.backend.clickhouse.password | string | `""` |  |
 | postgresql.auth.existingSecret | string | `""` |  |
-<!-- markdownlint-enable MD013 -->
+<!-- markdownlint-enable MD013 MD034 -->

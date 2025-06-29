@@ -174,30 +174,30 @@ topologySpreadConstraints: []
 frontend:
   # -- This is the URL where your deployment will be accessible from
   # @section -- Hoppscotch frontend parameters
-  baseUrl: http://localhost:3000
+  baseUrl: ""
   # -- A URL to generate shortcodes for sharing, can be the same as `frontend.baseUrl`
   # @section -- Hoppscotch frontend parameters
-  shortcodeBaseUrl: http://localhost:3000
+  shortcodeBaseUrl: ""
   # -- This URL is used to connect to the admin dashboard
   # @section -- Hoppscotch frontend parameters
-  adminUrl: http://localhost:3000
+  adminUrl: ""
 
   # -- The URL for GraphQL within the instance
   # @section -- Hoppscotch frontend parameters
-  backendGqlUrl: http://localhost:3000/graphql
+  backendGqlUrl: ""
   # -- The URL for WebSockets within the instance
   # @section -- Hoppscotch frontend parameters
-  backendWsUrl: wss://localhost:3000/graphql
+  backendWsUrl: ""
   # -- The URL for REST APIs within the instance
   # @section -- Hoppscotch frontend parameters
-  backendApiUrl: http://localhost:3000/v1
+  backendApiUrl: ""
 
   # -- Optional links to the Terms & Conditions
   # @section -- Hoppscotch frontend parameters
-  termsOfServiceUrl: https://docs.hoppscotch.io/support/terms
+  appTosLink: ""
   # -- Optional links to the Privacy Policy
   # @section -- Hoppscotch frontend parameters
-  privacyPolicyUrl: https://docs.hoppscotch.io/support/privacy
+  appPrivacyPolicyLink: ""
 
   enableSubpathBasedAccess: true
 
@@ -208,7 +208,7 @@ frontend:
 backend:
   # -- This is where you add your Postgres database URL
   # @section -- Hoppscotch backend parameters
-  databaseUrl: postgresql://hoppscotch:password@url:5432/hoppscotch
+  databaseUrl: ""
 
   # -- This is an optional variable that lets you specify an alternate port for the AIO container’s endpoint when operating in subpath access mode
   # @section -- Hoppscotch backend parameters
@@ -225,10 +225,10 @@ backend:
   magicLinkTokenValidity: 3
   # -- Validity of the refresh token for auth (in ms)
   # @section -- Hoppscotch backend parameters
-  refreshTokenValidity: 604800000
+  refreshTokenValidity: "604800000"
   # -- Validity of the access token for auth (in ms)
   # @section -- Hoppscotch backend parameters
-  accessTokenValidity: 86400000
+  accessTokenValidity: "86400000"
   ## -- The secret used to sign the session cookies
   # @section -- Hoppscotch backend parameters
   sessionSecret: ""
@@ -243,43 +243,35 @@ backend:
 
   # -- This is a fallback URL to debug when the actual redirects fail
   # @section -- Hoppscotch backend parameters
-  redirectUrl: http://localhost:3000
+  redirectUrl: ""
 
   # -- URLs of Hoppscotch backend, admin dashboard, frontend app and the bundle server that are allowed to interact with the desktop app
   # @section -- Hoppscotch backend parameters
-  whitelistedOrigins:
-    - http://localhost:3170
-    - http://localhost:3000
-    - http://localhost:3100
-    - app://localhost_3200
-    - app://hoppscotch
+  whitelistedOrigins: []
 
   # -- Allows you to specify which auth providers you want to enable
   # @section -- Hoppscotch backend parameters
   allowedAuthProviders:
-    - GOOGLE
-    - GITHUB
-    - MICROSOFT
-    - EMAIL
+    - email
 
   googleAuth:
     clientId: ""
     clientSecret: ""
-    callbackUrl: http://localhost:3000/auth/google/callback
-    scope: email,profile
+    callbackUrl: ""
+    scope: []
 
   githubAuth:
     clientId: ""
     clientSecret: ""
-    callbackUrl: http://localhost:3000/auth/github/callback
-    scope: user:email
+    callbackUrl: ""
+    scope: []
 
   microsoftAuth:
     clientId: ""
     clientSecret: ""
-    callbackUrl: http://localhost:3000/auth/microsoft/callback
-    scope: user.read
-    tenant: common
+    callbackUrl: ""
+    scope: ""
+    tenant: ""
 
   mailer:
     # -- Enables the SMTP mailer configuration
@@ -290,22 +282,22 @@ backend:
     useCustomConfigs: false
     # -- The email address that you would be using
     # @section -- Hoppscotch backend parameters
-    addressFrom: <from@example.com>
+    addressFrom: ""
     # -- The SMTP URL for email delivery
     # @section -- Hoppscotch backend parameters
-    smtpUrl: smtps://user@domain.com:pass@smtp.domain.com
+    smtpUrl: ""
     # -- The SMTP host
     # @section -- Hoppscotch backend parameters
-    smtpHost: smtp.domain.com
+    smtpHost: ""
     # -- The port to connect to the SMTP server
     # @section -- Hoppscotch backend parameters
     smtpPort: 465
     smtpSecure: true
     # -- The SMTP user or email for authentication
     # @section -- Hoppscotch backend parameters
-    smtpUser: user@domain.com
+    smtpUser: ""
     # -- Provide the password set for the SMTP user
-    smtpPassword: pass
+    smtpPassword: ""
     tlsRejectUnauthorized: true
 
   rateLimit:
@@ -339,20 +331,20 @@ enterprise:
     # @section -- Hoppscotch Enterprise parameters
     githubEnterpriseAuth:
       enabled: false
-      authorizationUrl: https://{domain}/login/oauth/authorize
-      tokenUrl: https://{domain}/login/oauth/access_token
-      userProfileUrl: https://{domain}/users
-      userEmailUrl: https://{domain}/user/emails
+      authorizationUrl: ""
+      tokenUrl: ""
+      userProfileUrl: ""
+      userEmailUrl: ""
 
     # -- SAML authorization configuration
     # @section -- Hoppscotch Enterprise parameters
     samlAuth:
       issuer: ""
       audience: ""
-      callbackUrl: http://localhost:3170/v1/auth/saml/callback
+      callbackUrl: ""
       cert: ""
       entryPoint: ""
-      wantAssertionSigned: true
+      wantAssertionsSigned: true
       wantResponseSigned: false
 
     # -- OpenID Connect (OIDC) authorization configuration
@@ -365,8 +357,8 @@ enterprise:
       userInfoUrl: ""
       clientId: ""
       clientSecret: ""
-      callbackUrl: http://localhost:3170/v1/auth/oidc/callback
-      scope: openid,email,profile
+      callbackUrl: ""
+      scope: []
 
     clickhouse:
       allowAuditLogs: false
@@ -410,24 +402,11 @@ postgresql:
   # @section -- Database parameters
   architecture: standalone
   primary:
-    # -- PostgreSQL Primary resource requests and limits
+    # -- Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production).
     # @section -- Database parameters
-    # ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
-    # Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production).
-    # More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
-    #
     resourcesPreset: "nano"
     # -- Set container requests and limits for different resources like CPU or memory (essential for production workloads)
     # @section -- Database parameters
-    # Example:
-    # resources:
-    #   requests:
-    #     cpu: 2
-    #     memory: 512Mi
-    #   limits:
-    #     cpu: 3
-    #     memory: 1024Mi
-    #
     resources: {}
 
 # External PostgreSQL configuration
