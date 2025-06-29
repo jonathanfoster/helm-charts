@@ -50,9 +50,9 @@ helm install my-release jonathanfoster/hoppscotch
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | replicaCount | int | `1` | This will set the replicaset count. |
-| image.repository | string | `"nginx"` | This sets the image repository. |
+| image.repository | string | `"hoppscotch/hoppscotch"` | This sets the image repository. |
 | image.pullPolicy | string | `"IfNotPresent"` | This sets the pull policy for images. |
-| image.tag | string | `"latest"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
 | serviceAccount.automount | bool | `true` | Automatically mount a ServiceAccount's API credentials? |
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
@@ -61,10 +61,67 @@ helm install my-release jonathanfoster/hoppscotch
 | podLabels | object | `{}` | This is for setting Kubernetes Labels to a Pod. |
 | service.type | string | `"ClusterIP"` | This sets the service type. |
 | service.port | int | `80` | This sets the ports. |
-| livenessProbe | object | `{"httpGet":{"path":"/","port":"http"}}` | This is to setup the liveness and readiness probes. |
+| resources | object | `{}` | Resources for the pod. This is where you can set CPU and memory limits and requests. |
+| livenessProbe | object | `{}` | This is to setup the liveness and readiness probes. |
 | autoscaling | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | This section is for setting up autoscaling. |
 | volumes | list | `[]` | Additional volumes on the output Deployment definition. |
 | volumeMounts | list | `[]` | Additional volumeMounts on the output Deployment definition. |
+| nodeSelector | object | `{}` | Node selector for pod assignment. |
+| tolerations | list | `[]` | Tolerations for pod assignment. |
+| affinity | object | `{}` | Affinity for pod assignment. |
+| topologySpreadConstraints | list | `[]` | Topology spread constraints for pod assignment. |
+
+### Hoppscotch frontend parameters
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| frontend.baseUrl | string | `"http://localhost:3000"` | This is the URL where your deployment will be accessible from |
+| frontend.shortcodeBaseUrl | string | `"http://localhost:3000"` | A URL to generate shortcodes for sharing, can be the same as `frontend.baseUrl` |
+| frontend.adminUrl | string | `"http://localhost:3000"` | This URL is used to connect to the admin dashboard |
+| frontend.backendGqlUrl | string | `"http://localhost:3000/graphql"` | The URL for GraphQL within the instance |
+| frontend.backendWsUrl | string | `"wss://localhost:3000/graphql"` | The URL for WebSockets within the instance |
+| frontend.backendApiUrl | string | `"http://localhost:3000/v1"` | The URL for REST APIs within the instance |
+| frontend.termsOfServiceUrl | string | `"https://docs.hoppscotch.io/support/terms"` | Optional links to the Terms & Conditions |
+| frontend.privacyPolicyUrl | string | `"https://docs.hoppscotch.io/support/privacy"` | Optional links to the Privacy Policy |
+
+### Hoppscotch backend parameters
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| backend.databaseUrl | string | `"postgresql://hoppscotch:password@url:5432/hoppscotch"` | This is where you add your Postgres database URL |
+| backend.aioAlternatePort | int | `80` | This is an optional variable that lets you specify an alternate port for the AIO container’s endpoint when operating in subpath access mode |
+| backend.jwtSecret | string | `""` | The secret used to sign the JWT tokens |
+| backend.tokenSaltComplexity | int | `10` | Defines the complexity of the SALT that is used for hashing - a higher number implies a more complex salt |
+| backend.magicLinkTokenValidity | int | `3` | Duration of the validity of the magic link being sent to sign in to Hoppscotch (in days) |
+| backend.refreshTokenValidity | int | `604800000` | Validity of the refresh token for auth (in ms) |
+| backend.accessTokenValidity | int | `86400000` | Validity of the access token for auth (in ms) |
+| backend.allowSecureCookies | bool | `true` | If disabled users will be able to use Hoppscotch over HTTP connections as well. |
+| backend.dataEncryptionKey | string | `""` | A 32-character key used for encrypting sensitive data stored in the database |
+| backend.redirectUrl | string | `"http://localhost:3000"` | This is a fallback URL to debug when the actual redirects fail |
+| backend.whitelistedOrigins | list | `["http://localhost:3170","http://localhost:3000","http://localhost:3100","app://localhost_3200","app://hoppscotch"]` | URLs of Hoppscotch backend, admin dashboard, frontend app and the bundle server that are allowed to interact with the desktop app |
+| backend.allowedAuthProviders | list | `["GOOGLE","GITHUB","MICROSOFT","EMAIL"]` | Allows you to specify which auth providers you want to enable |
+| backend.mailer.smtpEnabled | bool | `true` | Enables the SMTP mailer configuration |
+| backend.mailer.useCustomConfigs | bool | `false` | When custom mailer configurations are used |
+| backend.mailer.addressFrom | string | `"<from@example.com>"` | The email address that you would be using |
+| backend.mailer.smtpUrl | string | `"smtps://user@domain.com:pass@smtp.domain.com"` | The SMTP URL for email delivery |
+| backend.mailer.smtpHost | string | `"smtp.domain.com"` | The SMTP host |
+| backend.mailer.smtpPort | int | `465` | The port to connect to the SMTP server |
+| backend.mailer.smtpUser | string | `"user@domain.com"` | The SMTP user or email for authentication |
+| backend.rateLimit.ttl | int | `60` | The time it takes to refresh the maximum number of requests being received |
+| backend.rateLimit.max | int | `100` | The maximum number of requests that Hoppscotch can handle under `backend.rateLimit.ttl` |
+
+### Hoppscotch Enterprise parameters
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| enterprise.licenseKey | string | `""` | The license key required to use Hoppscotch Enterprise |
+| enterprise.frontend.localProxyServerEnabled | bool | `false` | Enables a local proxy server for routing API requests. This will only work if `frontend.enableSubpathBasedAccess` is set to `true`. |
+| enterprise.frontend.proxyAppUrl | string | `""` | Route all API requests via a proxy server for added security |
+| enterprise.backend.githubEnterpriseAuth | object | `{"authorizationUrl":"https://{domain}/login/oauth/authorize","enabled":false,"tokenUrl":"https://{domain}/login/oauth/access_token","userEmailUrl":"https://{domain}/user/emails","userProfileUrl":"https://{domain}/users"}` | Github Enterprise authorization configuration |
+| enterprise.backend.samlAuth | object | `{"audience":"","callbackUrl":"http://localhost:3170/v1/auth/saml/callback","cert":"","entryPoint":"","issuer":"","wantAssertionSigned":true,"wantResponseSigned":false}` | SAML authorization configuration |
+| enterprise.backend.oidcAuth | object | `{"authorizationUrl":"","callbackUrl":"http://localhost:3170/v1/auth/oidc/callback","clientId":"","clientSecret":"","issuer":"","providerName":"","scope":"openid,email,profile","tokenUrl":"","userInfoUrl":""}` | OpenID Connect (OIDC) authorization configuration |
+| enterprise.backend.horizontalScalingEnabled | bool | `false` | Set to true to enable horizontal scaling, which uses Redis for managing pub-sub and state across instances |
+| enterprise.backend.redisUrl | string | `""` | The URL for the Redis instance used for horizontal scaling |
 
 ### Database parameters
 
@@ -101,11 +158,28 @@ helm install my-release jonathanfoster/hoppscotch
 | ingress.hosts[0].paths[0].path | string | `"/"` |  |
 | ingress.hosts[0].paths[0].pathType | string | `"ImplementationSpecific"` |  |
 | ingress.tls | list | `[]` |  |
-| resources | object | `{}` |  |
-| readinessProbe.httpGet.path | string | `"/"` |  |
-| readinessProbe.httpGet.port | string | `"http"` |  |
-| nodeSelector | object | `{}` |  |
-| tolerations | list | `[]` |  |
-| affinity | object | `{}` |  |
+| readinessProbe | object | `{}` |  |
+| frontend.enableSubpathBasedAccess | bool | `true` |  |
+| backend.sessionSecret | string | `""` |  |
+| backend.googleAuth.clientId | string | `""` |  |
+| backend.googleAuth.clientSecret | string | `""` |  |
+| backend.googleAuth.callbackUrl | string | `"http://localhost:3000/auth/google/callback"` |  |
+| backend.googleAuth.scope | string | `"email,profile"` |  |
+| backend.githubAuth.clientId | string | `""` |  |
+| backend.githubAuth.clientSecret | string | `""` |  |
+| backend.githubAuth.callbackUrl | string | `"http://localhost:3000/auth/github/callback"` |  |
+| backend.githubAuth.scope | string | `"user:email"` |  |
+| backend.microsoftAuth.clientId | string | `""` |  |
+| backend.microsoftAuth.clientSecret | string | `""` |  |
+| backend.microsoftAuth.callbackUrl | string | `"http://localhost:3000/auth/microsoft/callback"` |  |
+| backend.microsoftAuth.scope | string | `"user.read"` |  |
+| backend.microsoftAuth.tenant | string | `"common"` |  |
+| backend.mailer.smtpSecure | bool | `true` |  |
+| backend.mailer.smtpPassword | string | `"pass"` | Provide the password set for the SMTP user |
+| backend.mailer.tlsRejectUnauthorized | bool | `true` |  |
+| enterprise.backend.clickhouse.allowAuditLogs | bool | `false` |  |
+| enterprise.backend.clickhouse.host | string | `""` |  |
+| enterprise.backend.clickhouse.user | string | `""` |  |
+| enterprise.backend.clickhouse.password | string | `""` |  |
 | postgresql.auth.existingSecret | string | `""` |  |
 <!-- markdownlint-enable MD013 -->

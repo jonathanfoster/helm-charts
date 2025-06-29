@@ -1,10 +1,14 @@
-# @section -- Global parameters
+################################################################################
+## Global parameters
+################################################################################
 
 # -- This is for the secrets for pulling an image from a private repository.
 # @section -- Global parameters
 imagePullSecrets: []
 
-# @section -- Common parameters
+################################################################################
+## Common parameters
+################################################################################
 
 # -- This is to override the chart name.
 # @section -- Common parameters
@@ -13,7 +17,9 @@ nameOverride: ""
 # @section -- Common parameters
 fullnameOverride: ""
 
-# @section -- Hoppscotch common parameters
+################################################################################
+## Hoppscotch common parameters
+################################################################################
 
 # -- This will set the replicaset count.
 # @section -- Hoppscotch common parameters
@@ -93,6 +99,8 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+# -- Resources for the pod. This is where you can set CPU and memory limits and requests.
+# @section -- Hoppscotch common parameters
 resources:
   {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -143,15 +151,240 @@ volumeMounts: []
 #   mountPath: "/etc/foo"
 #   readOnly: true
 
+# -- Node selector for pod assignment.
+# @section -- Hoppscotch common parameters
 nodeSelector: {}
 
+# -- Tolerations for pod assignment.
+# @section -- Hoppscotch common parameters
 tolerations: []
 
+# -- Affinity for pod assignment.
+# @section -- Hoppscotch common parameters
 affinity: {}
 
+# -- Topology spread constraints for pod assignment.
+# @section -- Hoppscotch common parameters
 topologySpreadConstraints: []
 
-# @section -- Database parameters
+################################################################################
+## Hoppscotch frontend parameters
+################################################################################
+
+frontend:
+  # -- This is the URL where your deployment will be accessible from
+  # @section -- Hoppscotch frontend parameters
+  baseUrl: http://localhost:3000
+  # -- A URL to generate shortcodes for sharing, can be the same as `frontend.baseUrl`
+  # @section -- Hoppscotch frontend parameters
+  shortcodeBaseUrl: http://localhost:3000
+  # -- This URL is used to connect to the admin dashboard
+  # @section -- Hoppscotch frontend parameters
+  adminUrl: http://localhost:3000
+
+  # -- The URL for GraphQL within the instance
+  # @section -- Hoppscotch frontend parameters
+  backendGqlUrl: http://localhost:3000/graphql
+  # -- The URL for WebSockets within the instance
+  # @section -- Hoppscotch frontend parameters
+  backendWsUrl: wss://localhost:3000/graphql
+  # -- The URL for REST APIs within the instance
+  # @section -- Hoppscotch frontend parameters
+  backendApiUrl: http://localhost:3000/v1
+
+  # -- Optional links to the Terms & Conditions
+  # @section -- Hoppscotch frontend parameters
+  termsOfServiceUrl: https://docs.hoppscotch.io/support/terms
+  # -- Optional links to the Privacy Policy
+  # @section -- Hoppscotch frontend parameters
+  privacyPolicyUrl: https://docs.hoppscotch.io/support/privacy
+
+  enableSubpathBasedAccess: true
+
+################################################################################
+## Hoppscotch backend parameters
+################################################################################
+
+backend:
+  # -- This is where you add your Postgres database URL
+  # @section -- Hoppscotch backend parameters
+  databaseUrl: postgresql://hoppscotch:password@url:5432/hoppscotch
+
+  # -- This is an optional variable that lets you specify an alternate port for the AIO container’s endpoint when operating in subpath access mode
+  # @section -- Hoppscotch backend parameters
+  aioAlternatePort: 80
+
+  # -- The secret used to sign the JWT tokens
+  # @section -- Hoppscotch backend parameters
+  jwtSecret: ""
+  # -- Defines the complexity of the SALT that is used for hashing - a higher number implies a more complex salt
+  # @section -- Hoppscotch backend parameters
+  tokenSaltComplexity: 10
+  # -- Duration of the validity of the magic link being sent to sign in to Hoppscotch (in days)
+  # @section -- Hoppscotch backend parameters
+  magicLinkTokenValidity: 3
+  # -- Validity of the refresh token for auth (in ms)
+  # @section -- Hoppscotch backend parameters
+  refreshTokenValidity: 604800000
+  # -- Validity of the access token for auth (in ms)
+  # @section -- Hoppscotch backend parameters
+  accessTokenValidity: 86400000
+  ## -- The secret used to sign the session cookies
+  # @section -- Hoppscotch backend parameters
+  sessionSecret: ""
+
+  # -- If disabled users will be able to use Hoppscotch over HTTP connections as well.
+  # @section -- Hoppscotch backend parameters
+  allowSecureCookies: true
+
+  # -- A 32-character key used for encrypting sensitive data stored in the database
+  # @section -- Hoppscotch backend parameters
+  dataEncryptionKey: ""
+
+  # -- This is a fallback URL to debug when the actual redirects fail
+  # @section -- Hoppscotch backend parameters
+  redirectUrl: http://localhost:3000
+
+  # -- URLs of Hoppscotch backend, admin dashboard, frontend app and the bundle server that are allowed to interact with the desktop app
+  # @section -- Hoppscotch backend parameters
+  whitelistedOrigins:
+    - http://localhost:3170
+    - http://localhost:3000
+    - http://localhost:3100
+    - app://localhost_3200
+    - app://hoppscotch
+
+  # -- Allows you to specify which auth providers you want to enable
+  # @section -- Hoppscotch backend parameters
+  allowedAuthProviders:
+    - GOOGLE
+    - GITHUB
+    - MICROSOFT
+    - EMAIL
+
+  googleAuth:
+    clientId: ""
+    clientSecret: ""
+    callbackUrl: http://localhost:3000/auth/google/callback
+    scope: email,profile
+
+  githubAuth:
+    clientId: ""
+    clientSecret: ""
+    callbackUrl: http://localhost:3000/auth/github/callback
+    scope: user:email
+
+  microsoftAuth:
+    clientId: ""
+    clientSecret: ""
+    callbackUrl: http://localhost:3000/auth/microsoft/callback
+    scope: user.read
+    tenant: common
+
+  mailer:
+    # -- Enables the SMTP mailer configuration
+    # @section -- Hoppscotch backend parameters
+    smtpEnabled: true
+    # -- When custom mailer configurations are used
+    # @section -- Hoppscotch backend parameters
+    useCustomConfigs: false
+    # -- The email address that you would be using
+    # @section -- Hoppscotch backend parameters
+    addressFrom: <from@example.com>
+    # -- The SMTP URL for email delivery
+    # @section -- Hoppscotch backend parameters
+    smtpUrl: smtps://user@domain.com:pass@smtp.domain.com
+    # -- The SMTP host
+    # @section -- Hoppscotch backend parameters
+    smtpHost: smtp.domain.com
+    # -- The port to connect to the SMTP server
+    # @section -- Hoppscotch backend parameters
+    smtpPort: 465
+    smtpSecure: true
+    # -- The SMTP user or email for authentication
+    # @section -- Hoppscotch backend parameters
+    smtpUser: user@domain.com
+    # -- Provide the password set for the SMTP user
+    smtpPassword: pass
+    tlsRejectUnauthorized: true
+
+  rateLimit:
+    # -- The time it takes to refresh the maximum number of requests being received
+    # @section -- Hoppscotch backend parameters
+    ttl: 60
+    # -- The maximum number of requests that Hoppscotch can handle under `backend.rateLimit.ttl`
+    # @section -- Hoppscotch backend parameters
+    max: 100
+
+################################################################################
+## Hoppscotch Enterprise parameters
+################################################################################
+
+enterprise:
+  # -- The license key required to use Hoppscotch Enterprise
+  # @section -- Hoppscotch Enterprise parameters
+  licenseKey: ""
+
+  frontend:
+    # -- Enables a local proxy server for routing API requests. This will only work if `frontend.enableSubpathBasedAccess` is set to `true`.
+    # @section -- Hoppscotch Enterprise parameters
+    localProxyServerEnabled: false
+
+    # -- Route all API requests via a proxy server for added security
+    # @section -- Hoppscotch Enterprise parameters
+    proxyAppUrl: ""
+
+  backend:
+    # -- Github Enterprise authorization configuration
+    # @section -- Hoppscotch Enterprise parameters
+    githubEnterpriseAuth:
+      enabled: false
+      authorizationUrl: https://{domain}/login/oauth/authorize
+      tokenUrl: https://{domain}/login/oauth/access_token
+      userProfileUrl: https://{domain}/users
+      userEmailUrl: https://{domain}/user/emails
+
+    # -- SAML authorization configuration
+    # @section -- Hoppscotch Enterprise parameters
+    samlAuth:
+      issuer: ""
+      audience: ""
+      callbackUrl: http://localhost:3170/v1/auth/saml/callback
+      cert: ""
+      entryPoint: ""
+      wantAssertionSigned: true
+      wantResponseSigned: false
+
+    # -- OpenID Connect (OIDC) authorization configuration
+    # @section -- Hoppscotch Enterprise parameters
+    oidcAuth:
+      providerName: ""
+      issuer: ""
+      authorizationUrl: ""
+      tokenUrl: ""
+      userInfoUrl: ""
+      clientId: ""
+      clientSecret: ""
+      callbackUrl: http://localhost:3170/v1/auth/oidc/callback
+      scope: openid,email,profile
+
+    clickhouse:
+      allowAuditLogs: false
+      host: ""
+      user: ""
+      password: ""
+
+    # -- Set to true to enable horizontal scaling, which uses Redis for managing pub-sub and state across instances
+    # @section -- Hoppscotch Enterprise parameters
+    horizontalScalingEnabled: false
+
+    # -- The URL for the Redis instance used for horizontal scaling
+    # @section -- Hoppscotch Enterprise parameters
+    redisUrl: ""
+
+################################################################################
+## Database parameters
+################################################################################
 
 # PostgreSQL chart configuration
 # ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml

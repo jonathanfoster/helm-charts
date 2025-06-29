@@ -62,7 +62,7 @@ spec:
           {{- end }}
           env:
             - name: ENABLE_SUBPATH_BASED_ACCESS
-              value: "true"
+              value: {{ .Values.frontend.enableSubpathBasedAccess | quote }}
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
