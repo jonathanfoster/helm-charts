@@ -139,7 +139,7 @@ pre-commit: helm-docs lint test-unit ## Run pre-commit hooks
 .PHONY: test-e2e
 test-e2e: ## Run end-to-end tests
 	@echo "${GREEN}Running end-to-end tests...${RESET}"
-	./scripts/test-e2e.sh --all
+	./scripts/test-e2e.sh --all --debug
 
 .PHONY: test-unit
 test-unit: ## Run unit tests

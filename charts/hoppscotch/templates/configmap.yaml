@@ -22,34 +22,24 @@ data:
   ################################################################################
   ## Hoppscotch backend parameters
   ################################################################################
-  DATABASE_URL: {{ .databaseUrl | quote }}
   HOPP_AIO_ALTERNATE_PORT: {{ .aioAlternatePort | quote }}
-  JWT_SECRET: {{ .jwtSecret | quote }}
   TOKEN_SALT_COMPLEXITY: {{ .tokenSaltComplexity | quote }}
   MAGIC_LINK_TOKEN_VALIDITY: {{ .magicLinkTokenValidity | quote }}
   REFRESH_TOKEN_VALIDITY: {{ .refreshTokenValidity | quote }}
   ACCESS_TOKEN_VALIDITY: {{ .accessTokenValidity | quote }}
-  SESSION_SECRET: {{ .sessionSecret | quote }}
   ALLOW_SECURE_COOKIES: {{ .allowSecureCookies | quote }}
-  DATA_ENCRYPTION_KEY: {{ .dataEncryptionKey | quote }}
   REDIRECT_URL: {{ .redirectUrl | quote }}
   WHITELISTED_ORIGINS: {{ .whitelistedOrigins | join "," | quote }}
   VITE_ALLOWED_AUTH_PROVIDERS: {{ .allowedAuthProviders | join "," | upper }}
   {{- with .googleAuth }}
-  GOOGLE_CLIENT_ID: {{ .clientId | quote }}
-  GOOGLE_CLIENT_SECRET: {{ .clientSecret | quote }}
   GOOGLE_CALLBACK_URL: {{ .callbackUrl | quote }}
   GOOGLE_SCOPE: {{ .scope | join "," | quote }}
   {{- end }}{{/* with .googleAuth */}}
   {{- with .githubAuth }}
-  GITHUB_CLIENT_ID: {{ .clientId | quote }}
-  GITHUB_CLIENT_SECRET: {{ .clientSecret | quote }}
   GITHUB_CALLBACK_URL: {{ .callbackUrl | quote }}
   GITHUB_SCOPE: {{ .scope | join "," | quote }}
   {{- end }}{{/* with .githubAuth */}}
   {{- with .microsoftAuth }}
-  MICROSOFT_CLIENT_ID: {{ .clientId | quote }}
-  MICROSOFT_CLIENT_SECRET: {{ .clientSecret | quote }}
   MICROSOFT_CALLBACK_URL: {{ .callbackUrl | quote }}
   MICROSOFT_SCOPE: {{ .scope | join "," | quote }}
   MICROSOFT_TENANT: {{ .tenant | quote }}
@@ -58,12 +48,9 @@ data:
   MAILER_SMTP_ENABLE: {{ .smtpEnabled | quote }}
   MAILER_USE_CUSTOM_CONFIGS: {{ .useCustomConfigs | quote }}
   MAILER_ADDRESS_FROM: {{ .addressFrom | quote }}
-  MAILER_SMTP_URL: {{ .smtpUrl | quote }}
   MAILER_SMTP_HOST: {{ .smtpHost | quote }}
   MAILER_SMTP_PORT: {{ .smtpPort | quote }}
   MAILER_SMTP_SECURE: {{ .smtpSecure | quote }}
-  MAILER_SMTP_USER: {{ .smtpUser | quote }}
-  MAILER_SMTP_PASSWORD: {{ .smtpPassword | quote }}
   MAILER_TLS_REJECT_UNAUTHORIZED: {{ .tlsRejectUnauthorized | quote }}
   {{- end }}{{/* with .mailer */}}
   {{- with .rateLimit }}
@@ -72,10 +59,6 @@ data:
   {{- end }}{{/* with .rateLimit */}}
   {{- end }}{{/* with .Values.backend */}}
   {{- with .Values.enterprise }}
-  ################################################################################
-  ## Hoppscotch Enterprise parameters
-  ################################################################################
-  ENTERPRISE_LICENSE_KEY: {{ .licenseKey | quote }}
   {{- with .frontend }}
   ################################################################################
   ## Hoppscotch Enterprise frontend parameters
@@ -98,7 +81,6 @@ data:
   SAML_ISSUER: {{ .issuer | quote }}
   SAML_AUDIENCE: {{ .audience | quote }}
   SAML_CALLBACK_URL: {{ .callbackUrl | quote }}
-  SAML_CERT: {{ .cert | quote }}
   SAML_ENTRY_POINT: {{ .entryPoint | quote }}
   SAML_WANT_ASSERTIONS_SIGNED: {{ .wantAssertionsSigned | quote }}
   SAML_WANT_RESPONSE_SIGNED: {{ .wantResponseSigned | quote }}
@@ -109,18 +91,13 @@ data:
   OIDC_AUTH_URL: {{ .authorizationUrl | quote }}
   OIDC_TOKEN_URL: {{ .tokenUrl | quote }}
   OIDC_USER_INFO_URL: {{ .userInfoUrl | quote }}
-  OIDC_CLIENT_ID: {{ .clientId | quote }}
-  OIDC_CLIENT_SECRET: {{ .clientSecret | quote }}
   OIDC_CALLBACK_URL: {{ .callbackUrl | quote }}
   OIDC_SCOPE: {{ .scope | join " " | quote }}
   {{- end }}{{/* with .oidcAuth */}}
   {{- if and .clickhouse .clickhouse.allowAuditLogs }}
   ALLOW_AUDIT_LOGS: {{ .clickhouse.allowAuditLogs | quote }}
   CLICKHOUSE_HOST: {{ .clickhouse.host | quote }}
-  CLICKHOUSE_USER: {{ .clickhouse.user | quote }}
-  CLICKHOUSE_PASSWORD: {{ .clickhouse.password | quote }}
   {{- end }}{{/* with .clickhouse */}}
   HORIZONTAL_SCALING: {{ .horizontalScalingEnabled | quote }}
-  REDIS_URL: {{ .redisUrl | quote }}
   {{- end }}{{/* with .backend */}}
   {{- end }}{{/* with .Values.enterprise */}}

@@ -1,5 +1,6 @@
 extends: default
 ignore:
+  - build/
   - charts/*/templates/
   - charts/*/values.yaml
 rules:

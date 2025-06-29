@@ -17,11 +17,11 @@ tests:
         appTosLink: https://example.com/tos
         appPrivacyPolicyLink: https://example.com/privacy
         enableSubpathBasedAccess: true
+    documentIndex: 0
     asserts:
-      - hasDocuments:
-          count: 1
-      - isKind:
-          of: ConfigMap
+      - containsDocument:
+          apiVersion: v1
+          kind: ConfigMap
       - equal:
           path: metadata.name
           value: RELEASE-NAME-hoppscotch
@@ -56,16 +56,12 @@ tests:
     template: configmap.yaml
     set:
       backend:
-        databaseUrl: postgres://user:password@example.com:5432/hoppscotch
         aioAlternatePort: 3000
-        jwtSecret: jwt-secret
         tokenSaltComplexity: 10
         magicLinkTokenValidity: 3
-        sessionSecret: session-secret
         refreshTokenValidity: "604800000"
         accessTokenValidity: "86400000"
         allowSecureCookies: true
-        dataEncryptionKey: data-encryption-key
         redirectUrl: https://example.com
         whitelistedOrigins:
           - https://example.com
@@ -76,21 +72,15 @@ tests:
           - microsoft
           - email
         googleAuth:
-          clientId: google-client-id
-          clientSecret: google-client-secret
           callbackUrl: https://example.com/auth/google/callback
           scope:
             - email
             - profile
         githubAuth:
-          clientId: github-client-id
-          clientSecret: github-client-secret
           callbackUrl: https://example.com/auth/github/callback
           scope:
             - user:email
         microsoftAuth:
-          clientId: microsoft-client-id
-          clientSecret: microsoft-client-secret
           callbackUrl: https://example.com/auth/microsoft/callback
           scope:
             - user.read
@@ -99,33 +89,28 @@ tests:
           smtpEnabled: true
           useCustomConfigs: false
           addressFrom: no-reply@example.com
-          smtpUrl: smtps://smtp-user:smtp-password@smtp.example.com
           smtpHost: smtp.example.com
           smtpPort: 465
           smtpSecure: true
-          smtpUser: smtp-user
-          smtpPassword: smtp-password
           tlsRejectUnauthorized: true
         rateLimit:
           ttl: 60
           max: 100
+    documentIndex: 0
     asserts:
-      - hasDocuments:
-          count: 1
-      - isKind:
-          of: ConfigMap
+      - containsDocument:
+          apiVersion: v1
+          kind: ConfigMap
       - equal:
           path: metadata.name
           value: RELEASE-NAME-hoppscotch
-      - equal:
+      - notExists:
           path: data.DATABASE_URL
-          value: postgres://user:password@example.com:5432/hoppscotch
       - equal:
           path: data.HOPP_AIO_ALTERNATE_PORT
           value: "3000"
-      - equal:
+      - notExists:
           path: data.JWT_SECRET
-          value: jwt-secret
       - equal:
           path: data.TOKEN_SALT_COMPLEXITY
           value: "10"
@@ -138,15 +123,13 @@ tests:
       - equal:
           path: data.ACCESS_TOKEN_VALIDITY
           value: "86400000"
-      - equal:
+      - notExists:
           path: data.SESSION_SECRET
-          value: session-secret
       - equal:
           path: data.ALLOW_SECURE_COOKIES
           value: "true"
-      - equal:
+      - notExists:
           path: data.DATA_ENCRYPTION_KEY
-          value: data-encryption-key
       - equal:
           path: data.REDIRECT_URL
           value: https://example.com
@@ -156,36 +139,30 @@ tests:
       - equal:
           path: data.VITE_ALLOWED_AUTH_PROVIDERS
           value: GOOGLE,GITHUB,MICROSOFT,EMAIL
-      - equal:
+      - notExists:
           path: data.GOOGLE_CLIENT_ID
-          value: google-client-id
-      - equal:
+      - notExists:
           path: data.GOOGLE_CLIENT_SECRET
-          value: google-client-secret
       - equal:
           path: data.GOOGLE_CALLBACK_URL
           value: https://example.com/auth/google/callback
       - equal:
           path: data.GOOGLE_SCOPE
           value: email,profile
-      - equal:
+      - notExists:
           path: data.GITHUB_CLIENT_ID
-          value: github-client-id
-      - equal:
+      - notExists:
           path: data.GITHUB_CLIENT_SECRET
-          value: github-client-secret
       - equal:
           path: data.GITHUB_CALLBACK_URL
           value: https://example.com/auth/github/callback
       - equal:
           path: data.GITHUB_SCOPE
           value: user:email
-      - equal:
+      - notExists:
           path: data.MICROSOFT_CLIENT_ID
-          value: microsoft-client-id
-      - equal:
+      - notExists:
           path: data.MICROSOFT_CLIENT_SECRET
-          value: microsoft-client-secret
       - equal:
           path: data.MICROSOFT_CALLBACK_URL
           value: https://example.com/auth/microsoft/callback
@@ -204,9 +181,8 @@ tests:
       - equal:
           path: data.MAILER_ADDRESS_FROM
           value: no-reply@example.com
-      - equal:
+      - notExists:
           path: data.MAILER_SMTP_URL
-          value: smtps://smtp-user:smtp-password@smtp.example.com
       - equal:
           path: data.MAILER_SMTP_HOST
           value: smtp.example.com
@@ -216,12 +192,10 @@ tests:
       - equal:
           path: data.MAILER_SMTP_SECURE
           value: "true"
-      - equal:
+      - notExists:
           path: data.MAILER_SMTP_USER
-          value: smtp-user
-      - equal:
+      - notExists:
           path: data.MAILER_SMTP_PASSWORD
-          value: smtp-password
       - equal:
           path: data.MAILER_TLS_REJECT_UNAUTHORIZED
           value: "true"
@@ -235,7 +209,6 @@ tests:
     template: configmap.yaml
     set:
       enterprise:
-        enabled: true
         licenseKey: enterprise-license-key
         frontend:
           localProxyServerEnabled: true
@@ -251,10 +224,6 @@ tests:
             issuer: https://saml.example.com
             audience: https://example.com
             callbackUrl: https://example.com/v1/auth/saml/callback
-            cert: -|
-              -----BEGIN CERTIFICATE-----
-              MIID...
-              -----END CERTIFICATE-----
             entryPoint: https://saml.example.com/saml
             wantAssertionsSigned: true
             wantResponseSigned: true
@@ -264,8 +233,6 @@ tests:
             authorizationUrl: https://oidc.example.com/auth
             tokenUrl: https://oidc.example.com/token
             userInfoUrl: https://oidc.example.com/userinfo
-            clientId: oidc-client-id
-            clientSecret: oidc-client-secret
             callbackUrl: https://example.com/v1/auth/oidc/callback
             scope:
               - openid
@@ -275,21 +242,17 @@ tests:
             allowAuditLogs: true
             host: clickhouse.example.com
             port: 8123
-            user: clickhouse-user
-            password: clickhouse-password
           horizontalScalingEnabled: true
-          redisUrl: redis://redis-user:redis-password@redis.example.com:6379
+    documentIndex: 0
     asserts:
-      - hasDocuments:
-          count: 1
-      - isKind:
-          of: ConfigMap
+      - containsDocument:
+          apiVersion: v1
+          kind: ConfigMap
       - equal:
           path: metadata.name
           value: RELEASE-NAME-hoppscotch
-      - equal:
+      - notExists:
           path: data.ENTERPRISE_LICENSE_KEY
-          value: enterprise-license-key
       - equal:
           path: data.LOCAL_PROXY_SERVER_ENABLE
           value: "true"
@@ -320,12 +283,8 @@ tests:
       - equal:
           path: data.SAML_CALLBACK_URL
           value: https://example.com/v1/auth/saml/callback
-      - equal:
+      - notExists:
           path: data.SAML_CERT
-          value: -|
-            -----BEGIN CERTIFICATE-----
-            MIID...
-            -----END CERTIFICATE-----
       - equal:
           path: data.SAML_ENTRY_POINT
           value: https://saml.example.com/saml
@@ -350,12 +309,10 @@ tests:
       - equal:
           path: data.OIDC_USER_INFO_URL
           value: https://oidc.example.com/userinfo
-      - equal:
+      - notExists:
           path: data.OIDC_CLIENT_ID
-          value: oidc-client-id
-      - equal:
+      - notExists:
           path: data.OIDC_CLIENT_SECRET
-          value: oidc-client-secret
       - equal:
           path: data.OIDC_CALLBACK_URL
           value: https://example.com/v1/auth/oidc/callback
@@ -368,15 +325,12 @@ tests:
       - equal:
           path: data.CLICKHOUSE_HOST
           value: clickhouse.example.com
-      - equal:
+      - notExists:
           path: data.CLICKHOUSE_USER
-          value: clickhouse-user
-      - equal:
+      - notExists:
           path: data.CLICKHOUSE_PASSWORD
-          value: clickhouse-password
       - equal:
           path: data.HORIZONTAL_SCALING
           value: "true"
-      - equal:
+      - notExists:
           path: data.REDIS_URL
-          value: redis://redis-user:redis-password@redis.example.com:6379

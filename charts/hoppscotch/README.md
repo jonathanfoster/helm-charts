@@ -93,8 +93,8 @@ helm install my-release jonathanfoster/hoppscotch
 | backend.jwtSecret | string | `""` | The secret used to sign the JWT tokens |
 | backend.tokenSaltComplexity | int | `10` | Defines the complexity of the SALT that is used for hashing - a higher number implies a more complex salt |
 | backend.magicLinkTokenValidity | int | `3` | Duration of the validity of the magic link being sent to sign in to Hoppscotch (in days) |
-| backend.refreshTokenValidity | int | `604800000` | Validity of the refresh token for auth (in ms) |
-| backend.accessTokenValidity | int | `86400000` | Validity of the access token for auth (in ms) |
+| backend.refreshTokenValidity | string | `"604800000"` | Validity of the refresh token for auth (in ms) |
+| backend.accessTokenValidity | string | `"86400000"` | Validity of the access token for auth (in ms) |
 | backend.allowSecureCookies | bool | `true` | If disabled users will be able to use Hoppscotch over HTTP connections as well. |
 | backend.dataEncryptionKey | string | `""` | A 32-character key used for encrypting sensitive data stored in the database |
 | backend.redirectUrl | string | `""` | This is a fallback URL to debug when the actual redirects fail |
@@ -117,7 +117,7 @@ helm install my-release jonathanfoster/hoppscotch
 | enterprise.licenseKey | string | `""` | The license key required to use Hoppscotch Enterprise |
 | enterprise.frontend.localProxyServerEnabled | bool | `false` | Enables a local proxy server for routing API requests. This will only work if `frontend.enableSubpathBasedAccess` is set to `true`. |
 | enterprise.frontend.proxyAppUrl | string | `""` | Route all API requests via a proxy server for added security |
-| enterprise.backend.githubEnterpriseAuth | object | `{"authorizationUrl":"","tokenUrl":"","userEmailUrl":"","userProfileUrl":""}` | Github Enterprise authorization configuration |
+| enterprise.backend.githubEnterpriseAuth | object | `{"authorizationUrl":"","enabled":false,"tokenUrl":"","userEmailUrl":"","userProfileUrl":""}` | Github Enterprise authorization configuration |
 | enterprise.backend.samlAuth | object | `{"audience":"","callbackUrl":"","cert":"","entryPoint":"","issuer":"","wantAssertionsSigned":true,"wantResponseSigned":false}` | SAML authorization configuration |
 | enterprise.backend.oidcAuth | object | `{"authorizationUrl":"","callbackUrl":"","clientId":"","clientSecret":"","issuer":"","providerName":"","scope":[],"tokenUrl":"","userInfoUrl":""}` | OpenID Connect (OIDC) authorization configuration |
 | enterprise.backend.horizontalScalingEnabled | bool | `false` | Set to true to enable horizontal scaling, which uses Redis for managing pub-sub and state across instances |
