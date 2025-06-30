@@ -272,7 +272,7 @@ backend:
 
   # -- A 32-character key used for encrypting sensitive data stored in the database
   # @section -- Hoppscotch backend parameters
-  dataEncryptionKey: ""
+  dataEncryptionKey: "12345678901234567890123456789012"
 
   # -- This is a fallback URL to debug when the actual redirects fail
   # @section -- Hoppscotch backend parameters
@@ -315,10 +315,11 @@ backend:
     useCustomConfigs: false
     # -- The email address that you would be using
     # @section -- Hoppscotch backend parameters
-    addressFrom: ""
+    addressFrom: no-reply@example.com
     # -- The SMTP URL for email delivery
     # @section -- Hoppscotch backend parameters
-    smtpUrl: ""
+    smtpUrl: smtps://user:pass@smtp.example.com
+
     # -- The SMTP host
     # @section -- Hoppscotch backend parameters
     smtpHost: ""
