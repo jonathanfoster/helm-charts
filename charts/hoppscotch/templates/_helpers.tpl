@@ -71,7 +71,7 @@ Generate the database URL from PostgreSQL chart or external database settings
 {{- $user := .Values.postgresql.auth.username -}}
 {{- $database := .Values.postgresql.auth.database -}}
 {{- $password := .Values.postgresql.auth.password | default "" -}}
-{{- printf "postgres://%s:%s@%s:%v/%s?sslmode=disable" $user $password $host $port $database -}}
+{{- include "hoppscotch.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
 {{- else if .Values.externalDatabase.sqlConnection -}}
 {{- .Values.externalDatabase.sqlConnection -}}
 {{- else -}}
@@ -80,6 +80,47 @@ Generate the database URL from PostgreSQL chart or external database settings
 {{- $user := .Values.externalDatabase.user -}}
 {{- $database := .Values.externalDatabase.database -}}
 {{- $password := .Values.externalDatabase.password -}}
-{{- printf "postgres://%s:%s@%s:%v/%s?sslmode=disable" $user $password $host $port $database -}}
+{{- include "hoppscotch.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
 {{- end -}}
 {{- end }}
+
+{{/*
+Format a database URL for use in configuration files.
+
+Useage: {{- include "hoppscotch.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
+
+Params:
+  - host - String - Required - The host of the database.
+  - port - Integer - Optional - The port of the database. Defaults to 5432.
+  - user - String - Optional - The username for the database.
+  - password - String - Optional - The password for the database, defaults to empty string.
+  - database - String - Optional - The name of the database.
+  - params - String - Optional - Additional parameters to append to the URL.
+*/}}
+{{- define "hoppscotch.formatDatabaseUrl" -}}
+{{- $protocol := "postgres://" -}}
+{{- $userspec := "" -}}
+{{- $hostspec := "" -}}
+{{- $dbname := "" -}}
+{{- $paramspec := "" -}}
+{{- if and .user .password -}}
+{{- $userspec = printf "%s:%s@" .user .password -}}
+{{- else if .user -}}
+{{- $userspec = printf "%s@" .user -}}
+{{- else -}}
+{{- $userspec = "" -}}
+{{- end -}}
+{{- if .port -}}
+{{- $hostspec = printf "%s:%d" .host (default 5432 .port) -}}
+{{- else -}}
+{{- $hostspec = printf "%s" .host -}}
+{{- end -}}
+{{- if .database -}}
+{{- $dbname = printf "/%s" .database -}}
+{{- end -}}
+{{- if .params -}}
+{{- $paramspec = printf "?%s" .params -}}
+{{- end -}}
+{{- printf "postgres://%s%s%s%s" $userspec $hostspec $dbname $paramspec -}}
+{{- end -}}
+
