@@ -139,15 +139,8 @@ Params:
   - key - The key in the secret data to lookup (required)
 */}}
 {{- define "hoppscotch.lookupSecret" -}}
-{{- $name := .name -}}
-{{- $namespace := .namespace -}}
-{{- $key := .key -}}
-{{- $value := "" -}}
-{{- $secret := (lookup "v1" "Secret" $namespace $name) -}}
-{{- if and $secret $secret.data -}}
-{{- if hasKey $secret.data $key -}}
-{{- $value = index $secret.data $key | b64dec | trimAll "\n" -}}
+{{- $secret := (lookup "v1" "Secret" .namespace .name) -}}
+{{- if and $secret $secret.data (hasKey $secret.data .key) -}}
+{{- index $secret.data .key | b64dec | trimAll "\n" -}}
 {{- end -}}
-{{- end -}}
-{{- $value -}}
 {{- end }}
