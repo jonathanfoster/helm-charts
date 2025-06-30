@@ -36,7 +36,7 @@ tests:
           kind: Secret
       - equal:
           path: data.DATABASE_URL
-          value: cG9zdGdyZXM6Ly9ob3Bwc2NvdGNoOm15cGFzc3dvcmRAUkVMRUFTRS1OQU1FLWhvcHBzY290Y2gtcG9zdGdyZXNxbC5OQU1FU1BBQ0Uuc3ZjLmNsdXN0ZXIubG9jYWw6NTQzMi9ob3Bwc2NvdGNo # echo -n 'postgres://hoppscotch:mypassword@RELEASE-NAME-hoppscotch-postgresql.NAMESPACE.svc.cluster.local:5432/hoppscotch' | base64
+          value: cG9zdGdyZXM6Ly9ob3Bwc2NvdGNoOm15cGFzc3dvcmRAUkVMRUFTRS1OQU1FLXBvc3RncmVzcWwuTkFNRVNQQUNFLnN2Yy5jbHVzdGVyLmxvY2FsOjU0MzIvaG9wcHNjb3RjaD9zc2xtb2RlPWRpc2FibGU= # echo -n 'postgres://hoppscotch:mypassword@RELEASE-NAME-postgresql.NAMESPACE.svc.cluster.local:5432/hoppscotch?sslmode=disable' | base64
   - it: should generate database URL from external database config when PostgreSQL disabled
     template: secrets.yaml
     set:
@@ -57,7 +57,7 @@ tests:
           kind: Secret
       - equal:
           path: data.DATABASE_URL
-          value: cG9zdGdyZXM6Ly9teXVzZXI6bXlwYXNzQGV4dGVybmFsLXBvc3RncmVzOjU0MzIvbXlkYg== # echo -n 'postgres://myuser:mypass@external-postgres:5432/mydb' | base64
+          value: cG9zdGdyZXM6Ly9teXVzZXI6bXlwYXNzQGV4dGVybmFsLXBvc3RncmVzOjU0MzIvbXlkYj9zc2xtb2RlPWRpc2FibGU= # echo -n 'postgres://myuser:mypass@external-postgres:5432/mydb' | base64
   - it: should use direct SQL connection string when provided
     template: secrets.yaml
     set:
@@ -95,7 +95,7 @@ tests:
           kind: Secret
       - equal:
           path: data.DATABASE_URL
-          value: cG9zdGdyZXM6Ly90ZXN0dXNlcjp0ZXN0cGFzc0BleHRlcm5hbC1wb3N0Z3JlczozMzA2L3Rlc3RkYg== # echo -n 'postgres://testuser:testpass@external-postgres:3306/testdb' | base64
+          value: cG9zdGdyZXM6Ly90ZXN0dXNlcjp0ZXN0cGFzc0BleHRlcm5hbC1wb3N0Z3JlczozMzA2L3Rlc3RkYj9zc2xtb2RlPWRpc2FibGU= # echo -n 'postgres://testuser:testpass@external-postgres:3306/testdb' | base64
   - it: should default to port 5432 when not specified for external database
     template: secrets.yaml
     set:
@@ -115,7 +115,7 @@ tests:
           kind: Secret
       - equal:
           path: data.DATABASE_URL
-          value: cG9zdGdyZXM6Ly90ZXN0dXNlcjp0ZXN0cGFzc0BleHRlcm5hbC1wb3N0Z3Jlczo1NDMyL3Rlc3RkYg== # echo -n 'postgres://testuser:testpass@external-postgres:5432/testdb' | base64
+          value: cG9zdGdyZXM6Ly90ZXN0dXNlcjp0ZXN0cGFzc0BleHRlcm5hbC1wb3N0Z3Jlczo1NDMyL3Rlc3RkYj9zc2xtb2RlPWRpc2FibGU= # echo -n 'postgres://testuser:testpass@external-postgres:5432/testdb?sslmode=disable' | base64
   - it: should handle empty password for PostgreSQL chart
     template: secrets.yaml
     set:
@@ -134,4 +134,4 @@ tests:
           kind: Secret
       - equal:
           path: data.DATABASE_URL
-          value: cG9zdGdyZXM6Ly9ob3Bwc2NvdGNoQFJFTEVBU0UtTkFNRS1ob3Bwc2NvdGNoLXBvc3RncmVzcWwuTkFNRVNQQUNFLnN2Yy5jbHVzdGVyLmxvY2FsOjU0MzIvaG9wcHNjb3RjaA== # echo -n 'postgres://hoppscotch@RELEASE-NAME-hoppscotch-postgresql.NAMESPACE.svc.cluster.local:5432/hoppscotch' | base64
+          value: cG9zdGdyZXM6Ly9ob3Bwc2NvdGNoQFJFTEVBU0UtTkFNRS1wb3N0Z3Jlc3FsLk5BTUVTUEFDRS5zdmMuY2x1c3Rlci5sb2NhbDo1NDMyL2hvcHBzY290Y2g/c3NsbW9kZT1kaXNhYmxl # echo -n 'postgres://hoppscotch@RELEASE-NAME-postgresql.NAMESPACE.svc.cluster.local:5432/hoppscotch?sslmode=disable' | base64

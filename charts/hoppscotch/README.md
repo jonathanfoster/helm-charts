@@ -44,6 +44,7 @@ helm install my-release jonathanfoster/hoppscotch
 |-----|------|---------|-------------|
 | nameOverride | string | `""` | This is to override the chart name. |
 | fullnameOverride | string | `""` | This is to override the fully qualified app name. |
+| clusterDomain | string | `"cluster.local"` | Kubernetes cluster domain name |
 
 ### Hoppscotch common parameters
 
