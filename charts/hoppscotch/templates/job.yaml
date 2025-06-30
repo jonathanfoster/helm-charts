@@ -1,0 +1,37 @@
+{{if .Values.setupDatabaseJob.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ printf "%s-setup-db" (include "hoppscotch.fullname" .) | trunc 63 | trimSuffix "-" }}
+  labels:
+    {{- include "hoppscotch.labels" . | nindent 4 }}
+    app.kubernetes.io/component: setup-db
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "hoppscotch.labels" . | nindent 8 }}
+        app.kubernetes.io/component: setup-db
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+        {{- if .Values.defaultInitContainers.waitForDatabase.enabled }}
+        {{ include "hoppscotch.waitForDatabaseInitContainer" . | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: setup-db
+          image: {{ include "hoppscotch.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+          args:
+            - -c
+            - ./node_modules/.bin/prisma migrate deploy
+          {{- with .Values.extraEnvs }}
+          env:
+            {{- tpl (toYaml .) . | nindent 12 }}
+          {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ include "hoppscotch.fullname" . }}
+{{ end }}

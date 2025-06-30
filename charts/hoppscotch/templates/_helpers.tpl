@@ -146,3 +146,32 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Returns a default init container that waits for the database to be ready.
+*/}}
+{{- define "hoppscotch.waitForDatabaseInitContainer" -}}
+- name: wait-for-db
+  image: postgres:16-alpine
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  command:
+    - /bin/sh
+  args:
+    - -c
+    - |
+      end_time=$(($(date +%s) + $0))
+      until pg_isready -d $DATABASE_URL; do
+        if [ $(date +%s) -ge $end_time ]; then
+          exit 1
+        fi
+        sleep 2
+      done
+    - {{ .Values.defaultInitContainers.waitForDatabase.timeout | default 60 | quote}}
+  {{- with .Values.extraEnvs }}
+  env:
+    {{- tpl (toYaml .) . | nindent 12 }}
+  {{- end }}
+  envFrom:
+    - secretRef:
+        name: {{ include "hoppscotch.fullname" . }}
+{{- end -}}

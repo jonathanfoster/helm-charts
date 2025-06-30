@@ -73,37 +73,17 @@ spec:
                 name: {{ include "hoppscotch.fullname" . }}
 
       initContainers:
-        {{- if .Values.defaultInitContainers.waitForDb.enabled }}
-        - name: wait-for-db
-          image: postgres:16-alpine
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command:
-            - 'sh'
-            - '-c'
-            - |
-              end_time=$(($(date +%s) + $0))
-              until pg_isready -d $DATABASE_URL; do
-                if [ $(date +%s) -ge $end_time ]; then
-                  exit 1
-                fi
-                sleep 2
-              done
-            - {{ .Values.defaultInitContainers.waitForDb.timeout | default 60 | quote}}
-          {{- with .Values.extraEnvs }}
-          env:
-            {{- tpl (toYaml .) . | nindent 12 }}
-          {{- end }}
-          envFrom:
-            - secretRef:
-                name: {{ include "hoppscotch.fullname" . }}
+        {{- if .Values.defaultInitContainers.waitForDatabase.enabled }}
+        {{ include "hoppscotch.waitForDatabaseInitContainer" . | nindent 8 }}
         {{- end }}
-        {{- if .Values.defaultInitContainers.waitForDbMigration.enabled }}
-        - name: wait-for-db-migration
+        {{- if .Values.defaultInitContainers.waitForDatabaseSetup.enabled }}
+        - name: wait-for-db-setup
           image: {{ include "hoppscotch.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            - 'sh'
-            - '-c'
+            - /bin/sh
+          args:
+            - -c
             - |
               end_time=$(($(date +%s) + $0))
               until ./node_modules/.bin/prisma migrate status; do
@@ -112,7 +92,7 @@ spec:
                 fi
                 sleep 2
               done
-            - {{ .Values.defaultInitContainers.waitForDbMigration.timeout | default 60 | quote}}
+            - {{ .Values.defaultInitContainers.waitForDatabaseSetup.timeout | default 60 | quote}}
           {{- with .Values.extraEnvs }}
           env:
             {{- tpl (toYaml .) . | nindent 12 }}

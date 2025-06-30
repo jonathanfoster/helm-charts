@@ -1,0 +1,25 @@
+suite: Job
+templates:
+  - job.yaml
+  - secrets.yaml
+values:
+  - ../values.yaml
+tests:
+  - it: should exist when setup database job is enabled
+    template: job.yaml
+    documentIndex: 0
+    asserts:
+      - containsDocument:
+          apiVersion: batch/v1
+          kind: Job
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-hoppscotch-setup-db
+  - it: should not exist when setup database job is disabled
+    template: job.yaml
+    set:
+      setupDatabaseJob:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0

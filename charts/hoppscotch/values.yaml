@@ -177,7 +177,7 @@ affinity: {}
 topologySpreadConstraints: []
 
 defaultInitContainers:
-  waitForDb:
+  waitForDatabase:
     # -- Wait for the database to be ready before starting the backend
     # @section -- Hoppscotch common parameters
     enabled: true
@@ -186,14 +186,19 @@ defaultInitContainers:
     # @section -- Hoppscotch common parameters
     timeout: 60
 
-  waitForDbMigration:
-    # -- Wait for the database migration to complete before starting the backend
+  waitForDatabaseSetup:
+    # -- Wait for the database setup to complete before starting the backend
     # @section -- Hoppscotch common parameters
     enabled: true
 
-    # -- Time in seconds to wait for the migration to complete
+    # -- Time in seconds to wait for the setup to complete
     # @section -- Hoppscotch common parameters
     timeout: 60
+
+setupDatabaseJob:
+  # -- This job runs the database setup
+  # @section -- Hoppscotch common parameters
+  enabled: true
 
 ################################################################################
 ## Hoppscotch frontend parameters
@@ -421,7 +426,7 @@ postgresql:
     username: hoppscotch
     # -- Password for the custom user to create
     # @section -- Database parameters
-    password: ""
+    password: hoppscotch
     # -- Name for a custom database to create
     # @section -- Database parameters
     database: hoppscotch
