@@ -86,6 +86,13 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{/*
+Create the image name and tag. Chart app version is used as a default tag if not specified.
+*/}}
+{{- define "hoppscotch.image" -}}
+{{- printf "%s:%s" .Values.image.repository (default .Chart.AppVersion .Values.image.tag) -}}
+{{- end -}}
+
+{{/*
 Common labels
 */}}
 {{- define "hoppscotch.labels" -}}

@@ -72,8 +72,10 @@ helm install my-release jonathanfoster/hoppscotch
 | tolerations | list | `[]` | Tolerations for pod assignment. |
 | affinity | object | `{}` | Affinity for pod assignment. |
 | topologySpreadConstraints | list | `[]` | Topology spread constraints for pod assignment. |
-| waitForDb.enabled | bool | `true` | Wait for the database to be ready before starting the backend |
-| waitForDb.timeout | int | `60` | The timeout for the wait-for-db init container in seconds |
+| defaultInitContainers.waitForDb.enabled | bool | `true` | Wait for the database to be ready before starting the backend |
+| defaultInitContainers.waitForDb.timeout | int | `60` | Time in seconds to wait for the database to be ready |
+| defaultInitContainers.waitForDbMigration.enabled | bool | `true` | Wait for the database migration to complete before starting the backend |
+| defaultInitContainers.waitForDbMigration.timeout | int | `60` | Time in seconds to wait for the migration to complete |
 
 ### Hoppscotch frontend parameters
 

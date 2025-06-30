@@ -176,14 +176,24 @@ affinity: {}
 # @section -- Hoppscotch common parameters
 topologySpreadConstraints: []
 
-waitForDb:
-  # -- Wait for the database to be ready before starting the backend
-  # @section -- Hoppscotch common parameters
-  enabled: true
+defaultInitContainers:
+  waitForDb:
+    # -- Wait for the database to be ready before starting the backend
+    # @section -- Hoppscotch common parameters
+    enabled: true
 
-  # -- The timeout for the wait-for-db init container in seconds
-  # @section -- Hoppscotch common parameters
-  timeout: 60
+    # -- Time in seconds to wait for the database to be ready
+    # @section -- Hoppscotch common parameters
+    timeout: 60
+
+  waitForDbMigration:
+    # -- Wait for the database migration to complete before starting the backend
+    # @section -- Hoppscotch common parameters
+    enabled: true
+
+    # -- Time in seconds to wait for the migration to complete
+    # @section -- Hoppscotch common parameters
+    timeout: 60
 
 ################################################################################
 ## Hoppscotch frontend parameters

@@ -73,3 +73,65 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].env[0].value
           value: BAR
+  - it: should have default init containers
+    template: deployment.yaml
+    documentIndex: 0
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: wait-for-db
+      - equal:
+          path: spec.template.spec.initContainers[1].name
+          value: wait-for-db-migration
+  - it: should have not have wait for DB init container when disabled
+    template: deployment.yaml
+    set:
+      defaultInitContainers:
+        waitForDb:
+          enabled: false
+    documentIndex: 0
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - notContains:
+          path: spec.template.spec.initContainers
+          content:
+            - name: wait-for-db
+  - it: should have not have wait for DB migration init container when disabled
+    template: deployment.yaml
+    set:
+      defaultInitContainers:
+        waitForDbMigration:
+          enabled: false
+    documentIndex: 0
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - notContains:
+          path: spec.template.spec.initContainers
+          content:
+            - name: wait-for-db-migration
+  - it: should have default init containers with custom timeout
+    template: deployment.yaml
+    set:
+      defaultInitContainers:
+        waitForDb:
+          timeout: 120
+        waitForDbMigration:
+          timeout: 120
+    documentIndex: 0
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - equal:
+          path: spec.template.spec.initContainers[0].command[3]
+          value: "120"
+      - equal:
+          path: spec.template.spec.initContainers[1].command[3]
+          value: "120"

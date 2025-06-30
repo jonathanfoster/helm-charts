@@ -40,7 +40,7 @@ spec:
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: {{ include "hoppscotch.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -71,10 +71,12 @@ spec:
                 name: {{ include "hoppscotch.fullname" . }}
             - secretRef:
                 name: {{ include "hoppscotch.fullname" . }}
-      {{- if .Values.waitForDb.enabled }}
+
       initContainers:
+        {{- if .Values.defaultInitContainers.waitForDb.enabled }}
         - name: wait-for-db
           image: postgres:16-alpine
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - 'sh'
             - '-c'
@@ -86,7 +88,7 @@ spec:
                 fi
                 sleep 2
               done
-            - {{ .Values.waitForDb.timeout | default 60 | quote}}
+            - {{ .Values.defaultInitContainers.waitForDb.timeout | default 60 | quote}}
           {{- with .Values.extraEnvs }}
           env:
             {{- tpl (toYaml .) . | nindent 12 }}
@@ -94,7 +96,31 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ include "hoppscotch.fullname" . }}
-      {{- end }}
+        {{- end }}
+        {{- if .Values.defaultInitContainers.waitForDbMigration.enabled }}
+        - name: wait-for-db-migration
+          image: {{ include "hoppscotch.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              end_time=$(($(date +%s) + $0))
+              until ./node_modules/.bin/prisma migrate status; do
+                if [ $(date +%s) -ge $end_time ]; then
+                  exit 1
+                fi
+                sleep 2
+              done
+            - {{ .Values.defaultInitContainers.waitForDbMigration.timeout | default 60 | quote}}
+          {{- with .Values.extraEnvs }}
+          env:
+            {{- tpl (toYaml .) . | nindent 12 }}
+          {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ include "hoppscotch.fullname" . }}
+        {{- end }}
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
