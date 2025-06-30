@@ -60,3 +60,26 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Generate the database URL from PostgreSQL chart or external database settings
+*/}}
+{{- define "hoppscotch.databaseUrl" -}}
+{{- if .Values.postgresql.enabled -}}
+{{- $host := printf "%s-postgresql.%s.svc.%s" (include "hoppscotch.fullname" .) .Release.Namespace .Values.clusterDomain -}}
+{{- $port := 5432 -}}
+{{- $user := .Values.postgresql.auth.username -}}
+{{- $database := .Values.postgresql.auth.database -}}
+{{- $password := .Values.postgresql.auth.password | default "" -}}
+{{- printf "postgres://%s:%s@%s:%v/%s?sslmode=disable" $user $password $host $port $database -}}
+{{- else if .Values.externalDatabase.sqlConnection -}}
+{{- .Values.externalDatabase.sqlConnection -}}
+{{- else -}}
+{{- $host := .Values.externalDatabase.host -}}
+{{- $port := .Values.externalDatabase.port | default 5432 | int -}}
+{{- $user := .Values.externalDatabase.user -}}
+{{- $database := .Values.externalDatabase.database -}}
+{{- $password := .Values.externalDatabase.password -}}
+{{- printf "postgres://%s:%s@%s:%v/%s?sslmode=disable" $user $password $host $port $database -}}
+{{- end -}}
+{{- end }}

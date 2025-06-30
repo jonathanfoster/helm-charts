@@ -91,7 +91,7 @@ helm install my-release jonathanfoster/hoppscotch
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| backend.databaseUrl | string | `"postgres://hoppscotch:password@localhost:5432/hoppscotch?sslmode=disable"` | This is where you add your Postgres database URL |
+| backend.databaseUrl | string | `""` | This is where you add your Postgres database URL |
 | backend.aioAlternatePort | int | `80` | This is an optional variable that lets you specify an alternate port for the AIO container’s endpoint when operating in subpath access mode |
 | backend.jwtSecret | string | `"secret"` | The secret used to sign the JWT tokens |
 | backend.tokenSaltComplexity | int | `10` | Defines the complexity of the SALT that is used for hashing - a higher number implies a more complex salt |

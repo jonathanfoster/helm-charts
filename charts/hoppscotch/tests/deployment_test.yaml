@@ -1,4 +1,4 @@
-suite: deployment
+suite: Deployment
 templates:
   - configmap.yaml
   - deployment.yaml

@@ -1,4 +1,4 @@
-suite: configmap
+suite: ConfigMap
 templates:
   - configmap.yaml
 values:

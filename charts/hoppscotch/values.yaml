@@ -16,6 +16,9 @@ nameOverride: ""
 # -- This is to override the fully qualified app name.
 # @section -- Common parameters
 fullnameOverride: ""
+# -- Kubernetes cluster domain name
+# @section -- Common parameters
+clusterDomain: cluster.local
 
 ################################################################################
 ## Hoppscotch common parameters
@@ -223,7 +226,7 @@ frontend:
 backend:
   # -- This is where you add your Postgres database URL
   # @section -- Hoppscotch backend parameters
-  databaseUrl: "postgres://hoppscotch:password@localhost:5432/hoppscotch?sslmode=disable"
+  databaseUrl: ""
 
   # -- This is an optional variable that lets you specify an alternate port for the AIO container’s endpoint when operating in subpath access mode
   # @section -- Hoppscotch backend parameters
