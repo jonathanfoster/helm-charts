@@ -73,7 +73,7 @@ Generate the database URL from PostgreSQL chart or external database settings
 {{- $password := .Values.postgresql.auth.password -}}
 {{- if not $password -}}
 {{- $postgresSecretName := printf "%s-postgresql" .Release.Name -}}
-{{- $password = include "hoppscotch.lookupSecret" (dict "context" . "name" $postgresSecretName "key" "password") -}}
+{{- $password = include "hoppscotch.lookupSecret" (dict "name" $postgresSecretName "namespace" .Release.Namespace "key" "password") -}}
 {{- end -}}
 {{- include "hoppscotch.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
 {{- else if .Values.externalDatabase.sqlConnection -}}
@@ -131,17 +131,16 @@ Params:
 {{/*
 Lookup a secret value by key. An empty string is returned if the key is not found.
 
-Usage: {{- include "hoppscotch.lookupSecret" (dict "context" . "name" "my-secret" "namespace" "my-namespace" "key" "my-key") -}}
+Usage: {{- include "hoppscotch.lookupSecret" (dict "name" "my-secret" "namespace" "my-namespace" "key" "my-key") -}}
 
 Params:
-  - context - The template context (required)
   - name - The name of the secret (required)
-  - namespace - The namespace of the secret
+  - namespace - The namespace of the secret (required)
   - key - The key in the secret data to lookup (required)
 */}}
 {{- define "hoppscotch.lookupSecret" -}}
 {{- $name := .name -}}
-{{- $namespace := .namespace | default .context.Release.Namespace -}}
+{{- $namespace := .namespace -}}
 {{- $key := .key -}}
 {{- $value := "" -}}
 {{- $secret := (lookup "v1" "Secret" $namespace $name) -}}
