@@ -39,7 +39,12 @@ helm-template: clean ## Render Helm templates
 .PHONY: helm-uninstall
 helm-uninstall: ## Uninstall chart
 	@echo "${GREEN}Uninstalling chart ${CHART_NAME}...${RESET}"
-	helm uninstall ${CHART_NAME} -n ${CHART_NAME}
+	@if ! helm list -n ${CHART_NAME} | grep -q ${CHART_NAME}; then \
+		echo "${YELLOW}Warning:${RESET} Chart ${CHART_NAME} is not installed"; \
+		exit 0; \
+	else \
+		helm uninstall ${CHART_NAME} -n ${CHART_NAME}; \
+	fi
 
 .PHONY: helm-upgrade
 helm-upgrade: ## Upgrade chart
