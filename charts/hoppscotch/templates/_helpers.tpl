@@ -91,15 +91,15 @@ Generate the database URL from PostgreSQL chart or external database settings
 {{/*
 Format a database URL for use in configuration files.
 
-Useage: {{- include "hoppscotch.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database "params" $params) -}}
+Usage: {{- include "hoppscotch.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database "params" $params) -}}
 
 Params:
-  - host - String - Required - The host of the database.
-  - port - Integer - Optional - The port of the database. Defaults to 5432.
-  - user - String - Optional - The username for the database.
-  - password - String - Optional - The password for the database, defaults to empty string.
-  - database - String - Optional - The name of the database.
-  - params - String - Optional - Additional parameters to append to the URL.
+  - host - The host of the database (required)
+  - port - The port of the database (default 5432)
+  - user - The username for the database
+  - password - The password for the database
+  - database - The name of the database
+  - params - Additional parameters to append to the URL
 */}}
 {{- define "hoppscotch.formatDatabaseUrl" -}}
 {{- $protocol := "postgres://" -}}
@@ -134,10 +134,10 @@ Lookup a secret value by key. An empty string is returned if the key is not foun
 Usage: {{- include "hoppscotch.lookupSecret" (dict "context" . "name" "my-secret" "namespace" "my-namespace" "key" "my-key") -}}
 
 Params:
-  - context - Object - Required - The template context (pass . as the context).
-  - name - String - Required - The name of the secret.
-  - namespace - String - Optional - The namespace of the secret. Defaults to the current namespace.
-  - key - String - Required - The key in the secret data to lookup.
+  - context - The template context (required)
+  - name - The name of the secret (required)
+  - namespace - The namespace of the secret
+  - key - The key in the secret data to lookup (required)
 */}}
 {{- define "hoppscotch.lookupSecret" -}}
 {{- $name := .name -}}
