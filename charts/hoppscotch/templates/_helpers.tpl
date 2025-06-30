@@ -102,22 +102,17 @@ Params:
   - params - Additional parameters to append to the URL
 */}}
 {{- define "hoppscotch.formatDatabaseUrl" -}}
-{{- $protocol := "postgres://" -}}
 {{- $userspec := "" -}}
-{{- $hostspec := "" -}}
+{{- $hostspec := .host -}}
 {{- $dbname := "" -}}
 {{- $paramspec := "" -}}
 {{- if and .user .password -}}
 {{- $userspec = printf "%s:%s@" .user .password -}}
 {{- else if .user -}}
 {{- $userspec = printf "%s@" .user -}}
-{{- else -}}
-{{- $userspec = "" -}}
 {{- end -}}
 {{- if .port -}}
 {{- $hostspec = printf "%s:%d" .host (default 5432 .port) -}}
-{{- else -}}
-{{- $hostspec = printf "%s" .host -}}
 {{- end -}}
 {{- if .database -}}
 {{- $dbname = printf "/%s" .database -}}
