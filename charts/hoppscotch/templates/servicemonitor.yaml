@@ -15,7 +15,7 @@ spec:
   jobLabel: {{ .Values.metrics.serviceMonitor.jobLabel | quote }}
   selector:
     matchLabels:
-      {{- include "hoppscotch.labels" . | nindent 4 }}
+      {{- include "hoppscotch.selectorLabels" . | nindent 4 }}
       {{- if .Values.metrics.serviceMonitor.selector }}
       {{- toYaml .Values.metrics.serviceMonitor.selector | nindent 6 }}
       {{- end }}

@@ -62,15 +62,6 @@ affinity: {}
 
 topologySpreadConstraints: []
 
-defaultInitContainers:
-  waitForDatabase:
-    enabled: true
-    timeout: 60
-
-  waitForDatabaseSetup:
-    enabled: true
-    timeout: 60
-
 setupDatabaseJob:
   enabled: true
 
@@ -237,6 +228,17 @@ ingress:
   extraTls: []
   secrets: []
   extraRules: []
+
+## @section Default Init Containers Parameters
+
+defaultInitContainers:
+  waitForDatabase:
+    enabled: true
+    timeout: 60
+
+  waitForDatabaseSetup:
+    enabled: true
+    timeout: 60
 
 ## @section Other Parameters
 
