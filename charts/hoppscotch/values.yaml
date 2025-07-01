@@ -1,6 +1,11 @@
 ## @section Global Parameters
 
-imagePullSecrets: []
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+  defaultStorageClass: ""
+  security:
+    allowInsecureImages: false
 
 ## @section Common Parameters
 
