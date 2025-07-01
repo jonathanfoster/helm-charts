@@ -5,9 +5,9 @@ metadata:
   labels: {{ include "hoppscotch.labels" . | nindent 4 }}
 data:
   {{- with .Values.frontend }}
-  ################################################################################
-  ## Hoppscotch frontend parameters
-  ################################################################################
+  ##
+  ## Hoppscotch Frontend Parameters
+  ##
   VITE_BASE_URL: {{ .baseUrl | quote }}
   VITE_SHORTCODE_BASE_URL: {{ .shortcodeBaseUrl | quote }}
   VITE_ADMIN_URL: {{ .adminUrl | quote }}
@@ -19,9 +19,9 @@ data:
   ENABLE_SUBPATH_BASED_ACCESS: {{ .enableSubpathBasedAccess | quote }}
   {{- end }}{{/* with .Values.frontend */}}
   {{- with .Values.backend }}
-  ################################################################################
-  ## Hoppscotch backend parameters
-  ################################################################################
+  ##
+  ## Hoppscotch Backend Parameters
+  ##
   HOPP_AIO_ALTERNATE_PORT: {{ .aioAlternatePort | quote }}
   TOKEN_SALT_COMPLEXITY: {{ .tokenSaltComplexity | quote }}
   MAGIC_LINK_TOKEN_VALIDITY: {{ .magicLinkTokenValidity | quote }}
@@ -60,16 +60,16 @@ data:
   {{- end }}{{/* with .Values.backend */}}
   {{- with .Values.enterprise }}
   {{- with .frontend }}
-  ################################################################################
-  ## Hoppscotch Enterprise frontend parameters
-  ################################################################################
+  ##
+  ## Hoppscotch Enterprise Frontend Parameters
+  ##
   LOCAL_PROXY_SERVER_ENABLE: {{ .localProxyServerEnabled | quote }}
   PROXY_APP_URL: {{ .proxyAppUrl | quote }}
   {{- end }}{{/* with .frontend */}}
   {{- with .backend }}
-  ################################################################################
-  ## Hoppscotch Enterprise backend parameters
-  ################################################################################
+  ##
+  ## Hoppscotch Enterprise Backend Parameters
+  ##
   {{- with .githubEnterpriseAuth }}
   IS_GITHUB_ENTERPRISE_ENABLED: {{ .enabled | quote }}
   GITHUB_AUTHORIZATION_URL: {{ .authorizationUrl | quote }}

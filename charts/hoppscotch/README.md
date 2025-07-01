@@ -32,13 +32,13 @@ helm install my-release jonathanfoster/hoppscotch
 
 <!-- markdownlint-disable MD013 MD034 -->
 
-### Global parameters
+### Global Parameters
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | imagePullSecrets | list | `[]` | This is for the secrets for pulling an image from a private repository. |
 
-### Common parameters
+### Common Parameters
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
@@ -46,7 +46,7 @@ helm install my-release jonathanfoster/hoppscotch
 | fullnameOverride | string | `""` | This is to override the fully qualified app name. |
 | clusterDomain | string | `"cluster.local"` | Kubernetes cluster domain name |
 
-### Hoppscotch common parameters
+### Hoppscotch Common Parameters
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
@@ -78,7 +78,7 @@ helm install my-release jonathanfoster/hoppscotch
 | defaultInitContainers.waitForDatabaseSetup.timeout | int | `60` | Time in seconds to wait for the setup to complete |
 | setupDatabaseJob.enabled | bool | `true` | This job runs the database setup |
 
-### Hoppscotch frontend parameters
+### Hoppscotch Frontend Parameters
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
@@ -91,7 +91,7 @@ helm install my-release jonathanfoster/hoppscotch
 | frontend.appTosLink | string | `""` | Optional links to the Terms & Conditions |
 | frontend.appPrivacyPolicyLink | string | `""` | Optional links to the Privacy Policy |
 
-### Hoppscotch backend parameters
+### Hoppscotch Backend Parameters
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
@@ -103,21 +103,21 @@ helm install my-release jonathanfoster/hoppscotch
 | backend.refreshTokenValidity | string | `"604800000"` | Validity of the refresh token for auth (in ms) |
 | backend.accessTokenValidity | string | `"86400000"` | Validity of the access token for auth (in ms) |
 | backend.allowSecureCookies | bool | `true` | If disabled users will be able to use Hoppscotch over HTTP connections as well. |
-| backend.dataEncryptionKey | string | `""` | A 32-character key used for encrypting sensitive data stored in the database |
+| backend.dataEncryptionKey | string | `"12345678901234567890123456789012"` | A 32-character key used for encrypting sensitive data stored in the database |
 | backend.redirectUrl | string | `""` | This is a fallback URL to debug when the actual redirects fail |
 | backend.whitelistedOrigins | list | `[]` | URLs of Hoppscotch backend, admin dashboard, frontend app and the bundle server that are allowed to interact with the desktop app |
 | backend.allowedAuthProviders | list | `["email"]` | Allows you to specify which auth providers you want to enable |
 | backend.mailer.smtpEnabled | bool | `true` | Enables the SMTP mailer configuration |
 | backend.mailer.useCustomConfigs | bool | `false` | When custom mailer configurations are used |
-| backend.mailer.addressFrom | string | `""` | The email address that you would be using |
-| backend.mailer.smtpUrl | string | `""` | The SMTP URL for email delivery |
+| backend.mailer.addressFrom | string | `"no-reply@example.com"` | The email address that you would be using |
+| backend.mailer.smtpUrl | string | `"smtps://user:pass@smtp.example.com"` | The SMTP URL for email delivery |
 | backend.mailer.smtpHost | string | `""` | The SMTP host |
 | backend.mailer.smtpPort | int | `465` | The port to connect to the SMTP server |
 | backend.mailer.smtpUser | string | `""` | The SMTP user or email for authentication |
 | backend.rateLimit.ttl | int | `60` | The time it takes to refresh the maximum number of requests being received |
 | backend.rateLimit.max | int | `100` | The maximum number of requests that Hoppscotch can handle under `backend.rateLimit.ttl` |
 
-### Hoppscotch Enterprise parameters
+### Hoppscotch Enterprise Parameters
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
@@ -130,14 +130,14 @@ helm install my-release jonathanfoster/hoppscotch
 | enterprise.backend.horizontalScalingEnabled | bool | `false` | Set to true to enable horizontal scaling, which uses Redis for managing pub-sub and state across instances |
 | enterprise.backend.redisUrl | string | `""` | The URL for the Redis instance used for horizontal scaling |
 
-### Database parameters
+### Database Parameters
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | postgresql.enabled | bool | `true` | Switch to enable or disable the PostgreSQL helm chart |
 | postgresql.auth.enablePostgresUser | bool | `true` | Assign a password to the "postgres" admin user. Otherwise, remote access will be blocked for this user |
 | postgresql.auth.username | string | `"hoppscotch"` | Name for a custom user to create |
-| postgresql.auth.password | string | `""` | Password for the custom user to create |
+| postgresql.auth.password | string | `"hoppscotch"` | Password for the custom user to create |
 | postgresql.auth.database | string | `"hoppscotch"` | Name for a custom database to create |
 | postgresql.architecture | string | `"standalone"` | PostgreSQL architecture (`standalone` or `replication`) |
 | postgresql.primary.resourcesPreset | string | `"nano"` | Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production). |
