@@ -1,256 +1,102 @@
-## @section Global Parameters
-
-# -- This is for the secrets for pulling an image from a private repository.
-# @section -- Global Parameters
 imagePullSecrets: []
 
-## @section Common Parameters
-
-# -- This is to override the chart name.
-# @section -- Common Parameters
 nameOverride: ""
-# -- This is to override the fully qualified app name.
-# @section -- Common Parameters
 fullnameOverride: ""
-# -- Kubernetes cluster domain name
-# @section -- Common Parameters
 clusterDomain: cluster.local
 
-## Hoppscotch Common Parameters
-##
-# -- This will set the replicaset count.
-# @section -- Hoppscotch Common Parameters
 replicaCount: 1
 
 containerPorts:
   http: 80
   https: 443
 
-# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
-  # -- This sets the image repository.
-  # @section -- Hoppscotch Common Parameters
   repository: hoppscotch/hoppscotch
-  # -- This sets the pull policy for images.
-  # @section -- Hoppscotch Common Parameters
   pullPolicy: IfNotPresent
-  # -- Overrides the image tag whose default is the chart appVersion.
-  # @section -- Hoppscotch Common Parameters
   tag: ""
 
-# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
 serviceAccount:
-  # -- Specifies whether a service account should be created
-  # @section -- Hoppscotch Common Parameters
   create: true
-  # -- Automatically mount a ServiceAccount's API credentials?
-  # @section -- Hoppscotch Common Parameters
   automount: true
-  # -- Annotations to add to the service account
-  # @section -- Hoppscotch Common Parameters
   annotations: {}
-  # -- The name of the service account to use. If not set and create is true, a name is generated using the fullname template
-  # @section -- Hoppscotch Common Parameters
   name: ""
 
-# -- This is for setting Kubernetes Annotations to a Pod.
-# @section -- Hoppscotch Common Parameters
 podAnnotations: {}
-# -- This is for setting Kubernetes Labels to a Pod.
-# @section -- Hoppscotch Common Parameters
 podLabels: {}
 
-podSecurityContext:
-  {}
-  # fsGroup: 2000
+podSecurityContext: {}
+securityContext: {}
 
-securityContext:
-  {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-# -- This is for setting extra environment variables in the pod.
-# @section -- Hoppscotch Common Parameters
 extraEnvs: []
-# - name: FOO
-#   value: BAR
 
-# -- Resources for the pod. This is where you can set CPU and memory limits and requests.
-# @section -- Hoppscotch Common Parameters
-resources:
-  {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources: {}
 
-# -- This is to setup the liveness and readiness probes.
-# @section -- Hoppscotch Common Parameters
-livenessProbe:
-  {}
-  # httpGet:
-  #   path: /
-  #   port: http
-readinessProbe:
-  {}
-  # httpGet:
-  #   path: /
-  #   port: http
+livenessProbe: {}
+readinessProbe: {}
 
-# -- This section is for setting up autoscaling.
-# @section -- Hoppscotch Common Parameters
 autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
-# -- Additional volumes on the output Deployment definition.
-# @section -- Hoppscotch Common Parameters
 volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
 
-# -- Additional volumeMounts on the output Deployment definition.
-# @section -- Hoppscotch Common Parameters
 volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
 
-# -- Node selector for pod assignment.
-# @section -- Hoppscotch Common Parameters
 nodeSelector: {}
 
-# -- Tolerations for pod assignment.
-# @section -- Hoppscotch Common Parameters
 tolerations: []
 
-# -- Affinity for pod assignment.
-# @section -- Hoppscotch Common Parameters
 affinity: {}
 
-# -- Topology spread constraints for pod assignment.
-# @section -- Hoppscotch Common Parameters
 topologySpreadConstraints: []
 
 defaultInitContainers:
   waitForDatabase:
-    # -- Wait for the database to be ready before starting the backend
-    # @section -- Hoppscotch Common Parameters
     enabled: true
-
-    # -- Time in seconds to wait for the database to be ready
-    # @section -- Hoppscotch Common Parameters
     timeout: 60
 
   waitForDatabaseSetup:
-    # -- Wait for the database setup to complete before starting the backend
-    # @section -- Hoppscotch Common Parameters
     enabled: true
-
-    # -- Time in seconds to wait for the setup to complete
-    # @section -- Hoppscotch Common Parameters
     timeout: 60
 
 setupDatabaseJob:
-  # -- This job runs the database setup
-  # @section -- Hoppscotch Common Parameters
   enabled: true
 
-# Hoppscotch Frontend Parameters
-#
 frontend:
-  # -- This is the URL where your deployment will be accessible from
-  # @section -- Hoppscotch Frontend Parameters
   baseUrl: ""
-  # -- A URL to generate shortcodes for sharing, can be the same as `frontend.baseUrl`
-  # @section -- Hoppscotch Frontend Parameters
   shortcodeBaseUrl: ""
-  # -- This URL is used to connect to the admin dashboard
-  # @section -- Hoppscotch Frontend Parameters
   adminUrl: ""
 
-  # -- The URL for GraphQL within the instance
-  # @section -- Hoppscotch Frontend Parameters
   backendGqlUrl: ""
-  # -- The URL for WebSockets within the instance
-  # @section -- Hoppscotch Frontend Parameters
   backendWsUrl: ""
-  # -- The URL for REST APIs within the instance
-  # @section -- Hoppscotch Frontend Parameters
   backendApiUrl: ""
 
-  # -- Optional links to the Terms & Conditions
-  # @section -- Hoppscotch Frontend Parameters
   appTosLink: ""
-  # -- Optional links to the Privacy Policy
-  # @section -- Hoppscotch Frontend Parameters
   appPrivacyPolicyLink: ""
 
   enableSubpathBasedAccess: true
 
-## Hoppscotch Backend Parameters
-##
 backend:
-  # -- This is where you add your Postgres database URL
-  # @section -- Hoppscotch Backend Parameters
   databaseUrl: ""
 
-  # -- This is an optional variable that lets you specify an alternate port for the AIO container’s endpoint when operating in subpath access mode
-  # @section -- Hoppscotch Backend Parameters
   aioAlternatePort: 80
 
-  # -- The secret used to sign the JWT tokens
-  # @section -- Hoppscotch Backend Parameters
   jwtSecret: "secret"
-  # -- Defines the complexity of the SALT that is used for hashing - a higher number implies a more complex salt
-  # @section -- Hoppscotch Backend Parameters
   tokenSaltComplexity: 10
-  # -- Duration of the validity of the magic link being sent to sign in to Hoppscotch (in days)
-  # @section -- Hoppscotch Backend Parameters
   magicLinkTokenValidity: 3
-  # -- Validity of the refresh token for auth (in ms)
-  # @section -- Hoppscotch Backend Parameters
   refreshTokenValidity: "604800000"
-  # -- Validity of the access token for auth (in ms)
-  # @section -- Hoppscotch Backend Parameters
   accessTokenValidity: "86400000"
-  ## -- The secret used to sign the session cookies
-  # @section -- Hoppscotch Backend Parameters
   sessionSecret: ""
 
-  # -- If disabled users will be able to use Hoppscotch over HTTP connections as well.
-  # @section -- Hoppscotch Backend Parameters
   allowSecureCookies: true
-
-  # -- A 32-character key used for encrypting sensitive data stored in the database
-  # @section -- Hoppscotch Backend Parameters
   dataEncryptionKey: "12345678901234567890123456789012"
 
-  # -- This is a fallback URL to debug when the actual redirects fail
-  # @section -- Hoppscotch Backend Parameters
   redirectUrl: ""
 
-  # -- URLs of Hoppscotch backend, admin dashboard, frontend app and the bundle server that are allowed to interact with the desktop app
-  # @section -- Hoppscotch Backend Parameters
   whitelistedOrigins: []
 
-  # -- Allows you to specify which auth providers you want to enable
-  # @section -- Hoppscotch Backend Parameters
   allowedAuthProviders:
     - email
 
@@ -274,60 +120,30 @@ backend:
     tenant: ""
 
   mailer:
-    # -- Enables the SMTP mailer configuration
-    # @section -- Hoppscotch Backend Parameters
     smtpEnabled: true
-    # -- When custom mailer configurations are used
-    # @section -- Hoppscotch Backend Parameters
     useCustomConfigs: false
-    # -- The email address that you would be using
-    # @section -- Hoppscotch Backend Parameters
     addressFrom: no-reply@example.com
-    # -- The SMTP URL for email delivery
-    # @section -- Hoppscotch Backend Parameters
     smtpUrl: smtps://user:pass@smtp.example.com
 
-    # -- The SMTP host
-    # @section -- Hoppscotch Backend Parameters
     smtpHost: ""
-    # -- The port to connect to the SMTP server
-    # @section -- Hoppscotch Backend Parameters
     smtpPort: 465
     smtpSecure: true
-    # -- The SMTP user or email for authentication
-    # @section -- Hoppscotch Backend Parameters
     smtpUser: ""
-    # -- Provide the password set for the SMTP user
     smtpPassword: ""
     tlsRejectUnauthorized: true
 
   rateLimit:
-    # -- The time it takes to refresh the maximum number of requests being received
-    # @section -- Hoppscotch Backend Parameters
     ttl: 60
-    # -- The maximum number of requests that Hoppscotch can handle under `backend.rateLimit.ttl`
-    # @section -- Hoppscotch Backend Parameters
     max: 100
 
-## Hoppscotch Enterprise Parameters
-##
 enterprise:
-  # -- The license key required to use Hoppscotch Enterprise
-  # @section -- Hoppscotch Enterprise Parameters
   licenseKey: ""
 
   frontend:
-    # -- Enables a local proxy server for routing API requests. This will only work if `frontend.enableSubpathBasedAccess` is set to `true`.
-    # @section -- Hoppscotch Enterprise Parameters
     localProxyServerEnabled: false
-
-    # -- Route all API requests via a proxy server for added security
-    # @section -- Hoppscotch Enterprise Parameters
     proxyAppUrl: ""
 
   backend:
-    # -- Github Enterprise authorization configuration
-    # @section -- Hoppscotch Enterprise Parameters
     githubEnterpriseAuth:
       enabled: false
       authorizationUrl: ""
@@ -335,8 +151,6 @@ enterprise:
       userProfileUrl: ""
       userEmailUrl: ""
 
-    # -- SAML authorization configuration
-    # @section -- Hoppscotch Enterprise Parameters
     samlAuth:
       issuer: ""
       audience: ""
@@ -346,8 +160,6 @@ enterprise:
       wantAssertionsSigned: true
       wantResponseSigned: false
 
-    # -- OpenID Connect (OIDC) authorization configuration
-    # @section -- Hoppscotch Enterprise Parameters
     oidcAuth:
       providerName: ""
       issuer: ""
@@ -365,15 +177,8 @@ enterprise:
       user: ""
       password: ""
 
-    # -- Set to true to enable horizontal scaling, which uses Redis for managing pub-sub and state across instances
-    # @section -- Hoppscotch Enterprise Parameters
     horizontalScalingEnabled: false
-
-    # -- The URL for the Redis instance used for horizontal scaling
-    # @section -- Hoppscotch Enterprise Parameters
     redisUrl: ""
-
-## @section Traffic Exposure Parameters
 
 service:
   type: ClusterIP
@@ -419,66 +224,26 @@ ingress:
   secrets: []
   extraRules: []
 
-## Database Parameters
-##
-# PostgreSQL chart configuration
-# ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
 postgresql:
-  # -- Switch to enable or disable the PostgreSQL helm chart
-  # @section -- Database Parameters
   enabled: true
   auth:
-    # -- Assign a password to the "postgres" admin user. Otherwise, remote access will be blocked for this user
-    # @section -- Database Parameters
     enablePostgresUser: true
-    # -- Name for a custom user to create
-    # @section -- Database Parameters
     username: hoppscotch
-    # -- Password for the custom user to create
-    # @section -- Database Parameters
     password: secret
-    # -- Name for a custom database to create
-    # @section -- Database Parameters
     database: hoppscotch
     existingSecret: ""
-  # -- PostgreSQL architecture (`standalone` or `replication`)
-  # @section -- Database Parameters
   architecture: standalone
   primary:
-    # -- Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production).
-    # @section -- Database Parameters
     resourcesPreset: "nano"
-    # -- Set container requests and limits for different resources like CPU or memory (essential for production workloads)
-    # @section -- Database Parameters
     resources: {}
 
-# External PostgreSQL configuration
-# All of these values are only used when postgresql.enabled is set to false
 externalDatabase:
-  # -- Database host (ignored if externalDatabase.sqlConnection is set)
-  # @section -- Database Parameters
   host: localhost
-  # -- Database port number (ignored if externalDatabase.sqlConnection is set)
-  # @section -- Database Parameters
   port: 5432
-  # -- Non-root username for Hoppscotch (ignored if externalDatabase.sqlConnection is set)
-  # @section -- Database Parameters
   user: hoppscotch
-  # -- Hoppscotch database name (ignored if externalDatabase.sqlConnection is set)
-  # @section -- Database Parameters
   database: hoppscotch
-  # -- Password for the non-root username for Hoppscotch (ignored if externalDatabase.sqlConnection or externalDatabase.existingSecret are set)
-  # @section -- Database Parameters
   password: ""
-  # -- SQL connection string
-  # @section -- Database Parameters
   sqlConnection: ""
-  # -- Name of an existing secret resource containing the database credentials
-  # @section -- Database Parameters
   existingSecret: ""
-  # -- Name of an existing secret key containing the database credentials (ignored if externalDatabase.existingSecretSqlConnectionKey is set)
-  # @section -- Database Parameters
   existingSecretPasswordKey: ""
-  # -- Name of an existing secret key containing the SQL connection string
-  # @section -- Database Parameters
   existingSecretSqlConnectionKey: ""
