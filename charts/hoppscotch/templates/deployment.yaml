@@ -80,7 +80,7 @@ spec:
 
       initContainers:
         {{- if .Values.defaultInitContainers.waitForDatabase.enabled }}
-        {{ include "hoppscotch.waitForDatabaseInitContainer" . | nindent 8 }}
+        {{ include "hoppscotch.defaultInitContainers.waitForDatabase" . | nindent 8 }}
         {{- end }}
         {{- if .Values.defaultInitContainers.waitForDatabaseSetup.enabled }}
         - name: wait-for-db-setup

@@ -1,65 +1,4 @@
 {{/*
-##########################################################################
-## Common Helpers
-## These helpers are used to render common parameter values.
-##########################################################################
-*/}}
-
-{{/*
-Allow the chart name to be overridden.
-*/}}
-{{- define "hoppscotch.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-{{/*
-Create a fully qualified name that includes the release name and chart name.
-*/}}
-{{- define "hoppscotch.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- $releaseName := regexReplaceAll "(-?[^a-z\\d\\-])+-?" (lower .Release.Name) "-" -}}
-{{- if contains $name $releaseName -}}
-{{- $releaseName | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s" $releaseName $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Allow the release namespace to be overridden for multi-namespace deployments in combined charts.
-*/}}
-{{- define "hoppscotch.namespace" -}}
-{{- default .Release.Namespace .Values.namespaceOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
-Render common labels for all resources.
-*/}}
-{{- define "hoppscotch.labels" -}}
-helm.sh/chart: {{ include "hoppscotch.chart" . }}
-{{ include "hoppscotch.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/part-of: {{ template "hoppscotch.name" . }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- if .Values.commonLabels}}
-{{ toYaml .Values.commonLabels }}
-{{- end }}
-{{- end -}}
-
-{{/*
-##########################################################################
-## Other Helpers
-## These helpers are used to render other parameter values.
-##########################################################################
-*/}}
-
-{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "hoppscotch.chart" -}}
@@ -94,17 +33,37 @@ Generate the database URL from PostgreSQL chart or external database settings
 {{- end }}
 
 {{/*
+Returns a default init container that waits for the database to be ready.
+*/}}
+{{- define "hoppscotch.defaultInitContainers.waitForDatabase" -}}
+- name: wait-for-db
+  image: postgres:16-alpine
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  command:
+    - /bin/sh
+  args:
+    - -c
+    - |
+      end_time=$(($(date +%s) + $0))
+      until pg_isready -d $DATABASE_URL; do
+        if [ $(date +%s) -ge $end_time ]; then
+          exit 1
+        fi
+        sleep 2
+      done
+    - {{ .Values.defaultInitContainers.waitForDatabase.timeout | default 60 | quote}}
+  {{- with .Values.extraEnvs }}
+  env:
+    {{- tpl (toYaml .) . | nindent 12 }}
+  {{- end }}
+  envFrom:
+    - secretRef:
+        name: {{ include "hoppscotch.fullname" . }}
+{{- end -}}
+
+{{/*
 Format a database URL for use in configuration files.
-
 Usage: {{- include "hoppscotch.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database "params" $params) -}}
-
-Params:
-  - host - The host of the database (required)
-  - port - The port of the database (default 5432)
-  - user - The username for the database
-  - password - The password for the database
-  - database - The name of the database
-  - params - Additional parameters to append to the URL
 */}}
 {{- define "hoppscotch.formatDatabaseUrl" -}}
 {{- $userspec := "" -}}
@@ -117,7 +76,7 @@ Params:
 {{- $userspec = printf "%s@" .user -}}
 {{- end -}}
 {{- if .port -}}
-{{- $hostspec = printf "%s:%d" .host (default 5432 .port) -}}
+{{- $hostspec = printf "%s:%d" .host .port -}}
 {{- end -}}
 {{- if .database -}}
 {{- $dbname = printf "/%s" .database -}}
@@ -141,19 +100,60 @@ Usage: {{ include "hoppscotch.ingress.certManagerRequest" ( dict "annotations" .
 */}}
 {{- define "hoppscotch.ingress.certManagerRequest" -}}
 {{ if or (hasKey .annotations "cert-manager.io/cluster-issuer") (hasKey .annotations "cert-manager.io/issuer") (hasKey .annotations "kubernetes.io/tls-acme") }}
-    {{- true -}}
+{{- true -}}
 {{- end -}}
 {{- end -}}
 
 {{/*
+Create a fully qualified name that includes the release name and chart name.
+*/}}
+{{- define "hoppscotch.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- $releaseName := regexReplaceAll "(-?[^a-z\\d\\-])+-?" (lower .Release.Name) "-" -}}
+{{- if contains $name $releaseName -}}
+{{- $releaseName | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" $releaseName $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Render common labels for all resources.
+*/}}
+{{- define "hoppscotch.labels" -}}
+helm.sh/chart: {{ include "hoppscotch.chart" . }}
+{{ include "hoppscotch.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/part-of: {{ template "hoppscotch.name" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.commonLabels}}
+{{ toYaml .Values.commonLabels }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Allow the chart name to be overridden.
+*/}}
+{{- define "hoppscotch.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Allow the release namespace to be overridden.
+*/}}
+{{- define "hoppscotch.namespace" -}}
+{{- default .Release.Namespace .Values.namespaceOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Lookup a secret value by key. An empty string is returned if the key is not found.
-
 Usage: {{- include "hoppscotch.lookupSecret" (dict "name" "my-secret" "namespace" "my-namespace" "key" "my-key") -}}
-
-Params:
-  - name - The name of the secret (required)
-  - namespace - The namespace of the secret (required)
-  - key - The key in the secret data to lookup (required)
 */}}
 {{- define "hoppscotch.lookupSecret" -}}
 {{- $secret := (lookup "v1" "Secret" .namespace .name) -}}
@@ -180,32 +180,3 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
-
-{{/*
-Returns a default init container that waits for the database to be ready.
-*/}}
-{{- define "hoppscotch.waitForDatabaseInitContainer" -}}
-- name: wait-for-db
-  image: postgres:16-alpine
-  imagePullPolicy: {{ .Values.image.pullPolicy }}
-  command:
-    - /bin/sh
-  args:
-    - -c
-    - |
-      end_time=$(($(date +%s) + $0))
-      until pg_isready -d $DATABASE_URL; do
-        if [ $(date +%s) -ge $end_time ]; then
-          exit 1
-        fi
-        sleep 2
-      done
-    - {{ .Values.defaultInitContainers.waitForDatabase.timeout | default 60 | quote}}
-  {{- with .Values.extraEnvs }}
-  env:
-    {{- tpl (toYaml .) . | nindent 12 }}
-  {{- end }}
-  envFrom:
-    - secretRef:
-        name: {{ include "hoppscotch.fullname" . }}
-{{- end -}}
