@@ -7,11 +7,11 @@ metadata:
   labels:
     app.kubernetes.io/component: hoppscotch
     {{- include "hoppscotch.labels" . | nindent 4 }}
-  {{- if or .Values.commonAnnotations .Values.ingress.annotations -}}
+  {{- if or .Values.commonAnnotations .Values.ingress.annotations }}
   annotations:
-    {{- .Values.commonAnnotations | nindent 4 }}
-    {{- .Values.ingress.annotations | nindent 4 }}
-  {{- end -}}
+    {{- toYaml .Values.commonAnnotations | nindent 4 }}
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
+  {{- end }}
 spec:
   {{- if .Values.ingress.ingressClassName }}
   ingressClassName: {{ .Values.ingress.ingressClassName | quote }}

@@ -30,7 +30,7 @@ Generate the database URL from PostgreSQL chart or external database settings
 {{- $password := .Values.externalDatabase.password -}}
 {{- include "hoppscotch.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
 {{- end -}}
-{{- end }}
+{{- end -}}
 
 {{/*
 Returns a default init container that waits for the database to be ready.
