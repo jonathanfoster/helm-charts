@@ -5,8 +5,8 @@ metadata:
   name: {{ printf "%s-setup-db" (include "hoppscotch.fullname" .) | trunc 63 | trimSuffix "-" }}
   namespace: {{ include "hoppscotch.namespace" . | quote }}
   labels:
-    {{- include "hoppscotch.labels" . | nindent 4 }}
     app.kubernetes.io/component: setup-db
+    {{- include "hoppscotch.labels" . | nindent 4 }}
   {{- if .Values.commonAnnotations }}
   annotations:
     {{ toYaml .Values.commonAnnotations | nindent 4 }}

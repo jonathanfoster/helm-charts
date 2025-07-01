@@ -4,8 +4,8 @@ metadata:
   name: {{ include "hoppscotch.fullname" . }}
   namespace: {{ include "hoppscotch.namespace" . | quote }}
   labels:
-    {{- include "hoppscotch.labels" . | nindent 4 }}
     app.kubernetes.io/component: hoppscotch
+    {{- include "hoppscotch.labels" . | nindent 4 }}
   {{- if or .Values.commonAnnotations .Values.service.annotations }}
   annotations:
     {{ toYaml .Values.commonAnnotations | nindent 4 }}

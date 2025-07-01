@@ -125,13 +125,14 @@ Create a fully qualified name that includes the release name and chart name.
 Render common labels for all resources.
 */}}
 {{- define "hoppscotch.labels" -}}
-helm.sh/chart: {{ include "hoppscotch.chart" . }}
-{{ include "hoppscotch.selectorLabels" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/name: {{ include "hoppscotch.name" . }}
+app.kubernetes.io/part-of: {{ template "hoppscotch.name" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
-app.kubernetes.io/part-of: {{ template "hoppscotch.name" . }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
+helm.sh/chart: {{ include "hoppscotch.chart" . }}
 {{- if .Values.commonLabels}}
 {{ toYaml .Values.commonLabels }}
 {{- end }}
@@ -166,8 +167,8 @@ Usage: {{- include "hoppscotch.lookupSecret" (dict "name" "my-secret" "namespace
 Selector labels
 */}}
 {{- define "hoppscotch.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "hoppscotch.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/name: {{ include "hoppscotch.name" . }}
 {{- end }}
 
 {{/*
