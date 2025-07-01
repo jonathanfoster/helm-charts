@@ -61,8 +61,6 @@ helm install my-release jonathanfoster/hoppscotch
 | podAnnotations | object | `{}` | This is for setting Kubernetes Annotations to a Pod. |
 | podLabels | object | `{}` | This is for setting Kubernetes Labels to a Pod. |
 | extraEnvs | list | `[]` | This is for setting extra environment variables in the pod. |
-| service.type | string | `"ClusterIP"` | This sets the service type. |
-| service.port | int | `80` | This sets the ports. |
 | resources | object | `{}` | Resources for the pod. This is where you can set CPU and memory limits and requests. |
 | livenessProbe | object | `{}` | This is to setup the liveness and readiness probes. |
 | autoscaling | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | This section is for setting up autoscaling. |
@@ -137,7 +135,7 @@ helm install my-release jonathanfoster/hoppscotch
 | postgresql.enabled | bool | `true` | Switch to enable or disable the PostgreSQL helm chart |
 | postgresql.auth.enablePostgresUser | bool | `true` | Assign a password to the "postgres" admin user. Otherwise, remote access will be blocked for this user |
 | postgresql.auth.username | string | `"hoppscotch"` | Name for a custom user to create |
-| postgresql.auth.password | string | `"hoppscotch"` | Password for the custom user to create |
+| postgresql.auth.password | string | `"secret"` | Password for the custom user to create |
 | postgresql.auth.database | string | `"hoppscotch"` | Name for a custom database to create |
 | postgresql.architecture | string | `"standalone"` | PostgreSQL architecture (`standalone` or `replication`) |
 | postgresql.primary.resourcesPreset | string | `"nano"` | Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production). |
@@ -156,15 +154,10 @@ helm install my-release jonathanfoster/hoppscotch
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| containerPorts.http | int | `80` |  |
+| containerPorts.https | int | `443` |  |
 | podSecurityContext | object | `{}` |  |
 | securityContext | object | `{}` |  |
-| ingress.enabled | bool | `false` |  |
-| ingress.className | string | `""` |  |
-| ingress.annotations | object | `{}` |  |
-| ingress.hosts[0].host | string | `"chart-example.local"` |  |
-| ingress.hosts[0].paths[0].path | string | `"/"` |  |
-| ingress.hosts[0].paths[0].pathType | string | `"ImplementationSpecific"` |  |
-| ingress.tls | list | `[]` |  |
 | readinessProbe | object | `{}` |  |
 | frontend.enableSubpathBasedAccess | bool | `true` |  |
 | backend.sessionSecret | string | `""` |  |
@@ -188,5 +181,41 @@ helm install my-release jonathanfoster/hoppscotch
 | enterprise.backend.clickhouse.host | string | `""` |  |
 | enterprise.backend.clickhouse.user | string | `""` |  |
 | enterprise.backend.clickhouse.password | string | `""` |  |
+| service.type | string | `"ClusterIP"` |  |
+| service.ports.http | int | `80` |  |
+| service.ports.https | int | `443` |  |
+| service.nodePorts.http | string | `""` |  |
+| service.nodePorts.https | string | `""` |  |
+| service.clusterIP | string | `""` |  |
+| service.loadBalancerIP | string | `""` |  |
+| service.loadBalancerSourceRanges | list | `[]` |  |
+| service.externalTrafficPolicy | string | `"Cluster"` |  |
+| service.annotations | object | `{}` |  |
+| service.extraPorts | list | `[]` |  |
+| service.sessionAffinity | string | `"None"` |  |
+| service.sessionAffinityConfig | object | `{}` |  |
+| networkPolicy.enabled | bool | `false` |  |
+| networkPolicy.allowExternal | bool | `true` |  |
+| networkPolicy.allowExternalEgress | bool | `true` |  |
+| networkPolicy.addExternalClientAccess | bool | `true` |  |
+| networkPolicy.extraIngress | list | `[]` |  |
+| networkPolicy.extraEgress | list | `[]` |  |
+| networkPolicy.ingressPodMatchLabels | object | `{}` |  |
+| networkPolicy.ingressNSMatchLabels | object | `{}` |  |
+| networkPolicy.ingressNSPodMatchLabels | object | `{}` |  |
+| ingress.enabled | bool | `false` |  |
+| ingress.pathType | string | `"ImplementationSpecific"` |  |
+| ingress.apiVersion | string | `""` |  |
+| ingress.hostname | string | `"hoppscotch.local"` |  |
+| ingress.ingressClassName | string | `""` |  |
+| ingress.path | string | `"/"` |  |
+| ingress.annotations | object | `{}` |  |
+| ingress.tls | bool | `false` |  |
+| ingress.selfSigned | bool | `false` |  |
+| ingress.extraHosts | list | `[]` |  |
+| ingress.extraPaths | list | `[]` |  |
+| ingress.extraTls | list | `[]` |  |
+| ingress.secrets | list | `[]` |  |
+| ingress.extraRules | list | `[]` |  |
 | postgresql.auth.existingSecret | string | `""` |  |
 <!-- markdownlint-enable MD013 MD034 -->

@@ -93,6 +93,16 @@ Create the image name and tag. Chart app version is used as a default tag if not
 {{- end -}}
 
 {{/*
+Return true if cert-manager required annotations for TLS signed certificates are set in the Ingress annotations
+Usage: {{ include "hoppscotch.ingress.certManagerRequest" ( dict "annotations" .Values.path.to.the.ingress.annotations ) }}
+*/}}
+{{- define "hoppscotch.ingress.certManagerRequest" -}}
+{{ if or (hasKey .annotations "cert-manager.io/cluster-issuer") (hasKey .annotations "cert-manager.io/issuer") (hasKey .annotations "kubernetes.io/tls-acme") }}
+    {{- true -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Common labels
 */}}
 {{- define "hoppscotch.labels" -}}

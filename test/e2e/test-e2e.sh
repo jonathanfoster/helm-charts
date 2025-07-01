@@ -51,7 +51,9 @@ create_kind_cluster() {
     exit 1
   fi
 
-  kind create cluster --name "${CLUSTER_NAME}" --image "kindest/node:${K8S_VERSION}" --wait 60s
+  kind create cluster --name "${CLUSTER_NAME}" --config "${ROOT_DIR}/test/e2e/kind.yaml" \
+    --image "kindest/node:${K8S_VERSION}" --wait 60s
+  kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/deploy-ingress-nginx.yaml
   CLUSTER_CREATED=true
 
   log_info "Copying kubeconfig to ct container"

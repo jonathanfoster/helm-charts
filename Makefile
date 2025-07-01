@@ -3,6 +3,7 @@
 BUILD_DIR:=build
 CHART_NAME?=hoppscotch
 CLUSTER_NAME?=helm-charts
+TEST_E2E_DIR:=test/e2e
 
 GREEN=\033[0;32m
 YELLOW=\033[0;33m
@@ -23,6 +24,12 @@ helm-docs: ## Generate Helm docs
 helm-install: kind-create-cluster ## Install chart
 	@echo "${GREEN}Installing chart ${CHART_NAME}...${RESET}"
 	helm install ${CHART_NAME} charts/${CHART_NAME} -n ${CHART_NAME} --create-namespace --wait --debug
+
+.PHONY: helm-upgrade
+helm-upgrade: ## Upgrade chart
+	@echo "${GREEN}Upgrading chart ${CHART_NAME}...${RESET}"
+	helm upgrade ${CHART_NAME} charts/${CHART_NAME} -n ${CHART_NAME} --wait --debug
+
 
 .PHONY: helm-template
 helm-template: clean ## Render Helm templates
@@ -98,7 +105,8 @@ kind-create-cluster: ## Create a Kind cluster
 	@if kind get clusters | grep -q "${CLUSTER_NAME}"; then \
 		echo "${YELLOW}Warning:${RESET} Kind cluster ${CLUSTER_NAME} already exists"; \
 	else \
-		kind create cluster --name ${CLUSTER_NAME}; \
+		kind create cluster --name ${CLUSTER_NAME} --config ${TEST_E2E_DIR}/kind.yaml; \
+		kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/deploy-ingress-nginx.yaml; \
 	fi
 
 .PHONY: kind-delete-cluster
@@ -144,7 +152,7 @@ pre-commit: helm-docs lint test-unit ## Run pre-commit hooks
 .PHONY: test-e2e
 test-e2e: ## Run end-to-end tests
 	@echo "${GREEN}Running end-to-end tests...${RESET}"
-	./scripts/test-e2e.sh --all --debug
+	${TEST_E2E_DIR}/test-e2e.sh --all --debug
 
 .PHONY: test-unit
 test-unit: ## Run unit tests
