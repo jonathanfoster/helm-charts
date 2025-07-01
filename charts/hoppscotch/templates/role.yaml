@@ -1,0 +1,24 @@
+{{ if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "hoppscotch.fullname" . }}
+  namespace: {{ include "hoppscotch.namespace" . | quote }}
+  labels:
+    {{- include "hoppscotch.labels" . | nindent 4 }}
+    app.kubernetes.io/component: hoppscotch
+  {{- if .Values.commonAnnotations }}
+  annotations:
+    {{ toYaml .Values.commonAnnotations | nindent 4 }}
+  {{- end }}
+rules:
+  - apiGroups: [""]
+    resources: ["*"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["*"]
+    verbs: ["*"]
+  {{- if .Values.rbac.rules }}
+  {{- include "common.tplvalues.render" ( dict "value" .Values.rbac.rules "context" $ ) | nindent 2 }}
+  {{- end }}
+{{- end }}

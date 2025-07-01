@@ -31,136 +31,71 @@ helm install my-release jonathanfoster/hoppscotch
 ## Parameters
 
 <!-- markdownlint-disable MD013 MD034 -->
-
-### Global Parameters
-
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| imagePullSecrets | list | `[]` | This is for the secrets for pulling an image from a private repository. |
-
-### Common Parameters
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| nameOverride | string | `""` | This is to override the chart name. |
-| fullnameOverride | string | `""` | This is to override the fully qualified app name. |
-| clusterDomain | string | `"cluster.local"` | Kubernetes cluster domain name |
-
-### Hoppscotch Common Parameters
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| replicaCount | int | `1` | This will set the replicaset count. |
-| image.repository | string | `"hoppscotch/hoppscotch"` | This sets the image repository. |
-| image.pullPolicy | string | `"IfNotPresent"` | This sets the pull policy for images. |
-| image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
-| serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
-| serviceAccount.automount | bool | `true` | Automatically mount a ServiceAccount's API credentials? |
-| serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
-| serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
-| podAnnotations | object | `{}` | This is for setting Kubernetes Annotations to a Pod. |
-| podLabels | object | `{}` | This is for setting Kubernetes Labels to a Pod. |
-| extraEnvs | list | `[]` | This is for setting extra environment variables in the pod. |
-| resources | object | `{}` | Resources for the pod. This is where you can set CPU and memory limits and requests. |
-| livenessProbe | object | `{}` | This is to setup the liveness and readiness probes. |
-| autoscaling | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | This section is for setting up autoscaling. |
-| volumes | list | `[]` | Additional volumes on the output Deployment definition. |
-| volumeMounts | list | `[]` | Additional volumeMounts on the output Deployment definition. |
-| nodeSelector | object | `{}` | Node selector for pod assignment. |
-| tolerations | list | `[]` | Tolerations for pod assignment. |
-| affinity | object | `{}` | Affinity for pod assignment. |
-| topologySpreadConstraints | list | `[]` | Topology spread constraints for pod assignment. |
-| defaultInitContainers.waitForDatabase.enabled | bool | `true` | Wait for the database to be ready before starting the backend |
-| defaultInitContainers.waitForDatabase.timeout | int | `60` | Time in seconds to wait for the database to be ready |
-| defaultInitContainers.waitForDatabaseSetup.enabled | bool | `true` | Wait for the database setup to complete before starting the backend |
-| defaultInitContainers.waitForDatabaseSetup.timeout | int | `60` | Time in seconds to wait for the setup to complete |
-| setupDatabaseJob.enabled | bool | `true` | This job runs the database setup |
-
-### Hoppscotch Frontend Parameters
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| frontend.baseUrl | string | `""` | This is the URL where your deployment will be accessible from |
-| frontend.shortcodeBaseUrl | string | `""` | A URL to generate shortcodes for sharing, can be the same as `frontend.baseUrl` |
-| frontend.adminUrl | string | `""` | This URL is used to connect to the admin dashboard |
-| frontend.backendGqlUrl | string | `""` | The URL for GraphQL within the instance |
-| frontend.backendWsUrl | string | `""` | The URL for WebSockets within the instance |
-| frontend.backendApiUrl | string | `""` | The URL for REST APIs within the instance |
-| frontend.appTosLink | string | `""` | Optional links to the Terms & Conditions |
-| frontend.appPrivacyPolicyLink | string | `""` | Optional links to the Privacy Policy |
-
-### Hoppscotch Backend Parameters
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| backend.databaseUrl | string | `""` | This is where you add your Postgres database URL |
-| backend.aioAlternatePort | int | `80` | This is an optional variable that lets you specify an alternate port for the AIO container’s endpoint when operating in subpath access mode |
-| backend.jwtSecret | string | `"secret"` | The secret used to sign the JWT tokens |
-| backend.tokenSaltComplexity | int | `10` | Defines the complexity of the SALT that is used for hashing - a higher number implies a more complex salt |
-| backend.magicLinkTokenValidity | int | `3` | Duration of the validity of the magic link being sent to sign in to Hoppscotch (in days) |
-| backend.refreshTokenValidity | string | `"604800000"` | Validity of the refresh token for auth (in ms) |
-| backend.accessTokenValidity | string | `"86400000"` | Validity of the access token for auth (in ms) |
-| backend.allowSecureCookies | bool | `true` | If disabled users will be able to use Hoppscotch over HTTP connections as well. |
-| backend.dataEncryptionKey | string | `"12345678901234567890123456789012"` | A 32-character key used for encrypting sensitive data stored in the database |
-| backend.redirectUrl | string | `""` | This is a fallback URL to debug when the actual redirects fail |
-| backend.whitelistedOrigins | list | `[]` | URLs of Hoppscotch backend, admin dashboard, frontend app and the bundle server that are allowed to interact with the desktop app |
-| backend.allowedAuthProviders | list | `["email"]` | Allows you to specify which auth providers you want to enable |
-| backend.mailer.smtpEnabled | bool | `true` | Enables the SMTP mailer configuration |
-| backend.mailer.useCustomConfigs | bool | `false` | When custom mailer configurations are used |
-| backend.mailer.addressFrom | string | `"no-reply@example.com"` | The email address that you would be using |
-| backend.mailer.smtpUrl | string | `"smtps://user:pass@smtp.example.com"` | The SMTP URL for email delivery |
-| backend.mailer.smtpHost | string | `""` | The SMTP host |
-| backend.mailer.smtpPort | int | `465` | The port to connect to the SMTP server |
-| backend.mailer.smtpUser | string | `""` | The SMTP user or email for authentication |
-| backend.rateLimit.ttl | int | `60` | The time it takes to refresh the maximum number of requests being received |
-| backend.rateLimit.max | int | `100` | The maximum number of requests that Hoppscotch can handle under `backend.rateLimit.ttl` |
-
-### Hoppscotch Enterprise Parameters
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| enterprise.licenseKey | string | `""` | The license key required to use Hoppscotch Enterprise |
-| enterprise.frontend.localProxyServerEnabled | bool | `false` | Enables a local proxy server for routing API requests. This will only work if `frontend.enableSubpathBasedAccess` is set to `true`. |
-| enterprise.frontend.proxyAppUrl | string | `""` | Route all API requests via a proxy server for added security |
-| enterprise.backend.githubEnterpriseAuth | object | `{"authorizationUrl":"","enabled":false,"tokenUrl":"","userEmailUrl":"","userProfileUrl":""}` | Github Enterprise authorization configuration |
-| enterprise.backend.samlAuth | object | `{"audience":"","callbackUrl":"","cert":"","entryPoint":"","issuer":"","wantAssertionsSigned":true,"wantResponseSigned":false}` | SAML authorization configuration |
-| enterprise.backend.oidcAuth | object | `{"authorizationUrl":"","callbackUrl":"","clientId":"","clientSecret":"","issuer":"","providerName":"","scope":[],"tokenUrl":"","userInfoUrl":""}` | OpenID Connect (OIDC) authorization configuration |
-| enterprise.backend.horizontalScalingEnabled | bool | `false` | Set to true to enable horizontal scaling, which uses Redis for managing pub-sub and state across instances |
-| enterprise.backend.redisUrl | string | `""` | The URL for the Redis instance used for horizontal scaling |
-
-### Database Parameters
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| postgresql.enabled | bool | `true` | Switch to enable or disable the PostgreSQL helm chart |
-| postgresql.auth.enablePostgresUser | bool | `true` | Assign a password to the "postgres" admin user. Otherwise, remote access will be blocked for this user |
-| postgresql.auth.username | string | `"hoppscotch"` | Name for a custom user to create |
-| postgresql.auth.password | string | `"secret"` | Password for the custom user to create |
-| postgresql.auth.database | string | `"hoppscotch"` | Name for a custom database to create |
-| postgresql.architecture | string | `"standalone"` | PostgreSQL architecture (`standalone` or `replication`) |
-| postgresql.primary.resourcesPreset | string | `"nano"` | Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production). |
-| postgresql.primary.resources | object | `{}` | Set container requests and limits for different resources like CPU or memory (essential for production workloads) |
-| externalDatabase.host | string | `"localhost"` | Database host (ignored if externalDatabase.sqlConnection is set) |
-| externalDatabase.port | int | `5432` | Database port number (ignored if externalDatabase.sqlConnection is set) |
-| externalDatabase.user | string | `"hoppscotch"` | Non-root username for Hoppscotch (ignored if externalDatabase.sqlConnection is set) |
-| externalDatabase.database | string | `"hoppscotch"` | Hoppscotch database name (ignored if externalDatabase.sqlConnection is set) |
-| externalDatabase.password | string | `""` | Password for the non-root username for Hoppscotch (ignored if externalDatabase.sqlConnection or externalDatabase.existingSecret are set) |
-| externalDatabase.sqlConnection | string | `""` | SQL connection string |
-| externalDatabase.existingSecret | string | `""` | Name of an existing secret resource containing the database credentials |
-| externalDatabase.existingSecretPasswordKey | string | `""` | Name of an existing secret key containing the database credentials (ignored if externalDatabase.existingSecretSqlConnectionKey is set) |
-| externalDatabase.existingSecretSqlConnectionKey | string | `""` | Name of an existing secret key containing the SQL connection string |
-
-### Other Values
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
+| global.imageRegistry | string | `""` |  |
+| global.imagePullSecrets | list | `[]` |  |
+| global.defaultStorageClass | string | `""` |  |
+| global.security.allowInsecureImages | bool | `false` |  |
+| nameOverride | string | `""` |  |
+| fullnameOverride | string | `""` |  |
+| namespaceOverride | string | `""` |  |
+| commonLabels | object | `{}` |  |
+| commonAnnotations | object | `{}` |  |
+| clusterDomain | string | `"cluster.local"` |  |
+| extraDeploy | list | `[]` |  |
+| replicaCount | int | `1` |  |
 | containerPorts.http | int | `80` |  |
 | containerPorts.https | int | `443` |  |
+| image.repository | string | `"hoppscotch/hoppscotch"` |  |
+| image.pullPolicy | string | `"IfNotPresent"` |  |
+| image.tag | string | `""` |  |
+| podAnnotations | object | `{}` |  |
+| podLabels | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
 | securityContext | object | `{}` |  |
+| extraEnvs | list | `[]` |  |
+| resources | object | `{}` |  |
+| livenessProbe | object | `{}` |  |
 | readinessProbe | object | `{}` |  |
+| autoscaling.enabled | bool | `false` |  |
+| autoscaling.minReplicas | int | `1` |  |
+| autoscaling.maxReplicas | int | `100` |  |
+| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
+| volumes | list | `[]` |  |
+| volumeMounts | list | `[]` |  |
+| nodeSelector | object | `{}` |  |
+| tolerations | list | `[]` |  |
+| affinity | object | `{}` |  |
+| topologySpreadConstraints | list | `[]` |  |
+| defaultInitContainers.waitForDatabase.enabled | bool | `true` |  |
+| defaultInitContainers.waitForDatabase.timeout | int | `60` |  |
+| defaultInitContainers.waitForDatabaseSetup.enabled | bool | `true` |  |
+| defaultInitContainers.waitForDatabaseSetup.timeout | int | `60` |  |
+| setupDatabaseJob.enabled | bool | `true` |  |
+| frontend.baseUrl | string | `""` |  |
+| frontend.shortcodeBaseUrl | string | `""` |  |
+| frontend.adminUrl | string | `""` |  |
+| frontend.backendGqlUrl | string | `""` |  |
+| frontend.backendWsUrl | string | `""` |  |
+| frontend.backendApiUrl | string | `""` |  |
+| frontend.appTosLink | string | `""` |  |
+| frontend.appPrivacyPolicyLink | string | `""` |  |
 | frontend.enableSubpathBasedAccess | bool | `true` |  |
+| backend.databaseUrl | string | `""` |  |
+| backend.aioAlternatePort | int | `80` |  |
+| backend.jwtSecret | string | `"secret"` |  |
+| backend.tokenSaltComplexity | int | `10` |  |
+| backend.magicLinkTokenValidity | int | `3` |  |
+| backend.refreshTokenValidity | string | `"604800000"` |  |
+| backend.accessTokenValidity | string | `"86400000"` |  |
 | backend.sessionSecret | string | `""` |  |
+| backend.allowSecureCookies | bool | `true` |  |
+| backend.dataEncryptionKey | string | `"12345678901234567890123456789012"` |  |
+| backend.redirectUrl | string | `""` |  |
+| backend.whitelistedOrigins | list | `[]` |  |
+| backend.allowedAuthProviders[0] | string | `"email"` |  |
 | backend.googleAuth.clientId | string | `""` |  |
 | backend.googleAuth.clientSecret | string | `""` |  |
 | backend.googleAuth.callbackUrl | string | `""` |  |
@@ -174,13 +109,48 @@ helm install my-release jonathanfoster/hoppscotch
 | backend.microsoftAuth.callbackUrl | string | `""` |  |
 | backend.microsoftAuth.scope | string | `""` |  |
 | backend.microsoftAuth.tenant | string | `""` |  |
+| backend.mailer.smtpEnabled | bool | `true` |  |
+| backend.mailer.useCustomConfigs | bool | `false` |  |
+| backend.mailer.addressFrom | string | `"no-reply@example.com"` |  |
+| backend.mailer.smtpUrl | string | `"smtps://user:pass@smtp.example.com"` |  |
+| backend.mailer.smtpHost | string | `""` |  |
+| backend.mailer.smtpPort | int | `465` |  |
 | backend.mailer.smtpSecure | bool | `true` |  |
-| backend.mailer.smtpPassword | string | `""` | Provide the password set for the SMTP user |
+| backend.mailer.smtpUser | string | `""` |  |
+| backend.mailer.smtpPassword | string | `""` |  |
 | backend.mailer.tlsRejectUnauthorized | bool | `true` |  |
+| backend.rateLimit.ttl | int | `60` |  |
+| backend.rateLimit.max | int | `100` |  |
+| enterprise.licenseKey | string | `""` |  |
+| enterprise.frontend.localProxyServerEnabled | bool | `false` |  |
+| enterprise.frontend.proxyAppUrl | string | `""` |  |
+| enterprise.backend.githubEnterpriseAuth.enabled | bool | `false` |  |
+| enterprise.backend.githubEnterpriseAuth.authorizationUrl | string | `""` |  |
+| enterprise.backend.githubEnterpriseAuth.tokenUrl | string | `""` |  |
+| enterprise.backend.githubEnterpriseAuth.userProfileUrl | string | `""` |  |
+| enterprise.backend.githubEnterpriseAuth.userEmailUrl | string | `""` |  |
+| enterprise.backend.samlAuth.issuer | string | `""` |  |
+| enterprise.backend.samlAuth.audience | string | `""` |  |
+| enterprise.backend.samlAuth.callbackUrl | string | `""` |  |
+| enterprise.backend.samlAuth.cert | string | `""` |  |
+| enterprise.backend.samlAuth.entryPoint | string | `""` |  |
+| enterprise.backend.samlAuth.wantAssertionsSigned | bool | `true` |  |
+| enterprise.backend.samlAuth.wantResponseSigned | bool | `false` |  |
+| enterprise.backend.oidcAuth.providerName | string | `""` |  |
+| enterprise.backend.oidcAuth.issuer | string | `""` |  |
+| enterprise.backend.oidcAuth.authorizationUrl | string | `""` |  |
+| enterprise.backend.oidcAuth.tokenUrl | string | `""` |  |
+| enterprise.backend.oidcAuth.userInfoUrl | string | `""` |  |
+| enterprise.backend.oidcAuth.clientId | string | `""` |  |
+| enterprise.backend.oidcAuth.clientSecret | string | `""` |  |
+| enterprise.backend.oidcAuth.callbackUrl | string | `""` |  |
+| enterprise.backend.oidcAuth.scope | list | `[]` |  |
 | enterprise.backend.clickhouse.allowAuditLogs | bool | `false` |  |
 | enterprise.backend.clickhouse.host | string | `""` |  |
 | enterprise.backend.clickhouse.user | string | `""` |  |
 | enterprise.backend.clickhouse.password | string | `""` |  |
+| enterprise.backend.horizontalScalingEnabled | bool | `false` |  |
+| enterprise.backend.redisUrl | string | `""` |  |
 | service.type | string | `"ClusterIP"` |  |
 | service.ports.http | int | `80` |  |
 | service.ports.https | int | `443` |  |
@@ -217,5 +187,41 @@ helm install my-release jonathanfoster/hoppscotch
 | ingress.extraTls | list | `[]` |  |
 | ingress.secrets | list | `[]` |  |
 | ingress.extraRules | list | `[]` |  |
+| rbac.create | bool | `false` |  |
+| rbac.rules | list | `[]` |  |
+| serviceAccount.create | bool | `true` |  |
+| serviceAccount.name | string | `""` |  |
+| serviceAccount.annotations | object | `{}` |  |
+| serviceAccount.automountServiceAccountToken | bool | `true` |  |
+| metrics.enabled | bool | `false` |  |
+| metrics.serviceMonitor.enabled | bool | `false` |  |
+| metrics.serviceMonitor.namespace | string | `""` |  |
+| metrics.serviceMonitor.annotations | object | `{}` |  |
+| metrics.serviceMonitor.labels | object | `{}` |  |
+| metrics.serviceMonitor.jobLabel | string | `""` |  |
+| metrics.serviceMonitor.honorLabels | bool | `false` |  |
+| metrics.serviceMonitor.tlsConfig | object | `{}` |  |
+| metrics.serviceMonitor.interval | string | `""` |  |
+| metrics.serviceMonitor.scrapeTimeout | string | `""` |  |
+| metrics.serviceMonitor.metricsRelabelings | list | `[]` |  |
+| metrics.serviceMonitor.relabelings | list | `[]` |  |
+| metrics.serviceMonitor.selector | object | `{}` |  |
+| postgresql.enabled | bool | `true` |  |
+| postgresql.auth.enablePostgresUser | bool | `true` |  |
+| postgresql.auth.username | string | `"hoppscotch"` |  |
+| postgresql.auth.password | string | `"secret"` |  |
+| postgresql.auth.database | string | `"hoppscotch"` |  |
 | postgresql.auth.existingSecret | string | `""` |  |
+| postgresql.architecture | string | `"standalone"` |  |
+| postgresql.primary.resourcesPreset | string | `"nano"` |  |
+| postgresql.primary.resources | object | `{}` |  |
+| externalDatabase.host | string | `"localhost"` |  |
+| externalDatabase.port | int | `5432` |  |
+| externalDatabase.user | string | `"hoppscotch"` |  |
+| externalDatabase.database | string | `"hoppscotch"` |  |
+| externalDatabase.password | string | `""` |  |
+| externalDatabase.sqlConnection | string | `""` |  |
+| externalDatabase.existingSecret | string | `""` |  |
+| externalDatabase.existingSecretPasswordKey | string | `""` |  |
+| externalDatabase.existingSecretSqlConnectionKey | string | `""` |  |
 <!-- markdownlint-enable MD013 MD034 -->

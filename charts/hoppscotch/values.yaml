@@ -30,12 +30,6 @@ image:
   pullPolicy: IfNotPresent
   tag: ""
 
-serviceAccount:
-  create: true
-  automount: true
-  annotations: {}
-  name: ""
-
 podAnnotations: {}
 podLabels: {}
 
@@ -245,6 +239,32 @@ ingress:
   extraRules: []
 
 ## @section Other Parameters
+
+rbac:
+  create: false
+  rules: []
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+  automountServiceAccountToken: true
+
+metrics:
+  enabled: false
+  serviceMonitor:
+    enabled: false
+    namespace: ""
+    annotations: {}
+    labels: {}
+    jobLabel: ""
+    honorLabels: false
+    tlsConfig: {}
+    interval: ""
+    scrapeTimeout: ""
+    metricsRelabelings: []
+    relabelings: []
+    selector: {}
 
 ## PostgreSQL Parameters
 
