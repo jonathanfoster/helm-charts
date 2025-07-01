@@ -1,8 +1,14 @@
+## @section Global Parameters
+
 imagePullSecrets: []
+
+## @section Common Parameters
 
 nameOverride: ""
 fullnameOverride: ""
 clusterDomain: cluster.local
+
+## @section Hoppscotch Parameters
 
 replicaCount: 1
 
@@ -180,6 +186,10 @@ enterprise:
     horizontalScalingEnabled: false
     redisUrl: ""
 
+## @section Traffic Exposure Parameters
+
+## Hoppscotch Service Parameters
+
 service:
   type: ClusterIP
   ports:
@@ -223,6 +233,10 @@ ingress:
   extraTls: []
   secrets: []
   extraRules: []
+
+## @section Other Parameters
+
+## PostgreSQL Parameters
 
 postgresql:
   enabled: true
