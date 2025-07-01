@@ -1,4 +1,65 @@
 {{/*
+##########################################################################
+## Common Helpers
+## These helpers are used to render common parameter values.
+##########################################################################
+*/}}
+
+{{/*
+Allow the chart name to be overridden.
+*/}}
+{{- define "hoppscotch.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Create a fully qualified name that includes the release name and chart name.
+*/}}
+{{- define "hoppscotch.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- $releaseName := regexReplaceAll "(-?[^a-z\\d\\-])+-?" (lower .Release.Name) "-" -}}
+{{- if contains $name $releaseName -}}
+{{- $releaseName | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" $releaseName $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Allow the release namespace to be overridden for multi-namespace deployments in combined charts.
+*/}}
+{{- define "hoppscotch.namespace" -}}
+{{- default .Release.Namespace .Values.namespaceOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Render common labels for all resources.
+*/}}
+{{- define "hoppscotch.labels" -}}
+helm.sh/chart: {{ include "hoppscotch.chart" . }}
+{{ include "hoppscotch.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/part-of: {{ template "hoppscotch.name" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.commonLabels}}
+{{ toYaml .Values.commonLabels }}
+{{- end }}
+{{- end -}}
+
+{{/*
+##########################################################################
+## Other Helpers
+## These helpers are used to render other parameter values.
+##########################################################################
+*/}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "hoppscotch.chart" -}}
@@ -68,24 +129,6 @@ Params:
 {{- end -}}
 
 {{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
-*/}}
-{{- define "hoppscotch.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
-{{- end }}
-{{- end }}
-
-{{/*
 Create the image name and tag. Chart app version is used as a default tag if not specified.
 */}}
 {{- define "hoppscotch.image" -}}
@@ -103,18 +146,6 @@ Usage: {{ include "hoppscotch.ingress.certManagerRequest" ( dict "annotations" .
 {{- end -}}
 
 {{/*
-Common labels
-*/}}
-{{- define "hoppscotch.labels" -}}
-helm.sh/chart: {{ include "hoppscotch.chart" . }}
-{{ include "hoppscotch.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end }}
-
-{{/*
 Lookup a secret value by key. An empty string is returned if the key is not found.
 
 Usage: {{- include "hoppscotch.lookupSecret" (dict "name" "my-secret" "namespace" "my-namespace" "key" "my-key") -}}
@@ -129,13 +160,6 @@ Params:
 {{- if and $secret $secret.data (hasKey $secret.data .key) -}}
 {{- index $secret.data .key | b64dec | trimAll "\n" -}}
 {{- end -}}
-{{- end }}
-
-{{/*
-Expand the name of the chart.
-*/}}
-{{- define "hoppscotch.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*

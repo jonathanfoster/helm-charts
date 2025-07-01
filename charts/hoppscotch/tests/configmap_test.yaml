@@ -24,7 +24,7 @@ tests:
           kind: ConfigMap
       - equal:
           path: metadata.name
-          value: RELEASE-NAME-hoppscotch
+          value: release-name-hoppscotch
       - equal:
           path: data.VITE_BASE_URL
           value: https://example.com
@@ -103,7 +103,7 @@ tests:
           kind: ConfigMap
       - equal:
           path: metadata.name
-          value: RELEASE-NAME-hoppscotch
+          value: release-name-hoppscotch
       - notExists:
           path: data.DATABASE_URL
       - equal:
@@ -250,7 +250,7 @@ tests:
           kind: ConfigMap
       - equal:
           path: metadata.name
-          value: RELEASE-NAME-hoppscotch
+          value: release-name-hoppscotch
       - notExists:
           path: data.ENTERPRISE_LICENSE_KEY
       - equal:

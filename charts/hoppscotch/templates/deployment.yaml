@@ -2,8 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "hoppscotch.fullname" . }}
+  namespace: {{ include "hoppscotch.namespace" . | quote }}
   labels:
     {{- include "hoppscotch.labels" . | nindent 4 }}
+    app.kubernetes.io/component: hoppscotch
+  {{- if .Values.commonAnnotations }}
+  annotations:
+    {{ toYaml .Values.commonAnnotations | nindent 4 }}
+  {{- end }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}

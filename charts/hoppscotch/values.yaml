@@ -11,7 +11,11 @@ global:
 
 nameOverride: ""
 fullnameOverride: ""
+namespaceOverride: ""
+commonLabels: {}
+commonAnnotations: {}
 clusterDomain: cluster.local
+extraDeploy: []
 
 ## @section Hoppscotch Parameters
 
