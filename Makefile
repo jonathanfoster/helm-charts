@@ -25,12 +25,6 @@ helm-install: kind-create-cluster ## Install chart
 	@echo "${GREEN}Installing chart ${CHART_NAME}...${RESET}"
 	helm install ${CHART_NAME} charts/${CHART_NAME} -n ${CHART_NAME} --create-namespace --wait --debug
 
-.PHONY: helm-upgrade
-helm-upgrade: ## Upgrade chart
-	@echo "${GREEN}Upgrading chart ${CHART_NAME}...${RESET}"
-	helm upgrade ${CHART_NAME} charts/${CHART_NAME} -n ${CHART_NAME} --wait --debug
-
-
 .PHONY: helm-template
 helm-template: clean ## Render Helm templates
 	@echo "${GREEN}Rendering Helm templates...${RESET}"
