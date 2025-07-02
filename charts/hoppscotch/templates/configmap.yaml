@@ -21,7 +21,7 @@ data:
   VITE_APP_TOS_LINK: {{ .appTosLink | quote }}
   VITE_APP_PRIVACY_POLICY_LINK: {{ .appPrivacyPolicyLink | quote }}
   ENABLE_SUBPATH_BASED_ACCESS: {{ .enableSubpathBasedAccess | quote }}
-  {{- end }}{{/* with .Values.frontend */}}
+  {{- end }}
   {{- with .Values.backend }}
   HOPP_AIO_ALTERNATE_PORT: {{ .aioAlternatePort | quote }}
   TOKEN_SALT_COMPLEXITY: {{ .authToken.tokenSaltComplexity | quote }}
@@ -35,16 +35,16 @@ data:
   {{- with .auth.google }}
   GOOGLE_CALLBACK_URL: {{ include "hoppscotch.backend.auth.google.callbackUrl" $ | quote }}
   GOOGLE_SCOPE: {{ .scope | join "," | quote }}
-  {{- end }}{{/* with .auth.google */}}
+  {{- end }}
   {{- with .auth.github }}
   GITHUB_CALLBACK_URL: {{ include "hoppscotch.backend.auth.github.callbackUrl" $ | quote }}
   GITHUB_SCOPE: {{ .scope | join "," | quote }}
-  {{- end }}{{/* with .auth.github */}}
+  {{- end }}
   {{- with .auth.microsoft }}
   MICROSOFT_CALLBACK_URL: {{ include "hoppscotch.backend.auth.microsoft.callbackUrl" $ | quote }}
   MICROSOFT_SCOPE: {{ .scope | join "," | quote }}
   MICROSOFT_TENANT: {{ .tenant | quote }}
-  {{- end }}{{/* with .auth.microsoft */}}
+  {{- end }}
   {{- with .mailer }}
   MAILER_SMTP_ENABLE: {{ .smtpEnabled | quote }}
   MAILER_USE_CUSTOM_CONFIGS: {{ .useCustomConfigs | quote }}
@@ -53,11 +53,11 @@ data:
   MAILER_SMTP_PORT: {{ .smtpPort | quote }}
   MAILER_SMTP_SECURE: {{ .smtpSecure | quote }}
   MAILER_TLS_REJECT_UNAUTHORIZED: {{ .tlsRejectUnauthorized | quote }}
-  {{- end }}{{/* with .mailer */}}
+  {{- end }}
   {{- with .rateLimit }}
   RATE_LIMIT_TTL: {{ .ttl | quote }}
   RATE_LIMIT_MAX: {{ .max | quote }}
-  {{- end }}{{/* with .rateLimit */}}
+  {{- end }}
   {{- if .horizontalScalingEnabled }}
   HORIZONTAL_SCALING: {{ .horizontalScalingEnabled | quote }}
   {{- end }}
@@ -68,14 +68,14 @@ data:
   {{- else if or $.Values.clickhouse.enabled $.Values.externalClickhouse.host }}
   CLICKHOUSE_HOST: {{ printf "%s:%s" (include "hoppscotch.secret.clickhouseHost" $) (include "hoppscotch.secret.clickhousePort" $ | toString) | quote }}
   {{- end }}
-  {{- end }}{{/* with .clickhouse */}}
+  {{- end }}
   {{- with .auth.githubEnterprise }}
   IS_GITHUB_ENTERPRISE_ENABLED: {{ .enabled | quote }}
   GITHUB_AUTHORIZATION_URL: {{ .authorizationUrl | quote }}
   GITHUB_TOKEN_URL: {{ .tokenUrl | quote }}
   GITHUB_USER_PROFILE_URL: {{ .userProfileUrl | quote }}
   GITHUB_USER_EMAIL_URL: {{ .userEmailUrl | quote }}
-  {{- end }}{{/* with .auth.githubEnterprise */}}
+  {{- end }}
   {{- with .auth.saml }}
   SAML_ISSUER: {{ .issuer | quote }}
   SAML_AUDIENCE: {{ .audience | quote }}
@@ -83,7 +83,7 @@ data:
   SAML_ENTRY_POINT: {{ .entryPoint | quote }}
   SAML_WANT_ASSERTIONS_SIGNED: {{ .wantAssertionsSigned | quote }}
   SAML_WANT_RESPONSE_SIGNED: {{ .wantResponseSigned | quote }}
-  {{- end }}{{/* with .auth.saml */}}
+  {{- end }}
   {{- with .auth.oidc }}
   OIDC_PROVIDER_NAME: {{ .providerName | quote }}
   OIDC_ISSUER: {{ .issuer | quote }}
@@ -92,9 +92,9 @@ data:
   OIDC_USER_INFO_URL: {{ .userInfoUrl | quote }}
   OIDC_CALLBACK_URL: {{ include "hoppscotch.backend.auth.oidc.callbackUrl" $ | quote }}
   OIDC_SCOPE: {{ .scope | join " " | quote }}
-  {{- end }}{{/* with .auth.oidc */}}
-  {{- end }}{{/* with .Values.backend */}}
+  {{- end }}
+  {{- end }}
   {{- with .Values.frontend }}
   LOCAL_PROXY_SERVER_ENABLE: {{ .localProxyServerEnabled | quote }}
   PROXY_APP_URL: {{ .proxyAppUrl | quote }}
-  {{- end }}{{/* with .Values.frontend */}}
+  {{- end }}
