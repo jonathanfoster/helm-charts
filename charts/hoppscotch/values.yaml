@@ -247,7 +247,7 @@ rbac:
   rules: []
 
 serviceAccount:
-  create: true
+  create: false
   name: ""
   annotations: {}
   automountServiceAccountToken: true
