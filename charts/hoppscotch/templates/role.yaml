@@ -12,13 +12,11 @@ metadata:
     {{- toYaml .Values.commonAnnotations | nindent 4 }}
   {{- end }}
 rules:
-  - apiGroups: [""]
-    resources: ["*"]
-    verbs: ["*"]
-  - apiGroups: [""]
-    resources: ["*"]
-    verbs: ["*"]
   {{- if .Values.rbac.rules }}
-  {{- include "common.tplvalues.render" ( dict "value" .Values.rbac.rules "context" $ ) | nindent 2 }}
+  {{- toYaml .Values.rbac.rules | nindent 2 }}
+  {{- else }}
+  - apiGroups: [""]
+    resources: ["secrets", "configmaps"]
+    verbs: ["get", "list"]
   {{- end }}
 {{- end }}

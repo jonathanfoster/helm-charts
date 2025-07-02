@@ -38,7 +38,7 @@ spec:
       {{- end }}
       {{- if .Values.metrics.serviceMonitor.metricRelabelings }}
       metricRelabelings:
-        {{- toYaml .Values.metrics.serviceMonitor.metricsRelabelings | nindent 8 }}
+        {{- toYaml .Values.metrics.serviceMonitor.metricRelabelings | nindent 8 }}
       {{- end }}
       {{- if .Values.metrics.serviceMonitor.relabelings }}
       relabelings:

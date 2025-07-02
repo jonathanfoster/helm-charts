@@ -8,8 +8,12 @@ metadata:
     {{- include "hoppscotch.labels" . | nindent 4 }}
   {{- if or .Values.commonAnnotations .Values.service.annotations }}
   annotations:
+    {{- if .Values.commonAnnotations }}
     {{- toYaml .Values.commonAnnotations | nindent 4 }}
+    {{- end }}
+    {{- if .Values.service.annotations }}
     {{- toYaml .Values.service.annotations | nindent 4 }}
+    {{- end }}
   {{- end }}
 spec:
   type: {{ .Values.service.type }}
@@ -45,7 +49,7 @@ spec:
       nodePort: null
       {{- end }}
     {{- if .Values.service.extraPorts }}
-    {{ .Values.service.extraPorts | indent 4 }}
+    {{- toYaml .Values.service.extraPorts | nindent 4 }}
     {{- end }}
   selector:
     {{- include "hoppscotch.selectorLabels" . | nindent 4 }}

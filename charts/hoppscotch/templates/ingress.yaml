@@ -9,8 +9,12 @@ metadata:
     {{- include "hoppscotch.labels" . | nindent 4 }}
   {{- if or .Values.commonAnnotations .Values.ingress.annotations }}
   annotations:
+    {{- if .Values.commonAnnotations }}
     {{- toYaml .Values.commonAnnotations | nindent 4 }}
+    {{- end }}
+    {{- if .Values.ingress.annotations }}
     {{- toYaml .Values.ingress.annotations | nindent 4 }}
+    {{- end }}
   {{- end }}
 spec:
   {{- if .Values.ingress.ingressClassName }}
@@ -45,7 +49,7 @@ spec:
                   number: {{ $.Values.service.ports.http }}
     {{- end }}
     {{- if .Values.ingress.extraRules }}
-    {{ .Values.ingress.extraRules | indent 4 }}
+    {{- toYaml .Values.ingress.extraRules | nindent 4 }}
     {{- end }}
   {{- if or (and .Values.ingress.tls (or (include "hoppscotch.ingress.certManagerRequest" ( dict "annotations" .Values.ingress.annotations )) .Values.ingress.selfSigned)) .Values.ingress.extraTls }}
   tls:
