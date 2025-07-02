@@ -24,10 +24,10 @@ data:
   {{- end }}{{/* with .Values.frontend */}}
   {{- with .Values.backend }}
   HOPP_AIO_ALTERNATE_PORT: {{ .aioAlternatePort | quote }}
-  TOKEN_SALT_COMPLEXITY: {{ .tokenSaltComplexity | quote }}
-  MAGIC_LINK_TOKEN_VALIDITY: {{ .magicLinkTokenValidity | quote }}
-  REFRESH_TOKEN_VALIDITY: {{ .refreshTokenValidity | quote }}
-  ACCESS_TOKEN_VALIDITY: {{ .accessTokenValidity | quote }}
+  TOKEN_SALT_COMPLEXITY: {{ .authToken.tokenSaltComplexity | quote }}
+  MAGIC_LINK_TOKEN_VALIDITY: {{ .authToken.magicLinkTokenValidity | quote }}
+  REFRESH_TOKEN_VALIDITY: {{ .authToken.refreshTokenValidity | quote }}
+  ACCESS_TOKEN_VALIDITY: {{ .authToken.accessTokenValidity | quote }}
   ALLOW_SECURE_COOKIES: {{ .allowSecureCookies | quote }}
   REDIRECT_URL: {{ include "hoppscotch.backend.redirectUrl" $ | quote }}
   WHITELISTED_ORIGINS: {{ include "hoppscotch.backend.whitelistedOrigins" $ | quote }}

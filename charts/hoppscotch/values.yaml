@@ -88,12 +88,13 @@ backend:
 
   aioAlternatePort: 80
 
-  jwtSecret: "secret"
-  tokenSaltComplexity: 10
-  magicLinkTokenValidity: 3
-  refreshTokenValidity: "604800000"
-  accessTokenValidity: "86400000"
-  sessionSecret: "secret"
+  authToken:
+    jwtSecret: "secret"
+    tokenSaltComplexity: 10
+    magicLinkTokenValidity: 3
+    refreshTokenValidity: "604800000"
+    accessTokenValidity: "86400000"
+    sessionSecret: "secret"
 
   allowSecureCookies: true
   dataEncryptionKey: "12345678901234567890123456789012"

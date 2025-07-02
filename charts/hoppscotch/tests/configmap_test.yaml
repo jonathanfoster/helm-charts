@@ -52,15 +52,17 @@ tests:
       - equal:
           path: data.ENABLE_SUBPATH_BASED_ACCESS
           value: "true"
+
   - it: should render backend parameters
     template: configmap.yaml
     set:
       backend:
         aioAlternatePort: 3000
-        tokenSaltComplexity: 10
-        magicLinkTokenValidity: 3
-        refreshTokenValidity: "604800000"
-        accessTokenValidity: "86400000"
+        authToken:
+          tokenSaltComplexity: 10
+          magicLinkTokenValidity: 3
+          refreshTokenValidity: "604800000"
+          accessTokenValidity: "86400000"
         allowSecureCookies: true
         redirectUrl: https://example.com
         whitelistedOrigins:
