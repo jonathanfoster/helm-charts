@@ -32,7 +32,6 @@ helm-template: clean ## Render Helm templates
 	@for chart in charts/*/; do \
 		if [ -d "$${chart}" ]; then \
 			chart_name=$$(basename "$${chart}"); \
-			helm dependency build "$${chart}"; \
 			helm template "$${chart_name}" "$${chart}" > "${BUILD_DIR}/$${chart_name}.yaml"; \
 		fi; \
 	done
