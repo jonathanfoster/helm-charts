@@ -1,4 +1,4 @@
-suite: test Redis URL
+suite: Redis
 templates:
   - secrets.yaml
 tests:

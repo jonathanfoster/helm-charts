@@ -40,6 +40,7 @@ securityContext: {}
 extraEnvs: []
 
 resources: {}
+resourcesPreset: "nano"
 
 livenessProbe: {}
 readinessProbe: {}
@@ -250,10 +251,14 @@ defaultInitContainers:
   waitForDatabase:
     enabled: true
     timeout: 300
+    resourcesPreset: "nano"
+    resources: {}
 
   waitForDatabaseSetup:
     enabled: true
     timeout: 300
+    resourcesPreset: "nano"
+    resources: {}
 
 ## @section Other Parameters
 

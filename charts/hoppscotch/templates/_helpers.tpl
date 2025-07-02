@@ -25,9 +25,14 @@ Returns a default init container that waits for the database to be ready.
         sleep 2
       done
     - {{ .Values.defaultInitContainers.waitForDatabase.timeout | default 60 | quote}}
+  {{- $resources := include "hoppscotch.resources" (dict "preset" .Values.defaultInitContainers.waitForDatabase.resourcesPreset "resources" .Values.defaultInitContainers.waitForDatabase.resources "component" "wait-for-db") }}
+  {{- if $resources }}
+  resources:
+    {{- $resources | nindent 4 }}
+  {{- end }}
   {{- with .Values.extraEnvs }}
   env:
-    {{- tpl (toYaml .) . | nindent 12 }}
+    {{- tpl (toYaml .) . | nindent 4 }}
   {{- end }}
   envFrom:
     - secretRef:
@@ -524,5 +529,102 @@ Return the ClickHouse password based on the ClickHouse chart or external ClickHo
 {{- $password -}}
 {{- else -}}
 {{- .Values.externalClickhouse.password -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the appropriate resource configuration based on resourcesPreset or custom resources
+Usage: {{ include "hoppscotch.resources" (dict "preset" .Values.resourcesPreset "resources" .Values.resources "component" "hoppscotch") }}
+*/}}
+{{- define "hoppscotch.resources" -}}
+{{- $preset := .preset -}}
+{{- $resources := .resources -}}
+{{- $component := .component | default "default" -}}
+{{- if $resources -}}
+{{- toYaml $resources -}}
+{{- else if $preset -}}
+{{- include "hoppscotch.resourcesPreset" (dict "preset" $preset "component" $component) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return predefined resource configurations based on preset name
+*/}}
+{{- define "hoppscotch.resourcesPreset" -}}
+{{- $preset := .preset -}}
+{{- $component := .component | default "default" -}}
+{{- if eq $preset "nano" -}}
+limits:
+  cpu: 150m
+  ephemeral-storage: 2Gi
+  memory: 192Mi
+requests:
+  cpu: 100m
+  ephemeral-storage: 50Mi
+  memory: 128Mi
+{{- else if eq $preset "micro" -}}
+limits:
+  cpu: 250m
+  ephemeral-storage: 2Gi
+  memory: 256Mi
+requests:
+  cpu: 125m
+  ephemeral-storage: 50Mi
+  memory: 192Mi
+{{- else if eq $preset "small" -}}
+limits:
+  cpu: 500m
+  ephemeral-storage: 2Gi
+  memory: 512Mi
+requests:
+  cpu: 250m
+  ephemeral-storage: 50Mi
+  memory: 256Mi
+{{- else if eq $preset "medium" -}}
+limits:
+  cpu: 1000m
+  ephemeral-storage: 2Gi
+  memory: 1Gi
+requests:
+  cpu: 500m
+  ephemeral-storage: 50Mi
+  memory: 512Mi
+{{- else if eq $preset "large" -}}
+limits:
+  cpu: 2000m
+  ephemeral-storage: 4Gi
+  memory: 2Gi
+requests:
+  cpu: 1000m
+  ephemeral-storage: 50Mi
+  memory: 1Gi
+{{- else if eq $preset "xlarge" -}}
+limits:
+  cpu: 4000m
+  ephemeral-storage: 8Gi
+  memory: 4Gi
+requests:
+  cpu: 2000m
+  ephemeral-storage: 50Mi
+  memory: 2Gi
+{{- else if eq $preset "2xlarge" -}}
+limits:
+  cpu: 8000m
+  ephemeral-storage: 16Gi
+  memory: 8Gi
+requests:
+  cpu: 4000m
+  ephemeral-storage: 50Mi
+  memory: 4Gi
+{{- else -}}
+{{/* Default to nano if preset is not recognized */}}
+limits:
+  cpu: 150m
+  ephemeral-storage: 2Gi
+  memory: 192Mi
+requests:
+  cpu: 100m
+  ephemeral-storage: 50Mi
+  memory: 128Mi
 {{- end -}}
 {{- end -}}

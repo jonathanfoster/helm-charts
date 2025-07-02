@@ -1,0 +1,152 @@
+suite: Resources Presets
+templates:
+  - templates/deployment.yaml
+  - templates/configmap.yaml
+  - templates/secrets.yaml
+tests:
+  - it: should apply nano resource preset by default
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: "150m"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: "192Mi"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: "100m"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: "128Mi"
+        template: templates/deployment.yaml
+
+  - it: should apply medium resource preset when specified
+    set:
+      resourcesPreset: medium
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: "1000m"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: "1Gi"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: "500m"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: "512Mi"
+        template: templates/deployment.yaml
+
+  - it: should apply large resource preset when specified
+    set:
+      resourcesPreset: large
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: "2000m"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: "2Gi"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: "1000m"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: "1Gi"
+        template: templates/deployment.yaml
+
+  - it: should override preset with custom resources
+    set:
+      resourcesPreset: large
+      resources:
+        limits:
+          cpu: 4000m
+          memory: 4Gi
+        requests:
+          cpu: 2000m
+          memory: 2Gi
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: "4000m"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: "4Gi"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: "2000m"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: "2Gi"
+        template: templates/deployment.yaml
+
+  - it: should apply resource presets to init containers
+    set:
+      defaultInitContainers.waitForDatabase.resourcesPreset: small
+      defaultInitContainers.waitForDatabaseSetup.resourcesPreset: micro
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].resources.limits.cpu
+          value: "500m"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.initContainers[0].resources.limits.memory
+          value: "512Mi"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.initContainers[1].resources.limits.cpu
+          value: "250m"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.initContainers[1].resources.limits.memory
+          value: "256Mi"
+        template: templates/deployment.yaml
+
+  - it: should override init container presets with custom resources
+    set:
+      defaultInitContainers.waitForDatabase.resources:
+        limits:
+          cpu: 1000m
+          memory: 1Gi
+        requests:
+          cpu: 500m
+          memory: 512Mi
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].resources.limits.cpu
+          value: "1000m"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.initContainers[0].resources.limits.memory
+          value: "1Gi"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.initContainers[0].resources.requests.cpu
+          value: "500m"
+        template: templates/deployment.yaml
+      - equal:
+          path: spec.template.spec.initContainers[0].resources.requests.memory
+          value: "512Mi"
+        template: templates/deployment.yaml
+
+  - it: should not set resources when empty preset and no custom resources
+    set:
+      resourcesPreset: ""
+      resources: {}
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].resources
+        template: templates/deployment.yaml

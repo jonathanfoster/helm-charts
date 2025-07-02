@@ -1,4 +1,4 @@
-suite: test ClickHouse Configuration
+suite: ClickHouse
 templates:
   - templates/configmap.yaml
   - templates/secrets.yaml

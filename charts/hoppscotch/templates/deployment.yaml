@@ -60,9 +60,10 @@ spec:
           readinessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.resources }}
+          {{- $resources := include "hoppscotch.resources" (dict "preset" .Values.resourcesPreset "resources" .Values.resources "component" "hoppscotch") }}
+          {{- if $resources }}
           resources:
-            {{- toYaml . | nindent 12 }}
+            {{- $resources | nindent 12 }}
           {{- end }}
           {{- if or .Values.volumeMounts .Values.persistence.enabled }}
           volumeMounts:
@@ -107,6 +108,11 @@ spec:
                 sleep 2
               done
             - {{ .Values.defaultInitContainers.waitForDatabaseSetup.timeout | default 60 | quote}}
+          {{- $resources := include "hoppscotch.resources" (dict "preset" .Values.defaultInitContainers.waitForDatabaseSetup.resourcesPreset "resources" .Values.defaultInitContainers.waitForDatabaseSetup.resources "component" "wait-for-db-setup") }}
+          {{- if $resources }}
+          resources:
+            {{- $resources | nindent 12 }}
+          {{- end }}
           {{- with .Values.extraEnvs }}
           env:
             {{- tpl (toYaml .) . | nindent 12 }}

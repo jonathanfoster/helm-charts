@@ -5,6 +5,14 @@ backend:
 
   dataEncryptionKey: "e2e-test-data-encryption-key1234"
 
+resourcesPreset: "nano"
+
+defaultInitContainers:
+  waitForDatabase:
+    resourcesPreset: "nano"
+  waitForDatabaseSetup:
+    resourcesPreset: "nano"
+
   auth:
     allowedProviders:
       - email
