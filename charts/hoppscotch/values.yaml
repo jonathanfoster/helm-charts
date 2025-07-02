@@ -249,11 +249,11 @@ persistence:
 defaultInitContainers:
   waitForDatabase:
     enabled: true
-    timeout: 60
+    timeout: 300
 
   waitForDatabaseSetup:
     enabled: true
-    timeout: 60
+    timeout: 300
 
 ## @section Other Parameters
 
