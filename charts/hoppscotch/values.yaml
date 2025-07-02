@@ -308,3 +308,23 @@ externalDatabase:
   existingSecret: ""
   existingSecretPasswordKey: ""
   existingSecretSqlConnectionKey: ""
+
+## Redis Parameters
+
+redis:
+  enabled: false
+  auth:
+    enabled: true
+    password: secret
+    existingSecret: ""
+  architecture: standalone
+  master:
+    resourcesPreset: "nano"
+    resources: {}
+
+externalRedis:
+  host: ""
+  port: 6379
+  password: ""
+  existingSecret: ""
+  existingSecretPasswordKey: ""

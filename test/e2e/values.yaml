@@ -44,3 +44,11 @@ postgresql:
   primary:
     persistence:
       enabled: false
+
+redis:
+  enabled: false
+  auth:
+    password: e2e-test-redis-password
+  master:
+    persistence:
+      enabled: false

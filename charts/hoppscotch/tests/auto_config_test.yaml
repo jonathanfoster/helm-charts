@@ -33,7 +33,7 @@ tests:
           value: "https://hoppscotch.example.com"
       - equal:
           path: data.WHITELISTED_ORIGINS
-          value: "https://hoppscotch.example.com,https://hoppscotch.example.com/admin,https://hoppscotch.example.com/backend,app://hoppscotch"
+          value: "https://hoppscotch.example.com,https://hoppscotch.example.com/admin,https://hoppscotch.example.com/backend,app://hoppscotch" # yamllint disable-line rule:line-length
 
   - it: should not override user-provided URLs
     template: configmap.yaml

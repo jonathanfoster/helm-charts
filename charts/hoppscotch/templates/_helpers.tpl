@@ -440,3 +440,40 @@ Generate OIDC auth callback URL based on ingress configuration
 {{- end -}}
 {{- end -}}
 {{- end }}
+
+{{/*
+Return the Redis URL based on the Redis chart or external Redis settings
+*/}}
+{{- define "hoppscotch.secret.redisUrl" -}}
+{{- if .Values.redis.enabled -}}
+{{- $host := printf "%s-redis-master.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
+{{- $port := 6379 -}}
+{{- $password := .Values.redis.auth.password -}}
+{{- if not $password -}}
+{{- $redisSecretName := printf "%s-redis" .Release.Name -}}
+{{- $password = include "hoppscotch.secret.lookupValue" (dict "name" $redisSecretName "namespace" .Release.Namespace "key" "redis-password") -}}
+{{- end -}}
+{{- include "hoppscotch.secret.formatRedisUrl" (dict "host" $host "port" $port "password" $password) -}}
+{{- else -}}
+{{- $host := .Values.externalRedis.host -}}
+{{- $port := .Values.externalRedis.port | default 6379 | int -}}
+{{- $password := .Values.externalRedis.password -}}
+{{- include "hoppscotch.secret.formatRedisUrl" (dict "host" $host "port" $port "password" $password) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Format a Redis URL for use in configuration files.
+Usage: {{- include "hoppscotch.secret.formatRedisUrl" (dict "host" $host "port" $port "password" $password) -}}
+*/}}
+{{- define "hoppscotch.secret.formatRedisUrl" -}}
+{{- $authspec := "" -}}
+{{- $hostspec := .host -}}
+{{- if .password -}}
+{{- $authspec = printf ":%s@" .password -}}
+{{- end -}}
+{{- if .port -}}
+{{- $hostspec = printf "%s:%d" .host .port -}}
+{{- end -}}
+{{- printf "redis://%s%s" $authspec $hostspec -}}
+{{- end -}}
