@@ -58,13 +58,13 @@ data:
   RATE_LIMIT_TTL: {{ .ttl | quote }}
   RATE_LIMIT_MAX: {{ .max | quote }}
   {{- end }}{{/* with .rateLimit */}}
-  {{- end }}{{/* with .Values.backend */}}
-  {{- with .Values.enterprise }}
-  {{- with .frontend }}
-  LOCAL_PROXY_SERVER_ENABLE: {{ .localProxyServerEnabled | quote }}
-  PROXY_APP_URL: {{ .proxyAppUrl | quote }}
-  {{- end }}{{/* with .frontend */}}
-  {{- with .backend }}
+  {{- if .horizontalScalingEnabled }}
+  HORIZONTAL_SCALING: {{ .horizontalScalingEnabled | quote }}
+  {{- end }}
+  {{- if and .clickhouse .clickhouse.allowAuditLogs }}
+  ALLOW_AUDIT_LOGS: {{ .clickhouse.allowAuditLogs | quote }}
+  CLICKHOUSE_HOST: {{ .clickhouse.host | quote }}
+  {{- end }}{{/* with .clickhouse */}}
   {{- with .auth.githubEnterprise }}
   IS_GITHUB_ENTERPRISE_ENABLED: {{ .enabled | quote }}
   GITHUB_AUTHORIZATION_URL: {{ .authorizationUrl | quote }}
@@ -89,10 +89,8 @@ data:
   OIDC_CALLBACK_URL: {{ .callbackUrl | quote }}
   OIDC_SCOPE: {{ .scope | join " " | quote }}
   {{- end }}{{/* with .auth.oidc */}}
-  {{- if and .clickhouse .clickhouse.allowAuditLogs }}
-  ALLOW_AUDIT_LOGS: {{ .clickhouse.allowAuditLogs | quote }}
-  CLICKHOUSE_HOST: {{ .clickhouse.host | quote }}
-  {{- end }}{{/* with .clickhouse */}}
-  HORIZONTAL_SCALING: {{ .horizontalScalingEnabled | quote }}
-  {{- end }}{{/* with .backend */}}
-  {{- end }}{{/* with .Values.enterprise */}}
+  {{- end }}{{/* with .Values.backend */}}
+  {{- with .Values.frontend }}
+  LOCAL_PROXY_SERVER_ENABLE: {{ .localProxyServerEnabled | quote }}
+  PROXY_APP_URL: {{ .proxyAppUrl | quote }}
+  {{- end }}{{/* with .Values.frontend */}}

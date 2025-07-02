@@ -80,6 +80,9 @@ frontend:
 
   enableSubpathBasedAccess: true
 
+  localProxyServerEnabled: false
+  proxyAppUrl: ""
+
 backend:
   databaseUrl: ""
 
@@ -115,12 +118,39 @@ backend:
       callbackUrl: ""
       scope: []
 
+    githubEnterprise:
+      enabled: false
+      authorizationUrl: ""
+      tokenUrl: ""
+      userProfileUrl: ""
+      userEmailUrl: ""
+
     microsoft:
       clientId: ""
       clientSecret: ""
       callbackUrl: ""
       scope: ""
       tenant: ""
+
+    oidc:
+      providerName: ""
+      issuer: ""
+      authorizationUrl: ""
+      tokenUrl: ""
+      userInfoUrl: ""
+      clientId: ""
+      clientSecret: ""
+      callbackUrl: ""
+      scope: []
+
+    saml:
+      issuer: ""
+      audience: ""
+      callbackUrl: ""
+      cert: ""
+      entryPoint: ""
+      wantAssertionsSigned: true
+      wantResponseSigned: false
 
   mailer:
     smtpEnabled: true
@@ -139,50 +169,16 @@ backend:
     ttl: 60
     max: 100
 
-enterprise:
-  licenseKey: ""
+  enterpriseLicenseKey: ""
 
-  frontend:
-    localProxyServerEnabled: false
-    proxyAppUrl: ""
+  clickhouse:
+    allowAuditLogs: false
+    host: ""
+    user: ""
+    password: ""
 
-  backend:
-    auth:
-      githubEnterprise:
-        enabled: false
-        authorizationUrl: ""
-        tokenUrl: ""
-        userProfileUrl: ""
-        userEmailUrl: ""
-
-      saml:
-        issuer: ""
-        audience: ""
-        callbackUrl: ""
-        cert: ""
-        entryPoint: ""
-        wantAssertionsSigned: true
-        wantResponseSigned: false
-
-      oidc:
-        providerName: ""
-        issuer: ""
-        authorizationUrl: ""
-        tokenUrl: ""
-        userInfoUrl: ""
-        clientId: ""
-        clientSecret: ""
-        callbackUrl: ""
-        scope: []
-
-    clickhouse:
-      allowAuditLogs: false
-      host: ""
-      user: ""
-      password: ""
-
-    horizontalScalingEnabled: false
-    redisUrl: ""
+  horizontalScalingEnabled: false
+  redisUrl: ""
 
 ## @section Traffic Exposure Parameters
 
