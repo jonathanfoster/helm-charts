@@ -12,12 +12,12 @@ metadata:
   {{- end }}
 data:
   {{- with .Values.frontend }}
-  VITE_BASE_URL: {{ .baseUrl | quote }}
-  VITE_SHORTCODE_BASE_URL: {{ .shortcodeBaseUrl | quote }}
-  VITE_ADMIN_URL: {{ .adminUrl | quote }}
-  VITE_BACKEND_GQL_URL: {{ .backendGqlUrl | quote }}
-  VITE_BACKEND_WS_URL: {{ .backendWsUrl | quote }}
-  VITE_BACKEND_API_URL: {{ .backendApiUrl | quote }}
+  VITE_BASE_URL: {{ include "hoppscotch.frontend.baseUrl" $ | quote }}
+  VITE_SHORTCODE_BASE_URL: {{ include "hoppscotch.frontend.shortcodeBaseUrl" $ | quote }}
+  VITE_ADMIN_URL: {{ include "hoppscotch.frontend.adminUrl" $ | quote }}
+  VITE_BACKEND_GQL_URL: {{ include "hoppscotch.frontend.backendGqlUrl" $ | quote }}
+  VITE_BACKEND_WS_URL: {{ include "hoppscotch.frontend.backendWsUrl" $ | quote }}
+  VITE_BACKEND_API_URL: {{ include "hoppscotch.frontend.backendApiUrl" $ | quote }}
   VITE_APP_TOS_LINK: {{ .appTosLink | quote }}
   VITE_APP_PRIVACY_POLICY_LINK: {{ .appPrivacyPolicyLink | quote }}
   ENABLE_SUBPATH_BASED_ACCESS: {{ .enableSubpathBasedAccess | quote }}
@@ -29,8 +29,8 @@ data:
   REFRESH_TOKEN_VALIDITY: {{ .refreshTokenValidity | quote }}
   ACCESS_TOKEN_VALIDITY: {{ .accessTokenValidity | quote }}
   ALLOW_SECURE_COOKIES: {{ .allowSecureCookies | quote }}
-  REDIRECT_URL: {{ .redirectUrl | quote }}
-  WHITELISTED_ORIGINS: {{ .whitelistedOrigins | join "," | quote }}
+  REDIRECT_URL: {{ include "hoppscotch.backend.redirectUrl" $ | quote }}
+  WHITELISTED_ORIGINS: {{ include "hoppscotch.backend.whitelistedOrigins" $ | quote }}
   VITE_ALLOWED_AUTH_PROVIDERS: {{ .auth.allowedProviders | join "," | upper }}
   {{- with .auth.google }}
   GOOGLE_CALLBACK_URL: {{ .callbackUrl | quote }}

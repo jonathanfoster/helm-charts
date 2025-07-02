@@ -203,3 +203,140 @@ Return the service account name to use.
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Generate the base URL for the frontend based on ingress configuration
+*/}}
+{{- define "hoppscotch.frontend.baseUrl" -}}
+{{- if .Values.frontend.baseUrl -}}
+{{- .Values.frontend.baseUrl -}}
+{{- else if .Values.ingress.enabled -}}
+{{- $scheme := "http" -}}
+{{- if .Values.ingress.tls -}}
+{{- $scheme = "https" -}}
+{{- end -}}
+{{- printf "%s://%s" $scheme .Values.ingress.hostname -}}
+{{- end -}}
+{{- end }}
+
+{{/*
+Generate the shortcode base URL for the frontend based on ingress configuration
+*/}}
+{{- define "hoppscotch.frontend.shortcodeBaseUrl" -}}
+{{- if .Values.frontend.shortcodeBaseUrl -}}
+{{- .Values.frontend.shortcodeBaseUrl -}}
+{{- else if .Values.ingress.enabled -}}
+{{- $scheme := "http" -}}
+{{- if .Values.ingress.tls -}}
+{{- $scheme = "https" -}}
+{{- end -}}
+{{- printf "%s://%s" $scheme .Values.ingress.hostname -}}
+{{- end -}}
+{{- end }}
+
+{{/*
+Generate the admin URL for the frontend based on ingress configuration
+*/}}
+{{- define "hoppscotch.frontend.adminUrl" -}}
+{{- if .Values.frontend.adminUrl -}}
+{{- .Values.frontend.adminUrl -}}
+{{- else if .Values.ingress.enabled -}}
+{{- $scheme := "http" -}}
+{{- if .Values.ingress.tls -}}
+{{- $scheme = "https" -}}
+{{- end -}}
+{{- if .Values.frontend.enableSubpathBasedAccess -}}
+{{- printf "%s://%s/admin" $scheme .Values.ingress.hostname -}}
+{{- else -}}
+{{- printf "%s://%s/admin" $scheme .Values.ingress.hostname -}}
+{{- end -}}
+{{- end -}}
+{{- end }}
+
+{{/*
+Generate the backend GraphQL URL for the frontend based on ingress configuration
+*/}}
+{{- define "hoppscotch.frontend.backendGqlUrl" -}}
+{{- if .Values.frontend.backendGqlUrl -}}
+{{- .Values.frontend.backendGqlUrl -}}
+{{- else if .Values.ingress.enabled -}}
+{{- $scheme := "http" -}}
+{{- if .Values.ingress.tls -}}
+{{- $scheme = "https" -}}
+{{- end -}}
+{{- if .Values.frontend.enableSubpathBasedAccess -}}
+{{- printf "%s://%s/backend/graphql" $scheme .Values.ingress.hostname -}}
+{{- else -}}
+{{- printf "%s://%s/backend/graphql" $scheme .Values.ingress.hostname -}}
+{{- end -}}
+{{- end -}}
+{{- end }}
+
+{{/*
+Generate the backend WebSocket URL for the frontend based on ingress configuration
+*/}}
+{{- define "hoppscotch.frontend.backendWsUrl" -}}
+{{- if .Values.frontend.backendWsUrl -}}
+{{- .Values.frontend.backendWsUrl -}}
+{{- else if .Values.ingress.enabled -}}
+{{- $scheme := "ws" -}}
+{{- if .Values.ingress.tls -}}
+{{- $scheme = "wss" -}}
+{{- end -}}
+{{- if .Values.frontend.enableSubpathBasedAccess -}}
+{{- printf "%s://%s/backend/graphql" $scheme .Values.ingress.hostname -}}
+{{- else -}}
+{{- printf "%s://%s/backend/graphql" $scheme .Values.ingress.hostname -}}
+{{- end -}}
+{{- end -}}
+{{- end }}
+
+{{/*
+Generate the backend API URL for the frontend based on ingress configuration
+*/}}
+{{- define "hoppscotch.frontend.backendApiUrl" -}}
+{{- if .Values.frontend.backendApiUrl -}}
+{{- .Values.frontend.backendApiUrl -}}
+{{- else if .Values.ingress.enabled -}}
+{{- $scheme := "http" -}}
+{{- if .Values.ingress.tls -}}
+{{- $scheme = "https" -}}
+{{- end -}}
+{{- if .Values.frontend.enableSubpathBasedAccess -}}
+{{- printf "%s://%s/backend/v1" $scheme .Values.ingress.hostname -}}
+{{- else -}}
+{{- printf "%s://%s/backend/v1" $scheme .Values.ingress.hostname -}}
+{{- end -}}
+{{- end -}}
+{{- end }}
+
+{{/*
+Generate the redirect URL for the backend based on ingress configuration
+*/}}
+{{- define "hoppscotch.backend.redirectUrl" -}}
+{{- if .Values.backend.redirectUrl -}}
+{{- .Values.backend.redirectUrl -}}
+{{- else if .Values.ingress.enabled -}}
+{{- $scheme := "http" -}}
+{{- if .Values.ingress.tls -}}
+{{- $scheme = "https" -}}
+{{- end -}}
+{{- printf "%s://%s" $scheme .Values.ingress.hostname -}}
+{{- end -}}
+{{- end }}
+
+{{/*
+Generate whitelisted origins for the backend based on ingress configuration
+*/}}
+{{- define "hoppscotch.backend.whitelistedOrigins" -}}
+{{- if .Values.backend.whitelistedOrigins -}}
+{{- .Values.backend.whitelistedOrigins | join "," -}}
+{{- else if .Values.ingress.enabled -}}
+{{- $scheme := "http" -}}
+{{- if .Values.ingress.tls -}}
+{{- $scheme = "https" -}}
+{{- end -}}
+{{- $baseUrl := printf "%s://%s" $scheme .Values.ingress.hostname -}}
+{{- printf "%s,%s/admin,%s/backend,app://hoppscotch" $baseUrl $baseUrl $baseUrl -}}
+{{- end -}}
+{{- end }}
