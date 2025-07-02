@@ -76,7 +76,7 @@ docker_exec() {
 
 install_charts() {
   log_info "Installing charts..."
-  docker_exec ct install "$@"
+  docker_exec ct install --helm-extra-args="--values=test/e2e/values.yaml" "$@"
 }
 
 log_error() { echo -e "${RED}Error:${RESET} $1" >&2; }

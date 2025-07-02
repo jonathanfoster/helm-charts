@@ -1,0 +1,46 @@
+backend:
+  authToken:
+    jwtSecret: "e2e-test-jwt-secret"
+    sessionSecret: "e2e-test-session-secret"
+
+  dataEncryptionKey: "e2e-test-data-encryption-key1234"
+
+  auth:
+    allowedProviders:
+      - email
+      - google
+      - github
+
+    google:
+      clientId: "e2e-test-google-client-id"
+      clientSecret: "e2e-test-google-client-secret"
+      scope:
+        - email
+        - profile
+
+    github:
+      clientId: "e2e-test-github-client-id"
+      clientSecret: "e2e-test-github-client-secret"
+      scope:
+        - user:email
+
+  mailer:
+    addressFrom: "noreply@localhost"
+    smtpUrl: "smtp://test:test@localhost"
+
+ingress:
+  enabled: true
+  hostname: localhost
+  tls: true
+  selfSigned: true
+  ingressClassName: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+
+postgresql:
+  auth:
+    password: e2e-test-postgresql-password
+  primary:
+    persistence:
+      enabled: false
