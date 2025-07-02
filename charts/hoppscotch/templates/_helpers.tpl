@@ -135,7 +135,7 @@ Return the database URL based on the PostgreSQL chart or external database setti
 {{- $postgresSecretName := printf "%s-postgresql" .Release.Name -}}
 {{- $password = include "hoppscotch.secret.lookupValue" (dict "name" $postgresSecretName "namespace" .Release.Namespace "key" "password") -}}
 {{- end -}}
-{{- include "hoppscotch.secret.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
+{{- include "hoppscotch.secret.formatPostgresUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
 {{- else if .Values.externalDatabase.sqlConnection -}}
 {{- .Values.externalDatabase.sqlConnection -}}
 {{- else -}}
@@ -144,15 +144,15 @@ Return the database URL based on the PostgreSQL chart or external database setti
 {{- $user := .Values.externalDatabase.user -}}
 {{- $database := .Values.externalDatabase.database -}}
 {{- $password := .Values.externalDatabase.password -}}
-{{- include "hoppscotch.secret.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
+{{- include "hoppscotch.secret.formatPostgresUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
 {{- end -}}
 {{- end -}}
 
 {{/*
 Format a database URL for use in configuration files.
-Usage: {{- include "hoppscotch.secret.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database "params" $params) -}}
+Usage: {{- include "hoppscotch.secret.formatPostgresUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database "params" $params) -}}
 */}}
-{{- define "hoppscotch.secret.formatDatabaseUrl" -}}
+{{- define "hoppscotch.secret.formatPostgresUrl" -}}
 {{- $userspec := "" -}}
 {{- $hostspec := .host -}}
 {{- $dbname := "" -}}
