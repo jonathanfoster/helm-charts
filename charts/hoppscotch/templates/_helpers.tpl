@@ -477,3 +477,52 @@ Usage: {{- include "hoppscotch.secret.formatRedisUrl" (dict "host" $host "port" 
 {{- end -}}
 {{- printf "redis://%s%s" $authspec $hostspec -}}
 {{- end -}}
+
+{{/*
+Return the ClickHouse host based on the ClickHouse chart or external ClickHouse settings
+*/}}
+{{- define "hoppscotch.secret.clickhouseHost" -}}
+{{- if .Values.clickhouse.enabled -}}
+{{- printf "%s-clickhouse.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
+{{- else -}}
+{{- .Values.externalClickhouse.host -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the ClickHouse port based on the ClickHouse chart or external ClickHouse settings
+*/}}
+{{- define "hoppscotch.secret.clickhousePort" -}}
+{{- if .Values.clickhouse.enabled -}}
+{{- 8123 -}}
+{{- else -}}
+{{- .Values.externalClickhouse.port | default 8123 -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the ClickHouse user based on the ClickHouse chart or external ClickHouse settings
+*/}}
+{{- define "hoppscotch.secret.clickhouseUser" -}}
+{{- if .Values.clickhouse.enabled -}}
+{{- .Values.clickhouse.auth.username -}}
+{{- else -}}
+{{- .Values.externalClickhouse.user -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the ClickHouse password based on the ClickHouse chart or external ClickHouse settings
+*/}}
+{{- define "hoppscotch.secret.clickhousePassword" -}}
+{{- if .Values.clickhouse.enabled -}}
+{{- $password := .Values.clickhouse.auth.password -}}
+{{- if not $password -}}
+{{- $clickhouseSecretName := printf "%s-clickhouse" .Release.Name -}}
+{{- $password = include "hoppscotch.secret.lookupValue" (dict "name" $clickhouseSecretName "namespace" .Release.Namespace "key" "admin-password") -}}
+{{- end -}}
+{{- $password -}}
+{{- else -}}
+{{- .Values.externalClickhouse.password -}}
+{{- end -}}
+{{- end -}}

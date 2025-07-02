@@ -5,5 +5,8 @@ dependencies:
 - name: redis
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 20.13.4
-digest: sha256:a57d9e093db79cd9f32043696b90fd9ad3acdf0f49273e0a4747b06fafe7cc8f
-generated: "2025-07-02T14:45:39.014654-04:00"
+- name: clickhouse
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 8.0.10
+digest: sha256:f188457027bb499e03ddb84aee85dd15233379f6217b201089b639d88e6ab334
+generated: "2025-07-02T15:11:17.266523-04:00"

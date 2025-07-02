@@ -328,3 +328,22 @@ externalRedis:
   password: ""
   existingSecret: ""
   existingSecretPasswordKey: ""
+
+## ClickHouse Parameters
+
+clickhouse:
+  enabled: false
+  auth:
+    username: hoppscotch
+    password: secret
+    existingSecret: ""
+  resourcesPreset: "nano"
+  resources: {}
+
+externalClickhouse:
+  host: ""
+  port: 8123
+  user: ""
+  password: ""
+  existingSecret: ""
+  existingSecretPasswordKey: ""

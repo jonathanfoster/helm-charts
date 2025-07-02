@@ -63,7 +63,11 @@ data:
   {{- end }}
   {{- if and .clickhouse .clickhouse.allowAuditLogs }}
   ALLOW_AUDIT_LOGS: {{ .clickhouse.allowAuditLogs | quote }}
+  {{- if .clickhouse.host }}
   CLICKHOUSE_HOST: {{ .clickhouse.host | quote }}
+  {{- else if or $.Values.clickhouse.enabled $.Values.externalClickhouse.host }}
+  CLICKHOUSE_HOST: {{ printf "%s:%s" (include "hoppscotch.secret.clickhouseHost" $) (include "hoppscotch.secret.clickhousePort" $ | toString) | quote }}
+  {{- end }}
   {{- end }}{{/* with .clickhouse */}}
   {{- with .auth.githubEnterprise }}
   IS_GITHUB_ENTERPRISE_ENABLED: {{ .enabled | quote }}

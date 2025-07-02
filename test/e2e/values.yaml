@@ -52,3 +52,10 @@ redis:
   master:
     persistence:
       enabled: false
+
+clickhouse:
+  enabled: false
+  auth:
+    username: e2e-test-user
+    password: e2e-test-clickhouse-password
+  resourcesPreset: "nano"
