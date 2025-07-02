@@ -33,15 +33,15 @@ data:
   WHITELISTED_ORIGINS: {{ include "hoppscotch.backend.whitelistedOrigins" $ | quote }}
   VITE_ALLOWED_AUTH_PROVIDERS: {{ .auth.allowedProviders | join "," | upper }}
   {{- with .auth.google }}
-  GOOGLE_CALLBACK_URL: {{ .callbackUrl | quote }}
+  GOOGLE_CALLBACK_URL: {{ include "hoppscotch.backend.auth.google.callbackUrl" $ | quote }}
   GOOGLE_SCOPE: {{ .scope | join "," | quote }}
   {{- end }}{{/* with .auth.google */}}
   {{- with .auth.github }}
-  GITHUB_CALLBACK_URL: {{ .callbackUrl | quote }}
+  GITHUB_CALLBACK_URL: {{ include "hoppscotch.backend.auth.github.callbackUrl" $ | quote }}
   GITHUB_SCOPE: {{ .scope | join "," | quote }}
   {{- end }}{{/* with .auth.github */}}
   {{- with .auth.microsoft }}
-  MICROSOFT_CALLBACK_URL: {{ .callbackUrl | quote }}
+  MICROSOFT_CALLBACK_URL: {{ include "hoppscotch.backend.auth.microsoft.callbackUrl" $ | quote }}
   MICROSOFT_SCOPE: {{ .scope | join "," | quote }}
   MICROSOFT_TENANT: {{ .tenant | quote }}
   {{- end }}{{/* with .auth.microsoft */}}
@@ -75,7 +75,7 @@ data:
   {{- with .auth.saml }}
   SAML_ISSUER: {{ .issuer | quote }}
   SAML_AUDIENCE: {{ .audience | quote }}
-  SAML_CALLBACK_URL: {{ .callbackUrl | quote }}
+  SAML_CALLBACK_URL: {{ include "hoppscotch.backend.auth.saml.callbackUrl" $ | quote }}
   SAML_ENTRY_POINT: {{ .entryPoint | quote }}
   SAML_WANT_ASSERTIONS_SIGNED: {{ .wantAssertionsSigned | quote }}
   SAML_WANT_RESPONSE_SIGNED: {{ .wantResponseSigned | quote }}
@@ -86,7 +86,7 @@ data:
   OIDC_AUTH_URL: {{ .authorizationUrl | quote }}
   OIDC_TOKEN_URL: {{ .tokenUrl | quote }}
   OIDC_USER_INFO_URL: {{ .userInfoUrl | quote }}
-  OIDC_CALLBACK_URL: {{ .callbackUrl | quote }}
+  OIDC_CALLBACK_URL: {{ include "hoppscotch.backend.auth.oidc.callbackUrl" $ | quote }}
   OIDC_SCOPE: {{ .scope | join " " | quote }}
   {{- end }}{{/* with .auth.oidc */}}
   {{- end }}{{/* with .Values.backend */}}
