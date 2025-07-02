@@ -232,7 +232,7 @@ ingress:
 ## @section Persistence Parameters
 
 persistence:
-  enabled: true
+  enabled: false
   mountPath: /hoppscotch/data
   subPath: ""
   storageClass: ""
