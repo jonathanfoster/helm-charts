@@ -6,9 +6,9 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
-Generate the database URL from PostgreSQL chart or external database settings
+Return the database URL based on the PostgreSQL chart or external database settings
 */}}
-{{- define "hoppscotch.databaseUrl" -}}
+{{- define "hoppscotch.secret.databaseUrl" -}}
 {{- if .Values.postgresql.enabled -}}
 {{- $host := printf "%s-postgresql.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
 {{- $port := 5432 -}}
@@ -17,9 +17,9 @@ Generate the database URL from PostgreSQL chart or external database settings
 {{- $password := .Values.postgresql.auth.password -}}
 {{- if not $password -}}
 {{- $postgresSecretName := printf "%s-postgresql" .Release.Name -}}
-{{- $password = include "hoppscotch.lookupSecret" (dict "name" $postgresSecretName "namespace" .Release.Namespace "key" "password") -}}
+{{- $password = include "hoppscotch.secret.lookupValue" (dict "name" $postgresSecretName "namespace" .Release.Namespace "key" "password") -}}
 {{- end -}}
-{{- include "hoppscotch.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
+{{- include "hoppscotch.secret.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
 {{- else if .Values.externalDatabase.sqlConnection -}}
 {{- .Values.externalDatabase.sqlConnection -}}
 {{- else -}}
@@ -28,7 +28,7 @@ Generate the database URL from PostgreSQL chart or external database settings
 {{- $user := .Values.externalDatabase.user -}}
 {{- $database := .Values.externalDatabase.database -}}
 {{- $password := .Values.externalDatabase.password -}}
-{{- include "hoppscotch.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
+{{- include "hoppscotch.secret.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
 {{- end -}}
 {{- end -}}
 
@@ -63,9 +63,9 @@ Returns a default init container that waits for the database to be ready.
 
 {{/*
 Format a database URL for use in configuration files.
-Usage: {{- include "hoppscotch.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database "params" $params) -}}
+Usage: {{- include "hoppscotch.secret.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database "params" $params) -}}
 */}}
-{{- define "hoppscotch.formatDatabaseUrl" -}}
+{{- define "hoppscotch.secret.formatDatabaseUrl" -}}
 {{- $userspec := "" -}}
 {{- $hostspec := .host -}}
 {{- $dbname := "" -}}
@@ -122,7 +122,7 @@ Create a fully qualified name that includes the release name and chart name.
 {{- end -}}
 
 {{/*
-Render common labels for all resources.
+Return common labels for all resources.
 */}}
 {{- define "hoppscotch.labels" -}}
 app.kubernetes.io/instance: {{ .Release.Name }}
@@ -153,10 +153,10 @@ Allow the release namespace to be overridden.
 {{- end -}}
 
 {{/*
-Lookup a secret value by key. An empty string is returned if the key is not found.
-Usage: {{- include "hoppscotch.lookupSecret" (dict "name" "my-secret" "namespace" "my-namespace" "key" "my-key") -}}
+Return the value of a secret key. An empty string is returned if the key is not found.
+Usage: {{- include "hoppscotch.secret.lookupValue" (dict "name" "my-secret" "namespace" "my-namespace" "key" "my-key") -}}
 */}}
-{{- define "hoppscotch.lookupSecret" -}}
+{{- define "hoppscotch.secret.lookupValue" -}}
 {{- $secret := (lookup "v1" "Secret" .namespace .name) -}}
 {{- if and $secret $secret.data (hasKey $secret.data .key) -}}
 {{- index $secret.data .key | b64dec | trimAll "\n" -}}
@@ -172,9 +172,9 @@ app.kubernetes.io/name: {{ include "hoppscotch.name" . }}
 {{- end }}
 
 {{/*
-Create the name of the service account to use
+Return the service account name to use.
 */}}
-{{- define "hoppscotch.serviceAccountName" -}}
+{{- define "hoppscotch.serviceAccount.name" -}}
 {{- if .Values.serviceAccount.create }}
 {{- default (include "hoppscotch.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
@@ -183,7 +183,7 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
-Return the PVC claim name to use
+Return the PVC claim name to use.
 */}}
 {{- define "hoppscotch.pvc.claimName" -}}
 {{- if .Values.persistence.existingClaim }}
