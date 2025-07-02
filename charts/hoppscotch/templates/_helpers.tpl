@@ -6,33 +6,6 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
-Return the database URL based on the PostgreSQL chart or external database settings
-*/}}
-{{- define "hoppscotch.secret.databaseUrl" -}}
-{{- if .Values.postgresql.enabled -}}
-{{- $host := printf "%s-postgresql.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
-{{- $port := 5432 -}}
-{{- $user := .Values.postgresql.auth.username -}}
-{{- $database := .Values.postgresql.auth.database -}}
-{{- $password := .Values.postgresql.auth.password -}}
-{{- if not $password -}}
-{{- $postgresSecretName := printf "%s-postgresql" .Release.Name -}}
-{{- $password = include "hoppscotch.secret.lookupValue" (dict "name" $postgresSecretName "namespace" .Release.Namespace "key" "password") -}}
-{{- end -}}
-{{- include "hoppscotch.secret.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
-{{- else if .Values.externalDatabase.sqlConnection -}}
-{{- .Values.externalDatabase.sqlConnection -}}
-{{- else -}}
-{{- $host := .Values.externalDatabase.host -}}
-{{- $port := .Values.externalDatabase.port | default 5432 | int -}}
-{{- $user := .Values.externalDatabase.user -}}
-{{- $database := .Values.externalDatabase.database -}}
-{{- $password := .Values.externalDatabase.password -}}
-{{- include "hoppscotch.secret.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Returns a default init container that waits for the database to be ready.
 */}}
 {{- define "hoppscotch.defaultInitContainers.waitForDatabase" -}}
@@ -62,29 +35,20 @@ Returns a default init container that waits for the database to be ready.
 {{- end -}}
 
 {{/*
-Format a database URL for use in configuration files.
-Usage: {{- include "hoppscotch.secret.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database "params" $params) -}}
+Create a fully qualified name that includes the release name and chart name.
 */}}
-{{- define "hoppscotch.secret.formatDatabaseUrl" -}}
-{{- $userspec := "" -}}
-{{- $hostspec := .host -}}
-{{- $dbname := "" -}}
-{{- $paramspec := "" -}}
-{{- if and .user .password -}}
-{{- $userspec = printf "%s:%s@" .user .password -}}
-{{- else if .user -}}
-{{- $userspec = printf "%s@" .user -}}
+{{- define "hoppscotch.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- $releaseName := regexReplaceAll "(-?[^a-z\\d\\-])+-?" (lower .Release.Name) "-" -}}
+{{- if contains $name $releaseName -}}
+{{- $releaseName | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" $releaseName $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-{{- if .port -}}
-{{- $hostspec = printf "%s:%d" .host .port -}}
 {{- end -}}
-{{- if .database -}}
-{{- $dbname = printf "/%s" .database -}}
-{{- end -}}
-{{- if .params -}}
-{{- $paramspec = printf "?%s" .params -}}
-{{- end -}}
-{{- printf "postgres://%s%s%s%s" $userspec $hostspec $dbname $paramspec -}}
 {{- end -}}
 
 {{/*
@@ -101,23 +65,6 @@ Usage: {{ include "hoppscotch.ingress.certManagerRequest" ( dict "annotations" .
 {{- define "hoppscotch.ingress.certManagerRequest" -}}
 {{ if or (hasKey .annotations "cert-manager.io/cluster-issuer") (hasKey .annotations "cert-manager.io/issuer") (hasKey .annotations "kubernetes.io/tls-acme") }}
 {{- true -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Create a fully qualified name that includes the release name and chart name.
-*/}}
-{{- define "hoppscotch.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- $releaseName := regexReplaceAll "(-?[^a-z\\d\\-])+-?" (lower .Release.Name) "-" -}}
-{{- if contains $name $releaseName -}}
-{{- $releaseName | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s" $releaseName $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
 {{- end -}}
 {{- end -}}
 
@@ -153,6 +100,70 @@ Allow the release namespace to be overridden.
 {{- end -}}
 
 {{/*
+Return the PVC claim name to use.
+*/}}
+{{- define "hoppscotch.pvc.claimName" -}}
+{{- if .Values.persistence.existingClaim }}
+{{- .Values.persistence.existingClaim }}
+{{- else }}
+{{- include "hoppscotch.fullname" . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Return the database URL based on the PostgreSQL chart or external database settings
+*/}}
+{{- define "hoppscotch.secret.databaseUrl" -}}
+{{- if .Values.postgresql.enabled -}}
+{{- $host := printf "%s-postgresql.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
+{{- $port := 5432 -}}
+{{- $user := .Values.postgresql.auth.username -}}
+{{- $database := .Values.postgresql.auth.database -}}
+{{- $password := .Values.postgresql.auth.password -}}
+{{- if not $password -}}
+{{- $postgresSecretName := printf "%s-postgresql" .Release.Name -}}
+{{- $password = include "hoppscotch.secret.lookupValue" (dict "name" $postgresSecretName "namespace" .Release.Namespace "key" "password") -}}
+{{- end -}}
+{{- include "hoppscotch.secret.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
+{{- else if .Values.externalDatabase.sqlConnection -}}
+{{- .Values.externalDatabase.sqlConnection -}}
+{{- else -}}
+{{- $host := .Values.externalDatabase.host -}}
+{{- $port := .Values.externalDatabase.port | default 5432 | int -}}
+{{- $user := .Values.externalDatabase.user -}}
+{{- $database := .Values.externalDatabase.database -}}
+{{- $password := .Values.externalDatabase.password -}}
+{{- include "hoppscotch.secret.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Format a database URL for use in configuration files.
+Usage: {{- include "hoppscotch.secret.formatDatabaseUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database "params" $params) -}}
+*/}}
+{{- define "hoppscotch.secret.formatDatabaseUrl" -}}
+{{- $userspec := "" -}}
+{{- $hostspec := .host -}}
+{{- $dbname := "" -}}
+{{- $paramspec := "" -}}
+{{- if and .user .password -}}
+{{- $userspec = printf "%s:%s@" .user .password -}}
+{{- else if .user -}}
+{{- $userspec = printf "%s@" .user -}}
+{{- end -}}
+{{- if .port -}}
+{{- $hostspec = printf "%s:%d" .host .port -}}
+{{- end -}}
+{{- if .database -}}
+{{- $dbname = printf "/%s" .database -}}
+{{- end -}}
+{{- if .params -}}
+{{- $paramspec = printf "?%s" .params -}}
+{{- end -}}
+{{- printf "postgres://%s%s%s%s" $userspec $hostspec $dbname $paramspec -}}
+{{- end -}}
+
+{{/*
 Return the value of a secret key. An empty string is returned if the key is not found.
 Usage: {{- include "hoppscotch.secret.lookupValue" (dict "name" "my-secret" "namespace" "my-namespace" "key" "my-key") -}}
 */}}
@@ -179,16 +190,5 @@ Return the service account name to use.
 {{- default (include "hoppscotch.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
-{{/*
-Return the PVC claim name to use.
-*/}}
-{{- define "hoppscotch.pvc.claimName" -}}
-{{- if .Values.persistence.existingClaim }}
-{{- .Values.persistence.existingClaim }}
-{{- else }}
-{{- include "hoppscotch.fullname" . }}
 {{- end }}
 {{- end }}
