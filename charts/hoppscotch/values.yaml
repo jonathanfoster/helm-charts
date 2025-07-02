@@ -19,6 +19,7 @@ extraDeploy: []
 
 ## @section Hoppscotch Parameters
 
+existingSecret: ""
 replicaCount: 1
 
 containerPorts:
@@ -89,7 +90,7 @@ backend:
   magicLinkTokenValidity: 3
   refreshTokenValidity: "604800000"
   accessTokenValidity: "86400000"
-  sessionSecret: ""
+  sessionSecret: "secret"
 
   allowSecureCookies: true
   dataEncryptionKey: "12345678901234567890123456789012"
@@ -98,27 +99,28 @@ backend:
 
   whitelistedOrigins: []
 
-  allowedAuthProviders:
-    - email
+  auth:
+    allowedProviders:
+      - email
 
-  googleAuth:
-    clientId: ""
-    clientSecret: ""
-    callbackUrl: ""
-    scope: []
+    google:
+      clientId: ""
+      clientSecret: ""
+      callbackUrl: ""
+      scope: []
 
-  githubAuth:
-    clientId: ""
-    clientSecret: ""
-    callbackUrl: ""
-    scope: []
+    github:
+      clientId: ""
+      clientSecret: ""
+      callbackUrl: ""
+      scope: []
 
-  microsoftAuth:
-    clientId: ""
-    clientSecret: ""
-    callbackUrl: ""
-    scope: ""
-    tenant: ""
+    microsoft:
+      clientId: ""
+      clientSecret: ""
+      callbackUrl: ""
+      scope: ""
+      tenant: ""
 
   mailer:
     smtpEnabled: true
@@ -145,32 +147,33 @@ enterprise:
     proxyAppUrl: ""
 
   backend:
-    githubEnterpriseAuth:
-      enabled: false
-      authorizationUrl: ""
-      tokenUrl: ""
-      userProfileUrl: ""
-      userEmailUrl: ""
+    auth:
+      githubEnterprise:
+        enabled: false
+        authorizationUrl: ""
+        tokenUrl: ""
+        userProfileUrl: ""
+        userEmailUrl: ""
 
-    samlAuth:
-      issuer: ""
-      audience: ""
-      callbackUrl: ""
-      cert: ""
-      entryPoint: ""
-      wantAssertionsSigned: true
-      wantResponseSigned: false
+      saml:
+        issuer: ""
+        audience: ""
+        callbackUrl: ""
+        cert: ""
+        entryPoint: ""
+        wantAssertionsSigned: true
+        wantResponseSigned: false
 
-    oidcAuth:
-      providerName: ""
-      issuer: ""
-      authorizationUrl: ""
-      tokenUrl: ""
-      userInfoUrl: ""
-      clientId: ""
-      clientSecret: ""
-      callbackUrl: ""
-      scope: []
+      oidc:
+        providerName: ""
+        issuer: ""
+        authorizationUrl: ""
+        tokenUrl: ""
+        userInfoUrl: ""
+        clientId: ""
+        clientSecret: ""
+        callbackUrl: ""
+        scope: []
 
     clickhouse:
       allowAuditLogs: false

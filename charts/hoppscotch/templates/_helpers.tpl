@@ -31,7 +31,7 @@ Returns a default init container that waits for the database to be ready.
   {{- end }}
   envFrom:
     - secretRef:
-        name: {{ include "hoppscotch.fullname" . }}
+        name: {{ include "hoppscotch.secretName" . }}
 {{- end -}}
 
 {{/*
@@ -105,6 +105,17 @@ Return the PVC claim name to use.
 {{- define "hoppscotch.pvc.claimName" -}}
 {{- if .Values.persistence.existingClaim }}
 {{- .Values.persistence.existingClaim }}
+{{- else }}
+{{- include "hoppscotch.fullname" . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Return the secret name to use for environment variables.
+*/}}
+{{- define "hoppscotch.secretName" -}}
+{{- if .Values.existingSecret }}
+{{- .Values.existingSecret }}
 {{- else }}
 {{- include "hoppscotch.fullname" . }}
 {{- end }}

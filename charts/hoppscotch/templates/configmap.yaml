@@ -31,20 +31,20 @@ data:
   ALLOW_SECURE_COOKIES: {{ .allowSecureCookies | quote }}
   REDIRECT_URL: {{ .redirectUrl | quote }}
   WHITELISTED_ORIGINS: {{ .whitelistedOrigins | join "," | quote }}
-  VITE_ALLOWED_AUTH_PROVIDERS: {{ .allowedAuthProviders | join "," | upper }}
-  {{- with .googleAuth }}
+  VITE_ALLOWED_AUTH_PROVIDERS: {{ .auth.allowedProviders | join "," | upper }}
+  {{- with .auth.google }}
   GOOGLE_CALLBACK_URL: {{ .callbackUrl | quote }}
   GOOGLE_SCOPE: {{ .scope | join "," | quote }}
-  {{- end }}{{/* with .googleAuth */}}
-  {{- with .githubAuth }}
+  {{- end }}{{/* with .auth.google */}}
+  {{- with .auth.github }}
   GITHUB_CALLBACK_URL: {{ .callbackUrl | quote }}
   GITHUB_SCOPE: {{ .scope | join "," | quote }}
-  {{- end }}{{/* with .githubAuth */}}
-  {{- with .microsoftAuth }}
+  {{- end }}{{/* with .auth.github */}}
+  {{- with .auth.microsoft }}
   MICROSOFT_CALLBACK_URL: {{ .callbackUrl | quote }}
   MICROSOFT_SCOPE: {{ .scope | join "," | quote }}
   MICROSOFT_TENANT: {{ .tenant | quote }}
-  {{- end }}{{/* with .microsoftAuth */}}
+  {{- end }}{{/* with .auth.microsoft */}}
   {{- with .mailer }}
   MAILER_SMTP_ENABLE: {{ .smtpEnabled | quote }}
   MAILER_USE_CUSTOM_CONFIGS: {{ .useCustomConfigs | quote }}
@@ -65,22 +65,22 @@ data:
   PROXY_APP_URL: {{ .proxyAppUrl | quote }}
   {{- end }}{{/* with .frontend */}}
   {{- with .backend }}
-  {{- with .githubEnterpriseAuth }}
+  {{- with .auth.githubEnterprise }}
   IS_GITHUB_ENTERPRISE_ENABLED: {{ .enabled | quote }}
   GITHUB_AUTHORIZATION_URL: {{ .authorizationUrl | quote }}
   GITHUB_TOKEN_URL: {{ .tokenUrl | quote }}
   GITHUB_USER_PROFILE_URL: {{ .userProfileUrl | quote }}
   GITHUB_USER_EMAIL_URL: {{ .userEmailUrl | quote }}
-  {{- end }}{{/* with .githubEnterpriseAuth */}}
-  {{- with .samlAuth }}
+  {{- end }}{{/* with .auth.githubEnterprise */}}
+  {{- with .auth.saml }}
   SAML_ISSUER: {{ .issuer | quote }}
   SAML_AUDIENCE: {{ .audience | quote }}
   SAML_CALLBACK_URL: {{ .callbackUrl | quote }}
   SAML_ENTRY_POINT: {{ .entryPoint | quote }}
   SAML_WANT_ASSERTIONS_SIGNED: {{ .wantAssertionsSigned | quote }}
   SAML_WANT_RESPONSE_SIGNED: {{ .wantResponseSigned | quote }}
-  {{- end }}{{/* with .samlAuth */}}
-  {{- with .oidcAuth }}
+  {{- end }}{{/* with .auth.saml */}}
+  {{- with .auth.oidc }}
   OIDC_PROVIDER_NAME: {{ .providerName | quote }}
   OIDC_ISSUER: {{ .issuer | quote }}
   OIDC_AUTH_URL: {{ .authorizationUrl | quote }}
@@ -88,7 +88,7 @@ data:
   OIDC_USER_INFO_URL: {{ .userInfoUrl | quote }}
   OIDC_CALLBACK_URL: {{ .callbackUrl | quote }}
   OIDC_SCOPE: {{ .scope | join " " | quote }}
-  {{- end }}{{/* with .oidcAuth */}}
+  {{- end }}{{/* with .auth.oidc */}}
   {{- if and .clickhouse .clickhouse.allowAuditLogs }}
   ALLOW_AUDIT_LOGS: {{ .clickhouse.allowAuditLogs | quote }}
   CLICKHOUSE_HOST: {{ .clickhouse.host | quote }}
