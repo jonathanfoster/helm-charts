@@ -181,3 +181,14 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Return the PVC claim name to use
+*/}}
+{{- define "hoppscotch.pvc.claimName" -}}
+{{- if .Values.persistence.existingClaim }}
+{{- .Values.persistence.existingClaim }}
+{{- else }}
+{{- include "hoppscotch.fullname" . }}
+{{- end }}
+{{- end }}

@@ -229,6 +229,21 @@ ingress:
   secrets: []
   extraRules: []
 
+## @section Persistence Parameters
+
+persistence:
+  enabled: true
+  mountPath: /hoppscotch/data
+  subPath: ""
+  storageClass: ""
+  annotations: {}
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
+  dataSource: {}
+  existingClaim: ""
+  selector: {}
+
 ## @section Default Init Containers Parameters
 
 defaultInitContainers:
