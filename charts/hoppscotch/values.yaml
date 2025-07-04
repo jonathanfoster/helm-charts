@@ -290,6 +290,8 @@ metrics:
     relabelings: []
     selector: {}
 
+## @section Database Parameters
+
 ## PostgreSQL Parameters
 
 postgresql:
