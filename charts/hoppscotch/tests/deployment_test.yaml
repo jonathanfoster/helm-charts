@@ -18,6 +18,7 @@ tests:
           value: release-name-hoppscotch
       - isNotNullOrEmpty:
           path: spec.template.metadata.annotations.checksum/configmap-release-name-hoppscotch
+
   - it: should have env from configmap
     template: deployment.yaml
     documentIndex: 0
@@ -31,6 +32,7 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
           value: release-name-hoppscotch
+
   - it: should have checksum secret annotation
     template: deployment.yaml
     documentIndex: 0
@@ -43,6 +45,7 @@ tests:
           value: release-name-hoppscotch
       - isNotNullOrEmpty:
           path: spec.template.metadata.annotations.checksum/secret-release-name-hoppscotch
+
   - it: should have env from secrets
     template: deployment.yaml
     documentIndex: 0
@@ -56,6 +59,7 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].envFrom[1].secretRef.name
           value: release-name-hoppscotch
+
   - it: should have extra environments
     template: deployment.yaml
     documentIndex: 0
@@ -73,6 +77,7 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].env[0].value
           value: BAR
+
   - it: should have default init containers
     template: deployment.yaml
     documentIndex: 0
@@ -86,6 +91,7 @@ tests:
       - equal:
           path: spec.template.spec.initContainers[1].name
           value: wait-for-db-setup
+
   - it: should have not have wait for DB init container when disabled
     template: deployment.yaml
     set:
@@ -101,6 +107,7 @@ tests:
           path: spec.template.spec.initContainers
           content:
             - name: wait-for-db
+
   - it: should have not have wait for DB setup init container when disabled
     template: deployment.yaml
     set:
@@ -116,6 +123,7 @@ tests:
           path: spec.template.spec.initContainers
           content:
             - name: wait-for-db-setup
+
   - it: should have default init containers with custom timeout
     template: deployment.yaml
     set:

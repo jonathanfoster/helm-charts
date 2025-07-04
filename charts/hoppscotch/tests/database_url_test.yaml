@@ -18,6 +18,7 @@ tests:
       - equal:
           path: data.DATABASE_URL
           value: cG9zdGdyZXM6Ly9jdXN0b20tdXNlcjpjdXN0b20tcGFzc0BjdXN0b20taG9zdDo5OTk5L2N1c3RvbS1kYg== # base64 of postgres://custom-user:custom-pass@custom-host:9999/custom-db
+
   - it: should generate database URL from PostgreSQL chart when enabled and no user URL
     template: secrets.yaml
     set:
@@ -37,6 +38,7 @@ tests:
       - equal:
           path: data.DATABASE_URL
           value: cG9zdGdyZXM6Ly9ob3Bwc2NvdGNoOm15cGFzc3dvcmRAUkVMRUFTRS1OQU1FLXBvc3RncmVzcWwuTkFNRVNQQUNFLnN2Yy5jbHVzdGVyLmxvY2FsOjU0MzIvaG9wcHNjb3RjaA== # echo -n 'postgres://hoppscotch:mypassword@release-name-postgresql.NAMESPACE.svc.cluster.local:5432/hoppscotch' | base64
+
   - it: should generate database URL from external database config when PostgreSQL disabled
     template: secrets.yaml
     set:
@@ -58,6 +60,7 @@ tests:
       - equal:
           path: data.DATABASE_URL
           value: cG9zdGdyZXM6Ly9teXVzZXI6bXlwYXNzQGV4dGVybmFsLXBvc3RncmVzOjU0MzIvbXlkYg== # echo -n 'postgres://myuser:mypass@external-postgres:5432/mydb' | base64
+
   - it: should use direct SQL connection string when provided
     template: secrets.yaml
     set:
@@ -75,6 +78,7 @@ tests:
       - equal:
           path: data.DATABASE_URL
           value: cG9zdGdyZXNxbDovL3VzZXI6cGFzc0BjdXN0b20taG9zdDoxMjM0L2N1c3RvbWRi # echo -n 'postgresql://user:pass@custom-host:1234/customdb' | base64
+
   - it: should handle custom port for external database
     template: secrets.yaml
     set:
@@ -96,6 +100,7 @@ tests:
       - equal:
           path: data.DATABASE_URL
           value: cG9zdGdyZXM6Ly90ZXN0dXNlcjp0ZXN0cGFzc0BleHRlcm5hbC1wb3N0Z3JlczozMzA2L3Rlc3RkYg== # echo -n 'postgres://testuser:testpass@external-postgres:3306/testdb' | base64
+
   - it: should default to port 5432 when not specified for external database
     template: secrets.yaml
     set:
@@ -116,6 +121,7 @@ tests:
       - equal:
           path: data.DATABASE_URL
           value: cG9zdGdyZXM6Ly90ZXN0dXNlcjp0ZXN0cGFzc0BleHRlcm5hbC1wb3N0Z3Jlczo1NDMyL3Rlc3RkYg== # echo -n 'postgres://testuser:testpass@external-postgres:5432/testdb' | base64
+
   - it: should handle empty password for PostgreSQL chart
     template: secrets.yaml
     set:
