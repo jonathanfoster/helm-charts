@@ -1,4 +1,4 @@
-## @section Global Parameters
+# @section -- Global Parameters
 
 global:
   imageRegistry: ""
@@ -7,7 +7,7 @@ global:
   security:
     allowInsecureImages: false
 
-## @section Common Parameters
+# @section -- Common Parameters
 
 nameOverride: ""
 fullnameOverride: ""
@@ -17,7 +17,7 @@ commonAnnotations: {}
 clusterDomain: cluster.local
 extraDeploy: []
 
-## @section Hoppscotch Parameters
+# @section -- Hoppscotch Parameters
 
 existingSecret: ""
 replicaCount: 1
@@ -190,9 +190,7 @@ backend:
   horizontalScalingEnabled: false
   redisUrl: ""
 
-## @section Traffic Exposure Parameters
-
-## Hoppscotch Service Parameters
+# @section -- Traffic Exposure Parameters
 
 service:
   type: ClusterIP
@@ -238,7 +236,7 @@ ingress:
   secrets: []
   extraRules: []
 
-## @section Persistence Parameters
+# @section -- Persistence Parameters
 
 persistence:
   enabled: false
@@ -253,7 +251,7 @@ persistence:
   existingClaim: ""
   selector: {}
 
-## @section Default Init Containers Parameters
+# @section -- Default Init Containers Parameters
 
 defaultInitContainers:
   waitForDatabase:
@@ -268,7 +266,7 @@ defaultInitContainers:
     resourcesPreset: "nano"
     resources: {}
 
-## @section Other Parameters
+# @section -- Other Parameters
 
 rbac:
   create: false
@@ -296,9 +294,7 @@ metrics:
     relabelings: []
     selector: {}
 
-## @section Database Parameters
-
-## PostgreSQL Parameters
+# @section -- Database Parameters
 
 postgresql:
   enabled: true
@@ -324,8 +320,6 @@ externalDatabase:
   existingSecretPasswordKey: ""
   existingSecretSqlConnectionKey: ""
 
-## Redis Parameters
-
 redis:
   enabled: false
   auth:
@@ -343,8 +337,6 @@ externalRedis:
   password: ""
   existingSecret: ""
   existingSecretPasswordKey: ""
-
-## ClickHouse Parameters
 
 clickhouse:
   enabled: false
