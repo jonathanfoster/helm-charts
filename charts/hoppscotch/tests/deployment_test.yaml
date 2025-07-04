@@ -135,3 +135,71 @@ tests:
       - equal:
           path: spec.template.spec.initContainers[1].args[2]
           value: "120"
+
+  - it: should use default update strategy
+    template: deployment.yaml
+    documentIndex: 0
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - equal:
+          path: spec.strategy.type
+          value: RollingUpdate
+      - equal:
+          path: spec.strategy.rollingUpdate.maxUnavailable
+          value: 1
+      - equal:
+          path: spec.strategy.rollingUpdate.maxSurge
+          value: 1
+
+  - it: should use custom update strategy
+    template: deployment.yaml
+    documentIndex: 0
+    set:
+      updateStrategy:
+        type: Recreate
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - equal:
+          path: spec.strategy.type
+          value: Recreate
+      - notExists:
+          path: spec.strategy.rollingUpdate
+
+  - it: should use custom rolling update strategy
+    template: deployment.yaml
+    documentIndex: 0
+    set:
+      updateStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 2
+          maxSurge: 0
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - equal:
+          path: spec.strategy.type
+          value: RollingUpdate
+      - equal:
+          path: spec.strategy.rollingUpdate.maxUnavailable
+          value: 2
+      - equal:
+          path: spec.strategy.rollingUpdate.maxSurge
+          value: 0
+
+  - it: should not have strategy when updateStrategy is null
+    template: deployment.yaml
+    documentIndex: 0
+    set:
+      updateStrategy: null
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - notExists:
+          path: spec.strategy
