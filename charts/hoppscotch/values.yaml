@@ -37,7 +37,9 @@ podLabels: {}
 podSecurityContext: {}
 securityContext: {}
 
-extraEnvs: []
+extraEnvVars: []
+extraEnvVarsCM: ""
+extraEnvVarsSecret: ""
 
 resources: {}
 resourcesPreset: "nano"

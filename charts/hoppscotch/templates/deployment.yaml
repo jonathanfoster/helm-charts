@@ -78,15 +78,18 @@ spec:
             {{- toYaml . | nindent 12 }}
             {{- end }}
           {{- end }}
-          {{- with .Values.extraEnvs }}
+          {{- $extraEnvVars := include "hoppscotch.extraEnvVars" . -}}
+          {{- if $extraEnvVars }}
           env:
-            {{- tpl (toYaml .) . | nindent 12 }}
+            {{- $extraEnvVars | nindent 12 }}
           {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ include "hoppscotch.fullname" . }}
             - secretRef:
                 name: {{ include "hoppscotch.secretName" . }}
+            {{- include "hoppscotch.extraEnvVarsCM" . | nindent 12 }}
+            {{- include "hoppscotch.extraEnvVarsSecret" . | nindent 12 }}
       initContainers:
         {{- if .Values.defaultInitContainers.waitForDatabase.enabled }}
         {{- include "hoppscotch.defaultInitContainers.waitForDatabase" . | nindent 8 }}
@@ -113,13 +116,16 @@ spec:
           resources:
             {{- $resources | nindent 12 }}
           {{- end }}
-          {{- with .Values.extraEnvs }}
+          {{- $extraEnvVars := include "hoppscotch.extraEnvVars" . -}}
+          {{- if $extraEnvVars }}
           env:
-            {{- tpl (toYaml .) . | nindent 12 }}
+            {{- $extraEnvVars | nindent 12 }}
           {{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "hoppscotch.secretName" . }}
+            {{- include "hoppscotch.extraEnvVarsCM" . | nindent 12 }}
+            {{- include "hoppscotch.extraEnvVarsSecret" . | nindent 12 }}
         {{- end }}
       {{- if or .Values.volumes .Values.persistence.enabled }}
       volumes:

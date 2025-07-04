@@ -60,7 +60,7 @@ tests:
     template: deployment.yaml
     documentIndex: 0
     set:
-      extraEnvs:
+      extraEnvVars:
         - name: FOO
           value: BAR
     asserts:
