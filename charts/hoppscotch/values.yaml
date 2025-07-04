@@ -19,17 +19,28 @@ extraDeploy: []
 
 # @section -- Hoppscotch Parameters
 
-existingSecret: ""
 replicaCount: 1
-
-containerPorts:
-  http: 80
-  https: 443
 
 image:
   repository: hoppscotch/hoppscotch
   pullPolicy: IfNotPresent
   tag: ""
+
+containerPorts:
+  http: 80
+  https: 443
+
+existingSecret: ""
+
+extraEnvVars: []
+extraEnvVarsCM: ""
+extraEnvVarsSecret: ""
+
+resourcesPreset: "nano"
+resources: {}
+
+livenessProbe: {}
+readinessProbe: {}
 
 podAnnotations: {}
 podLabels: {}
@@ -37,15 +48,11 @@ podLabels: {}
 podSecurityContext: {}
 securityContext: {}
 
-extraEnvVars: []
-extraEnvVarsCM: ""
-extraEnvVarsSecret: ""
-
-resources: {}
-resourcesPreset: "nano"
-
-livenessProbe: {}
-readinessProbe: {}
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+    maxSurge: 1
 
 autoscaling:
   enabled: false
@@ -54,16 +61,6 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
-updateStrategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxUnavailable: 1
-    maxSurge: 1
-
-volumes: []
-
-volumeMounts: []
-
 nodeSelector: {}
 
 tolerations: []
@@ -71,6 +68,10 @@ tolerations: []
 affinity: {}
 
 topologySpreadConstraints: []
+
+volumes: []
+
+volumeMounts: []
 
 setupDatabaseJob:
   enabled: true
@@ -197,17 +198,17 @@ service:
   ports:
     http: 80
     https: 443
+  clusterIP: ""
   nodePorts:
     http: ""
     https: ""
-  clusterIP: ""
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
   externalTrafficPolicy: Cluster
   annotations: {}
-  extraPorts: []
   sessionAffinity: None
   sessionAffinityConfig: {}
+  extraPorts: []
 
 networkPolicy:
   enabled: false
@@ -222,11 +223,11 @@ networkPolicy:
 
 ingress:
   enabled: false
+  ingressClassName: ""
+  hostname: hoppscotch.local
+  path: /
   pathType: ImplementationSpecific
   apiVersion: ""
-  hostname: hoppscotch.local
-  ingressClassName: ""
-  path: /
   annotations: {}
   tls: false
   selfSigned: false
@@ -240,13 +241,13 @@ ingress:
 
 persistence:
   enabled: false
-  mountPath: /hoppscotch/data
-  subPath: ""
   storageClass: ""
-  annotations: {}
   accessModes:
     - ReadWriteOnce
   size: 8Gi
+  mountPath: /hoppscotch/data
+  subPath: ""
+  annotations: {}
   dataSource: {}
   existingClaim: ""
   selector: {}
@@ -268,15 +269,15 @@ defaultInitContainers:
 
 # @section -- Other Parameters
 
-rbac:
-  create: false
-  rules: []
-
 serviceAccount:
   create: false
   name: ""
   annotations: {}
   automountServiceAccountToken: true
+
+rbac:
+  create: false
+  rules: []
 
 metrics:
   enabled: false
@@ -287,14 +288,16 @@ metrics:
     labels: {}
     jobLabel: ""
     honorLabels: false
-    tlsConfig: {}
     interval: ""
     scrapeTimeout: ""
+    tlsConfig: {}
     metricsRelabelings: []
     relabelings: []
     selector: {}
 
 # @section -- Database Parameters
+
+## PostgreSQL Parameters
 
 postgresql:
   enabled: true
@@ -320,6 +323,8 @@ externalDatabase:
   existingSecretPasswordKey: ""
   existingSecretSqlConnectionKey: ""
 
+## Redis Parameters
+
 redis:
   enabled: false
   auth:
@@ -337,6 +342,8 @@ externalRedis:
   password: ""
   existingSecret: ""
   existingSecretPasswordKey: ""
+
+## ClickHouse Parameters
 
 clickhouse:
   enabled: false
