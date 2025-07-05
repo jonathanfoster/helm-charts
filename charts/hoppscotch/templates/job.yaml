@@ -36,14 +36,19 @@ spec:
           args:
             - -c
             - ./node_modules/.bin/prisma migrate deploy
-          {{- $extraEnvVars := include "hoppscotch.extraEnvVars" . -}}
-          {{- if $extraEnvVars }}
+          {{- if .Values.extraEnvVars }}
           env:
-            {{- $extraEnvVars | nindent 12 }}
+            {{- toYaml .Values.extraEnvVars | nindent 12 }}
           {{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "hoppscotch.fullname" . }}
-            {{- include "hoppscotch.extraEnvVarsCM" . | nindent 12 }}
-            {{- include "hoppscotch.extraEnvVarsSecret" . | nindent 12 }}
+            {{- if .Values.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ .Values.extraEnvVarsCM }}
+            {{- end }}
+            {{- if .Values.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ .Values.extraEnvVarsSecret }}
+            {{- end }}
 {{- end }}

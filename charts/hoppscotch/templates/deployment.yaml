@@ -83,18 +83,23 @@ spec:
             {{- toYaml . | nindent 12 }}
             {{- end }}
           {{- end }}
-          {{- $extraEnvVars := include "hoppscotch.extraEnvVars" . -}}
-          {{- if $extraEnvVars }}
+          {{- if .Values.extraEnvVars }}
           env:
-            {{- $extraEnvVars | nindent 12 }}
+            {{- toYaml .Values.extraEnvVars | nindent 12 }}
           {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ include "hoppscotch.fullname" . }}
             - secretRef:
                 name: {{ include "hoppscotch.secretName" . }}
-            {{- include "hoppscotch.extraEnvVarsCM" . | nindent 12 }}
-            {{- include "hoppscotch.extraEnvVarsSecret" . | nindent 12 }}
+            {{- if .Values.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ .Values.extraEnvVarsCM }}
+            {{- end }}
+            {{- if .Values.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ .Values.extraEnvVarsSecret }}
+            {{- end }}
       initContainers:
         {{- if .Values.defaultInitContainers.waitForDatabase.enabled }}
         {{- include "hoppscotch.defaultInitContainers.waitForDatabase" . | nindent 8 }}
@@ -121,16 +126,21 @@ spec:
           resources:
             {{- $resources | nindent 12 }}
           {{- end }}
-          {{- $extraEnvVars := include "hoppscotch.extraEnvVars" . -}}
-          {{- if $extraEnvVars }}
+          {{- if .Values.extraEnvVars }}
           env:
-            {{- $extraEnvVars | nindent 12 }}
+            {{- toYaml .Values.extraEnvVars | nindent 12 }}
           {{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "hoppscotch.secretName" . }}
-            {{- include "hoppscotch.extraEnvVarsCM" . | nindent 12 }}
-            {{- include "hoppscotch.extraEnvVarsSecret" . | nindent 12 }}
+            {{- if .Values.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ .Values.extraEnvVarsCM }}
+            {{- end }}
+            {{- if .Values.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ .Values.extraEnvVarsSecret }}
+            {{- end }}
         {{- end }}
       {{- if or .Values.volumes .Values.persistence.enabled }}
       volumes:
