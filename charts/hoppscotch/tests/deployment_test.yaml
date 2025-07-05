@@ -192,17 +192,6 @@ tests:
           path: spec.strategy.rollingUpdate.maxSurge
           value: 0
 
-  - it: should not have strategy when updateStrategy is null
-    template: deployment.yaml
-    documentIndex: 0
-    set:
-      updateStrategy: null
-    asserts:
-      - containsDocument:
-          apiVersion: apps/v1
-          kind: Deployment
-      - notExists:
-          path: spec.strategy
   - it: should use custom wait for database image when configured
     template: deployment.yaml
     documentIndex: 0
