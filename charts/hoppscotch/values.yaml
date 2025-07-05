@@ -264,6 +264,10 @@ persistence:
 defaultInitContainers:
   waitForDatabase:
     enabled: true
+    image:
+      repository: postgres
+      tag: 16-alpine
+      pullPolicy: IfNotPresent
     timeout: 300
     resourcesPreset: "nano"
     resources: {}

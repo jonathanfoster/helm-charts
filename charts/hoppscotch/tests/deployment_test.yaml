@@ -87,10 +87,10 @@ tests:
           kind: Deployment
       - equal:
           path: spec.template.spec.initContainers[0].name
-          value: wait-for-db
+          value: wait-for-database
       - equal:
           path: spec.template.spec.initContainers[1].name
-          value: wait-for-db-setup
+          value: wait-for-database-setup
 
   - it: should have not have wait for DB init container when disabled
     template: deployment.yaml
@@ -106,7 +106,7 @@ tests:
       - notContains:
           path: spec.template.spec.initContainers
           content:
-            - name: wait-for-db
+            - name: wait-for-database
 
   - it: should have not have wait for DB setup init container when disabled
     template: deployment.yaml
@@ -122,7 +122,7 @@ tests:
       - notContains:
           path: spec.template.spec.initContainers
           content:
-            - name: wait-for-db-setup
+            - name: wait-for-database-setup
 
   - it: should have default init containers with custom timeout
     template: deployment.yaml
@@ -203,3 +203,48 @@ tests:
           kind: Deployment
       - notExists:
           path: spec.strategy
+  - it: should use custom wait for database image when configured
+    template: deployment.yaml
+    documentIndex: 0
+    set:
+      defaultInitContainers:
+        waitForDatabase:
+          enabled: true
+          image:
+            repository: custom-postgres
+            tag: 15-alpine
+            pullPolicy: Always
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: wait-for-database
+      - equal:
+          path: spec.template.spec.initContainers[0].image
+          value: custom-postgres:15-alpine
+      - equal:
+          path: spec.template.spec.initContainers[0].imagePullPolicy
+          value: Always
+
+  - it: should use default wait for database image when not configured
+    template: deployment.yaml
+    documentIndex: 0
+    set:
+      defaultInitContainers:
+        waitForDatabase:
+          enabled: true
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: wait-for-database
+      - equal:
+          path: spec.template.spec.initContainers[0].image
+          value: postgres:16-alpine
+      - equal:
+          path: spec.template.spec.initContainers[0].imagePullPolicy
+          value: IfNotPresent

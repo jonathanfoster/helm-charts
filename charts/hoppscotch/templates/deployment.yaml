@@ -105,7 +105,7 @@ spec:
         {{- include "hoppscotch.defaultInitContainers.waitForDatabase" . | nindent 8 }}
         {{- end }}
         {{- if .Values.defaultInitContainers.waitForDatabaseSetup.enabled }}
-        - name: wait-for-db-setup
+        - name: wait-for-database-setup
           image: {{ include "hoppscotch.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:

@@ -9,9 +9,9 @@ Create chart name and version as used by the chart label.
 Returns a default init container that waits for the database to be ready.
 */}}
 {{- define "hoppscotch.defaultInitContainers.waitForDatabase" -}}
-- name: wait-for-db
-  image: postgres:16-alpine
-  imagePullPolicy: {{ .Values.image.pullPolicy }}
+- name: wait-for-database
+  image: {{ printf "%s:%s" .Values.defaultInitContainers.waitForDatabase.image.repository (default "latest" .Values.defaultInitContainers.waitForDatabase.image.tag) }}
+  imagePullPolicy: {{ .Values.defaultInitContainers.waitForDatabase.image.pullPolicy }}
   command:
     - /bin/sh
   args:

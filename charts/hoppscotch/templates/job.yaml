@@ -2,10 +2,10 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ printf "%s-setup-db" (include "hoppscotch.fullname" .) | trunc 63 | trimSuffix "-" }}
+  name: {{ printf "%s-setup-database" (include "hoppscotch.fullname" .) | trunc 63 | trimSuffix "-" }}
   namespace: {{ include "hoppscotch.namespace" . | quote }}
   labels:
-    app.kubernetes.io/component: setup-db
+    app.kubernetes.io/component: setup-database
     {{- include "hoppscotch.labels" . | nindent 4 }}
   {{- if .Values.commonAnnotations }}
   annotations:
@@ -28,7 +28,7 @@ spec:
         {{- include "hoppscotch.defaultInitContainers.waitForDatabase" . | nindent 8 }}
         {{- end }}
       containers:
-        - name: setup-db
+        - name: setup-database
           image: {{ include "hoppscotch.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
