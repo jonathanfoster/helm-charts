@@ -30,16 +30,21 @@ Returns a default init container that waits for the database to be ready.
   resources:
     {{- $resources | nindent 4 }}
   {{- end }}
-  {{- $extraEnvVars := include "hoppscotch.extraEnvVars" . -}}
-  {{- if $extraEnvVars }}
+  {{- if .Values.extraEnvVars }}
   env:
-    {{- $extraEnvVars | nindent 4 }}
+    {{- toYaml .Values.extraEnvVars | nindent 4 }}
   {{- end }}
   envFrom:
     - secretRef:
         name: {{ include "hoppscotch.secretName" . }}
-    {{- include "hoppscotch.extraEnvVarsCM" . | nindent 4 }}
-    {{- include "hoppscotch.extraEnvVarsSecret" . | nindent 4 }}
+    {{- if .Values.extraEnvVarsCM }}
+    - configMapRef:
+        name: {{ .Values.extraEnvVarsCM }}
+    {{- end }}
+    {{- if .Values.extraEnvVarsSecret }}
+    - secretRef:
+        name: {{ .Values.extraEnvVarsSecret }}
+    {{- end }}
 {{- end -}}
 
 {{/*
@@ -629,45 +634,5 @@ requests:
   cpu: 100m
   ephemeral-storage: 50Mi
   memory: 128Mi
-{{- end -}}
-{{- end -}}
-
-{{/*
-Generate extra environment variables for containers
-Usage: {{- include "hoppscotch.extraEnvVars" . | nindent 12 }}
-*/}}
-{{- define "hoppscotch.extraEnvVars" -}}
-{{- if .Values.extraEnvVars }}
-{{- range .Values.extraEnvVars }}
-- name: {{ .name | quote }}
-  {{- if .value }}
-  value: {{ .value | quote }}
-  {{- else if .valueFrom }}
-  valueFrom:
-    {{- toYaml .valueFrom | nindent 4 }}
-  {{- end }}
-{{- end }}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Generate extra environment variables from ConfigMap for containers
-Usage: {{- include "hoppscotch.extraEnvVarsCM" . | nindent 12 }}
-*/}}
-{{- define "hoppscotch.extraEnvVarsCM" -}}
-{{- if .Values.extraEnvVarsCM }}
-- configMapRef:
-    name: {{ .Values.extraEnvVarsCM }}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Generate extra environment variables from Secret for containers
-Usage: {{- include "hoppscotch.extraEnvVarsSecret" . | nindent 12 }}
-*/}}
-{{- define "hoppscotch.extraEnvVarsSecret" -}}
-{{- if .Values.extraEnvVarsSecret }}
-- secretRef:
-    name: {{ .Values.extraEnvVarsSecret }}
 {{- end -}}
 {{- end -}}
