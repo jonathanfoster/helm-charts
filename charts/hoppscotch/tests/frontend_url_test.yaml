@@ -42,14 +42,15 @@ tests:
         enabled: true
         hostname: hoppscotch.example.com
         tls: true
-      frontend:
-        baseUrl: "https://custom.example.com"
-        adminUrl: "https://custom-admin.example.com"
-      backend:
-        redirectUrl: "https://custom-redirect.example.com"
-        whitelistedOrigins:
-          - "https://custom1.example.com"
-          - "https://custom2.example.com"
+      hoppscotch:
+        frontend:
+          baseUrl: "https://custom.example.com"
+          adminUrl: "https://custom-admin.example.com"
+        backend:
+          redirectUrl: "https://custom-redirect.example.com"
+          whitelistedOrigins:
+            - "https://custom1.example.com"
+            - "https://custom2.example.com"
     documentIndex: 0
     asserts:
       - equal:

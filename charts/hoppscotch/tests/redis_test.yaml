@@ -34,7 +34,7 @@ tests:
 
   - it: should use custom redisUrl when provided
     set:
-      backend.redisUrl: "redis://custom-redis:6379"
+      hoppscotch.backend.redisUrl: "redis://custom-redis:6379"
     asserts:
       - hasDocuments:
           count: 1
@@ -49,7 +49,7 @@ tests:
     set:
       redis.enabled: false
       externalRedis.host: ""
-      backend.redisUrl: ""
+      hoppscotch.backend.redisUrl: ""
     asserts:
       - hasDocuments:
           count: 1

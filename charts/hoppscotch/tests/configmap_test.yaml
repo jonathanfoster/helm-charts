@@ -7,16 +7,17 @@ tests:
   - it: should render frontend parameters
     template: configmap.yaml
     set:
-      frontend:
-        baseUrl: https://example.com
-        shortcodeBaseUrl: https://example.com/shortcode
-        adminUrl: https://example.com/admin
-        backendGqlUrl: https://example.com/api/graphql
-        backendWsUrl: wss://example.com/api/graphql
-        backendApiUrl: https://example.com/api
-        appTosLink: https://example.com/tos
-        appPrivacyPolicyLink: https://example.com/privacy
-        enableSubpathBasedAccess: true
+      hoppscotch:
+        frontend:
+          baseUrl: https://example.com
+          shortcodeBaseUrl: https://example.com/shortcode
+          adminUrl: https://example.com/admin
+          backendGqlUrl: https://example.com/api/graphql
+          backendWsUrl: wss://example.com/api/graphql
+          backendApiUrl: https://example.com/api
+          appTosLink: https://example.com/tos
+          appPrivacyPolicyLink: https://example.com/privacy
+          enableSubpathBasedAccess: true
     documentIndex: 0
     asserts:
       - containsDocument:
@@ -56,49 +57,50 @@ tests:
   - it: should render backend parameters
     template: configmap.yaml
     set:
-      backend:
-        aioAlternatePort: 3000
-        authToken:
-          tokenSaltComplexity: 10
-          magicLinkTokenValidity: 3
-          refreshTokenValidity: "604800000"
-          accessTokenValidity: "86400000"
-        allowSecureCookies: true
-        redirectUrl: https://example.com
-        whitelistedOrigins:
-          - https://example.com
-          - app://example.com
-        auth:
-          allowedProviders:
-            - google
-            - github
-            - microsoft
-            - email
-          google:
-            callbackUrl: https://example.com/auth/google/callback
-            scope:
+      hoppscotch:
+        backend:
+          aioAlternatePort: 3000
+          authToken:
+            tokenSaltComplexity: 10
+            magicLinkTokenValidity: 3
+            refreshTokenValidity: "604800000"
+            accessTokenValidity: "86400000"
+          allowSecureCookies: true
+          redirectUrl: https://example.com
+          whitelistedOrigins:
+            - https://example.com
+            - app://example.com
+          auth:
+            allowedProviders:
+              - google
+              - github
+              - microsoft
               - email
-              - profile
-          github:
-            callbackUrl: https://example.com/auth/github/callback
-            scope:
-              - user:email
-          microsoft:
-            callbackUrl: https://example.com/auth/microsoft/callback
-            scope:
-              - user.read
-            tenant: common
-        mailer:
-          smtpEnabled: true
-          useCustomConfigs: false
-          addressFrom: no-reply@example.com
-          smtpHost: smtp.example.com
-          smtpPort: 465
-          smtpSecure: true
-          tlsRejectUnauthorized: true
-        rateLimit:
-          ttl: 60
-          max: 100
+            google:
+              callbackUrl: https://example.com/auth/google/callback
+              scope:
+                - email
+                - profile
+            github:
+              callbackUrl: https://example.com/auth/github/callback
+              scope:
+                - user:email
+            microsoft:
+              callbackUrl: https://example.com/auth/microsoft/callback
+              scope:
+                - user.read
+              tenant: common
+          mailer:
+            smtpEnabled: true
+            useCustomConfigs: false
+            addressFrom: no-reply@example.com
+            smtpHost: smtp.example.com
+            smtpPort: 465
+            smtpSecure: true
+            tlsRejectUnauthorized: true
+          rateLimit:
+            ttl: 60
+            max: 100
     documentIndex: 0
     asserts:
       - containsDocument:
@@ -191,39 +193,40 @@ tests:
   - it: should render enterprise parameters
     template: configmap.yaml
     set:
-      frontend:
-        localProxyServerEnabled: true
-        proxyAppUrl: https://proxy.example.com
-      backend:
-        auth:
-          githubEnterprise:
-            enabled: true
-            authorizationUrl: https://github.example.com/login/oauth/authorize
-            tokenUrl: https://github.example.com/login/oauth/access_token
-            userProfileUrl: https://github.example.com/users
-            userEmailUrl: https://github.example.com/user/emails
-          saml:
-            issuer: https://saml.example.com
-            audience: https://example.com
-            callbackUrl: https://example.com/v1/auth/saml/callback
-            entryPoint: https://saml.example.com/saml
-            wantAssertionsSigned: true
-            wantResponseSigned: true
-          oidc:
-            providerName: oidc-provider
-            issuer: https://oidc.example.com
-            authorizationUrl: https://oidc.example.com/auth
-            tokenUrl: https://oidc.example.com/token
-            userInfoUrl: https://oidc.example.com/userinfo
-            callbackUrl: https://example.com/v1/auth/oidc/callback
+      hoppscotch:
+        frontend:
+          localProxyServerEnabled: true
+          proxyAppUrl: https://proxy.example.com
+        backend:
+          auth:
+            githubEnterprise:
+              enabled: true
+              authorizationUrl: https://github.example.com/login/oauth/authorize
+              tokenUrl: https://github.example.com/login/oauth/access_token
+              userProfileUrl: https://github.example.com/users
+              userEmailUrl: https://github.example.com/user/emails
+            saml:
+              issuer: https://saml.example.com
+              audience: https://example.com
+              callbackUrl: https://example.com/v1/auth/saml/callback
+              entryPoint: https://saml.example.com/saml
+              wantAssertionsSigned: true
+              wantResponseSigned: true
+            oidc:
+              providerName: oidc-provider
+              issuer: https://oidc.example.com
+              authorizationUrl: https://oidc.example.com/auth
+              tokenUrl: https://oidc.example.com/token
+              userInfoUrl: https://oidc.example.com/userinfo
+              callbackUrl: https://example.com/v1/auth/oidc/callback
             scope:
               - openid
               - profile
               - email
-        clickhouse:
-          allowAuditLogs: true
-          host: http://clickhouse.example.com:8123
-        horizontalScalingEnabled: true
+          clickhouse:
+            allowAuditLogs: true
+            host: http://clickhouse.example.com:8123
+          horizontalScalingEnabled: true
     documentIndex: 0
     asserts:
       - containsDocument:

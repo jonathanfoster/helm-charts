@@ -11,21 +11,22 @@ tests:
         enabled: true
         hostname: hoppscotch.example.com
         tls: true
-      frontend:
-        enableSubpathBasedAccess: true
-      backend:
-        auth:
-          allowedProviders:
-            - google
-            - github
-            - microsoft
-            - saml
-            - oidc
-          google: {}
-          github: {}
-          microsoft: {}
-          saml: {}
-          oidc: {}
+      hoppscotch:
+        frontend:
+          enableSubpathBasedAccess: true
+        backend:
+          auth:
+            allowedProviders:
+              - google
+              - github
+              - microsoft
+              - saml
+              - oidc
+            google: {}
+            github: {}
+            microsoft: {}
+            saml: {}
+            oidc: {}
     documentIndex: 0
     asserts:
       - containsDocument:
@@ -54,21 +55,22 @@ tests:
         enabled: true
         hostname: hoppscotch.example.com
         tls: true
-      frontend:
-        enableSubpathBasedAccess: false
-      backend:
-        auth:
-          allowedProviders:
-            - google
-            - github
-            - microsoft
-            - saml
-            - oidc
-          google: {}
-          github: {}
-          microsoft: {}
-          saml: {}
-          oidc: {}
+      hoppscotch:
+        frontend:
+          enableSubpathBasedAccess: false
+        backend:
+          auth:
+            allowedProviders:
+              - google
+              - github
+              - microsoft
+              - saml
+              - oidc
+            google: {}
+            github: {}
+            microsoft: {}
+            saml: {}
+            oidc: {}
     documentIndex: 0
     asserts:
       - containsDocument:
@@ -97,26 +99,27 @@ tests:
         enabled: true
         hostname: hoppscotch.example.com
         tls: true
-      frontend:
-        enableSubpathBasedAccess: true
-      backend:
-        auth:
-          allowedProviders:
-            - google
-            - github
-            - microsoft
-            - saml
-            - oidc
-          google:
-            callbackUrl: https://custom.example.com/auth/google/callback
-          github:
-            callbackUrl: https://custom.example.com/auth/github/callback
-          microsoft:
-            callbackUrl: https://custom.example.com/auth/microsoft/callback
-          saml:
-            callbackUrl: https://custom.example.com/auth/saml/callback
-          oidc:
-            callbackUrl: https://custom.example.com/auth/oidc/callback
+      hoppscotch:
+        frontend:
+          enableSubpathBasedAccess: true
+        backend:
+          auth:
+            allowedProviders:
+              - google
+              - github
+              - microsoft
+              - saml
+              - oidc
+            google:
+              callbackUrl: https://custom.example.com/auth/google/callback
+            github:
+              callbackUrl: https://custom.example.com/auth/github/callback
+            microsoft:
+              callbackUrl: https://custom.example.com/auth/microsoft/callback
+            saml:
+              callbackUrl: https://custom.example.com/auth/saml/callback
+            oidc:
+              callbackUrl: https://custom.example.com/auth/oidc/callback
     documentIndex: 0
     asserts:
       - containsDocument:

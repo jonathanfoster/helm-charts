@@ -8,8 +8,9 @@ tests:
   - it: should use user-provided database URL when backend.databaseUrl is set
     template: secrets.yaml
     set:
-      backend:
-        databaseUrl: postgres://custom-user:custom-pass@custom-host:9999/custom-db
+      hoppscotch:
+        backend:
+          databaseUrl: postgres://custom-user:custom-pass@custom-host:9999/custom-db
     documentIndex: 0
     asserts:
       - containsDocument:
@@ -22,8 +23,9 @@ tests:
   - it: should generate database URL from PostgreSQL chart when enabled and no user URL
     template: secrets.yaml
     set:
-      backend:
-        databaseUrl: ""
+      hoppscotch:
+        backend:
+          databaseUrl: ""
       postgresql:
         enabled: true
         auth:
@@ -42,8 +44,9 @@ tests:
   - it: should generate database URL from external database config when PostgreSQL disabled
     template: secrets.yaml
     set:
-      backend:
-        databaseUrl: ""
+      hoppscotch:
+        backend:
+          databaseUrl: ""
       postgresql:
         enabled: false
       externalDatabase:
@@ -64,8 +67,9 @@ tests:
   - it: should use direct SQL connection string when provided
     template: secrets.yaml
     set:
-      backend:
-        databaseUrl: ""
+      hoppscotch:
+        backend:
+          databaseUrl: ""
       postgresql:
         enabled: false
       externalDatabase:
@@ -82,8 +86,9 @@ tests:
   - it: should handle custom port for external database
     template: secrets.yaml
     set:
-      backend:
-        databaseUrl: ""
+      hoppscotch:
+        backend:
+          databaseUrl: ""
       postgresql:
         enabled: false
       externalDatabase:

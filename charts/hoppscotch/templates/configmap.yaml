@@ -11,7 +11,7 @@ metadata:
     {{- toYaml .Values.commonAnnotations | nindent 4 }}
   {{- end }}
 data:
-  {{- with .Values.frontend }}
+  {{- with .Values.hoppscotch.frontend }}
   VITE_BASE_URL: {{ include "hoppscotch.frontend.baseUrl" $ | quote }}
   VITE_SHORTCODE_BASE_URL: {{ include "hoppscotch.frontend.shortcodeBaseUrl" $ | quote }}
   VITE_ADMIN_URL: {{ include "hoppscotch.frontend.adminUrl" $ | quote }}
@@ -22,7 +22,7 @@ data:
   VITE_APP_PRIVACY_POLICY_LINK: {{ .appPrivacyPolicyLink | quote }}
   ENABLE_SUBPATH_BASED_ACCESS: {{ .enableSubpathBasedAccess | quote }}
   {{- end }}
-  {{- with .Values.backend }}
+  {{- with .Values.hoppscotch.backend }}
   HOPP_AIO_ALTERNATE_PORT: {{ .aioAlternatePort | quote }}
   TOKEN_SALT_COMPLEXITY: {{ .authToken.tokenSaltComplexity | quote }}
   MAGIC_LINK_TOKEN_VALIDITY: {{ .authToken.magicLinkTokenValidity | quote }}
@@ -94,7 +94,7 @@ data:
   OIDC_SCOPE: {{ .scope | join " " | quote }}
   {{- end }}
   {{- end }}
-  {{- with .Values.frontend }}
+  {{- with .Values.hoppscotch.frontend }}
   LOCAL_PROXY_SERVER_ENABLE: {{ .localProxyServerEnabled | quote }}
   PROXY_APP_URL: {{ .proxyAppUrl | quote }}
   {{- end }}

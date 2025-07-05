@@ -50,9 +50,7 @@ securityContext: {}
 
 updateStrategy:
   type: RollingUpdate
-  rollingUpdate:
-    maxUnavailable: 1
-    maxSurge: 1
+  rollingUpdate: {}
 
 autoscaling:
   enabled: false
@@ -76,126 +74,129 @@ volumeMounts: []
 setupDatabaseJob:
   enabled: true
 
-frontend:
-  baseUrl: ""
-  shortcodeBaseUrl: ""
-  adminUrl: ""
+## Hoppscotch Application Configuration
 
-  backendGqlUrl: ""
-  backendWsUrl: ""
-  backendApiUrl: ""
+hoppscotch:
+  frontend:
+    baseUrl: ""
+    shortcodeBaseUrl: ""
+    adminUrl: ""
 
-  appTosLink: ""
-  appPrivacyPolicyLink: ""
+    backendGqlUrl: ""
+    backendWsUrl: ""
+    backendApiUrl: ""
 
-  enableSubpathBasedAccess: true
+    appTosLink: ""
+    appPrivacyPolicyLink: ""
 
-  localProxyServerEnabled: false
-  proxyAppUrl: ""
+    enableSubpathBasedAccess: true
 
-backend:
-  databaseUrl: ""
+    localProxyServerEnabled: false
+    proxyAppUrl: ""
 
-  aioAlternatePort: 80
+  backend:
+    databaseUrl: ""
 
-  authToken:
-    jwtSecret: "secret"
-    tokenSaltComplexity: 10
-    magicLinkTokenValidity: 3
-    refreshTokenValidity: "604800000"
-    accessTokenValidity: "86400000"
-    sessionSecret: "secret"
+    aioAlternatePort: 80
 
-  allowSecureCookies: true
-  dataEncryptionKey: "12345678901234567890123456789012"
+    authToken:
+      jwtSecret: "secret"
+      tokenSaltComplexity: 10
+      magicLinkTokenValidity: 3
+      refreshTokenValidity: "604800000"
+      accessTokenValidity: "86400000"
+      sessionSecret: "secret"
 
-  redirectUrl: ""
+    allowSecureCookies: true
+    dataEncryptionKey: "12345678901234567890123456789012"
 
-  whitelistedOrigins: []
+    redirectUrl: ""
 
-  auth:
-    allowedProviders:
-      - email
+    whitelistedOrigins: []
 
-    google:
-      clientId: ""
-      clientSecret: ""
-      callbackUrl: ""
-      scope:
-        - email
-        - profile
-
-    github:
-      clientId: ""
-      clientSecret: ""
-      callbackUrl: ""
-      scope:
-        - user:email
-
-    githubEnterprise:
-      enabled: false
-      authorizationUrl: ""
-      tokenUrl: ""
-      userProfileUrl: ""
-      userEmailUrl: ""
-
-    microsoft:
-      clientId: ""
-      clientSecret: ""
-      callbackUrl: ""
-      scope: user.read
-      tenant: ""
-
-    oidc:
-      providerName: ""
-      issuer: ""
-      authorizationUrl: ""
-      tokenUrl: ""
-      userInfoUrl: ""
-      clientId: ""
-      clientSecret: ""
-      callbackUrl: ""
-      scope:
-        - openid
-        - profile
+    auth:
+      allowedProviders:
         - email
 
-    saml:
-      issuer: ""
-      audience: ""
-      callbackUrl: ""
-      cert: ""
-      entryPoint: ""
-      wantAssertionsSigned: true
-      wantResponseSigned: false
+      google:
+        clientId: ""
+        clientSecret: ""
+        callbackUrl: ""
+        scope:
+          - email
+          - profile
 
-  mailer:
-    smtpEnabled: true
-    useCustomConfigs: false
-    addressFrom: no-reply@example.com
-    smtpUrl: smtps://user:pass@smtp.example.com
+      github:
+        clientId: ""
+        clientSecret: ""
+        callbackUrl: ""
+        scope:
+          - user:email
 
-    smtpHost: ""
-    smtpPort: 465
-    smtpSecure: true
-    smtpUser: ""
-    smtpPassword: ""
-    tlsRejectUnauthorized: true
+      githubEnterprise:
+        enabled: false
+        authorizationUrl: ""
+        tokenUrl: ""
+        userProfileUrl: ""
+        userEmailUrl: ""
 
-  rateLimit:
-    ttl: 60
-    max: 100
+      microsoft:
+        clientId: ""
+        clientSecret: ""
+        callbackUrl: ""
+        scope: user.read
+        tenant: ""
 
-  enterpriseLicenseKey: ""
+      oidc:
+        providerName: ""
+        issuer: ""
+        authorizationUrl: ""
+        tokenUrl: ""
+        userInfoUrl: ""
+        clientId: ""
+        clientSecret: ""
+        callbackUrl: ""
+        scope:
+          - openid
+          - profile
+          - email
 
-  clickhouse:
-    allowAuditLogs: false
-    host: ""
-    user: ""
-    password: ""
+      saml:
+        issuer: ""
+        audience: ""
+        callbackUrl: ""
+        cert: ""
+        entryPoint: ""
+        wantAssertionsSigned: true
+        wantResponseSigned: false
 
-  horizontalScalingEnabled: false
-  redisUrl: ""
+    mailer:
+      smtpEnabled: true
+      useCustomConfigs: false
+      addressFrom: no-reply@example.com
+      smtpUrl: smtps://user:pass@smtp.example.com
+
+      smtpHost: ""
+      smtpPort: 465
+      smtpSecure: true
+      smtpUser: ""
+      smtpPassword: ""
+      tlsRejectUnauthorized: true
+
+    rateLimit:
+      ttl: 60
+      max: 100
+
+    enterpriseLicenseKey: ""
+
+    clickhouse:
+      allowAuditLogs: false
+      host: ""
+      user: ""
+      password: ""
+
+    horizontalScalingEnabled: false
+    redisUrl: ""
 
 # @section -- Traffic Exposure Parameters
 

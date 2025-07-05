@@ -5,10 +5,15 @@ templates:
 tests:
   - it: should include ClickHouse configuration when subchart is enabled and audit logs are enabled
     set:
-      clickhouse.enabled: true
-      clickhouse.auth.username: test-user
-      clickhouse.auth.password: test-password
-      backend.clickhouse.allowAuditLogs: true
+      hoppscotch:
+        backend:
+          clickhouse:
+            allowAuditLogs: true
+      clickhouse:
+        enabled: true
+        auth:
+          username: test-user
+          password: test-password
     asserts:
       - equal:
           path: data.ALLOW_AUDIT_LOGS
@@ -29,12 +34,17 @@ tests:
 
   - it: should include external ClickHouse configuration when external host is set
     set:
-      clickhouse.enabled: false
-      externalClickhouse.host: external.clickhouse.com
-      externalClickhouse.port: 9123
-      externalClickhouse.user: external-user
-      externalClickhouse.password: external-password
-      backend.clickhouse.allowAuditLogs: true
+      hoppscotch:
+        backend:
+          clickhouse:
+            allowAuditLogs: true
+      clickhouse:
+        enabled: false
+      externalClickhouse:
+        host: external.clickhouse.com
+        port: 9123
+        user: external-user
+        password: external-password
     asserts:
       - equal:
           path: data.ALLOW_AUDIT_LOGS
@@ -55,10 +65,13 @@ tests:
 
   - it: should use custom ClickHouse configuration when provided
     set:
-      backend.clickhouse.allowAuditLogs: true
-      backend.clickhouse.host: custom.clickhouse.com:8443
-      backend.clickhouse.user: custom-user
-      backend.clickhouse.password: custom-password
+      hoppscotch:
+        backend:
+          clickhouse:
+            allowAuditLogs: true
+            host: custom.clickhouse.com:8443
+            user: custom-user
+            password: custom-password
     asserts:
       - equal:
           path: data.ALLOW_AUDIT_LOGS
@@ -79,8 +92,12 @@ tests:
 
   - it: should not include ClickHouse configuration when audit logs are disabled
     set:
-      clickhouse.enabled: true
-      backend.clickhouse.allowAuditLogs: false
+      hoppscotch:
+        backend:
+          clickhouse:
+            allowAuditLogs: false
+      clickhouse:
+        enabled: true
     asserts:
       - notExists:
           path: data.ALLOW_AUDIT_LOGS
@@ -97,9 +114,14 @@ tests:
 
   - it: should not include ClickHouse configuration when no ClickHouse is configured
     set:
-      clickhouse.enabled: false
-      externalClickhouse.host: ""
-      backend.clickhouse.allowAuditLogs: true
+      hoppscotch:
+        backend:
+          clickhouse:
+            allowAuditLogs: true
+      clickhouse:
+        enabled: false
+        externalClickhouse:
+          host: ""
     asserts:
       - equal:
           path: data.ALLOW_AUDIT_LOGS

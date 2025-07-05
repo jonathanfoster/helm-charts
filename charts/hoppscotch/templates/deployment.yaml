@@ -16,11 +16,8 @@ spec:
   {{- end }}
   {{- if .Values.updateStrategy }}
   strategy:
-    type: {{ .Values.updateStrategy.type }}
-    {{- if and (eq .Values.updateStrategy.type "RollingUpdate") .Values.updateStrategy.rollingUpdate }}
-    rollingUpdate:
-      {{- toYaml .Values.updateStrategy.rollingUpdate | nindent 6 }}
-    {{- end }}
+    {{- toYaml .Values.updateStrategy | nindent 4 }}
+  {{- else }}
   {{- end }}
   selector:
     matchLabels:

@@ -1,41 +1,3 @@
-backend:
-  authToken:
-    jwtSecret: "e2e-test-jwt-secret"
-    sessionSecret: "e2e-test-session-secret"
-
-  dataEncryptionKey: "e2e-test-data-encryption-key1234"
-
-resourcesPreset: "nano"
-
-defaultInitContainers:
-  waitForDatabase:
-    resourcesPreset: "nano"
-  waitForDatabaseSetup:
-    resourcesPreset: "nano"
-
-  auth:
-    allowedProviders:
-      - email
-      - google
-      - github
-
-    google:
-      clientId: "e2e-test-google-client-id"
-      clientSecret: "e2e-test-google-client-secret"
-      scope:
-        - email
-        - profile
-
-    github:
-      clientId: "e2e-test-github-client-id"
-      clientSecret: "e2e-test-github-client-secret"
-      scope:
-        - user:email
-
-  mailer:
-    addressFrom: "noreply@localhost"
-    smtpUrl: "smtp://test:test@localhost"
-
 ingress:
   enabled: true
   hostname: localhost
@@ -43,27 +5,4 @@ ingress:
   selfSigned: true
   ingressClassName: nginx
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-
-postgresql:
-  auth:
-    password: e2e-test-postgresql-password
-  primary:
-    persistence:
-      enabled: false
-
-redis:
-  enabled: false
-  auth:
-    password: e2e-test-redis-password
-  master:
-    persistence:
-      enabled: false
-
-clickhouse:
-  enabled: false
-  auth:
-    username: e2e-test-user
-    password: e2e-test-clickhouse-password
-  resourcesPreset: "nano"
