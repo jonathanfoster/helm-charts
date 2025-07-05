@@ -216,8 +216,8 @@ Return the service account name to use.
 Generate the base URL for the frontend based on ingress configuration
 */}}
 {{- define "hoppscotch.frontend.baseUrl" -}}
-{{- if .Values.frontend.baseUrl -}}
-{{- .Values.frontend.baseUrl -}}
+{{- if .Values.hoppscotch.frontend.baseUrl -}}
+{{- .Values.hoppscotch.frontend.baseUrl -}}
 {{- else if .Values.ingress.enabled -}}
 {{- $scheme := "http" -}}
 {{- if .Values.ingress.tls -}}
@@ -231,8 +231,8 @@ Generate the base URL for the frontend based on ingress configuration
 Generate the shortcode base URL for the frontend based on ingress configuration
 */}}
 {{- define "hoppscotch.frontend.shortcodeBaseUrl" -}}
-{{- if .Values.frontend.shortcodeBaseUrl -}}
-{{- .Values.frontend.shortcodeBaseUrl -}}
+{{- if .Values.hoppscotch.frontend.shortcodeBaseUrl -}}
+{{- .Values.hoppscotch.frontend.shortcodeBaseUrl -}}
 {{- else if .Values.ingress.enabled -}}
 {{- $scheme := "http" -}}
 {{- if .Values.ingress.tls -}}
@@ -246,14 +246,14 @@ Generate the shortcode base URL for the frontend based on ingress configuration
 Generate the admin URL for the frontend based on ingress configuration
 */}}
 {{- define "hoppscotch.frontend.adminUrl" -}}
-{{- if .Values.frontend.adminUrl -}}
-{{- .Values.frontend.adminUrl -}}
+{{- if .Values.hoppscotch.frontend.adminUrl -}}
+{{- .Values.hoppscotch.frontend.adminUrl -}}
 {{- else if .Values.ingress.enabled -}}
 {{- $scheme := "http" -}}
 {{- if .Values.ingress.tls -}}
 {{- $scheme = "https" -}}
 {{- end -}}
-{{- if .Values.frontend.enableSubpathBasedAccess -}}
+{{- if .Values.hoppscotch.frontend.enableSubpathBasedAccess -}}
 {{- printf "%s://%s/admin" $scheme .Values.ingress.hostname -}}
 {{- else -}}
 {{- printf "%s://%s/admin" $scheme .Values.ingress.hostname -}}
@@ -265,14 +265,14 @@ Generate the admin URL for the frontend based on ingress configuration
 Generate the backend GraphQL URL for the frontend based on ingress configuration
 */}}
 {{- define "hoppscotch.frontend.backendGqlUrl" -}}
-{{- if .Values.frontend.backendGqlUrl -}}
-{{- .Values.frontend.backendGqlUrl -}}
+{{- if .Values.hoppscotch.frontend.backendGqlUrl -}}
+{{- .Values.hoppscotch.frontend.backendGqlUrl -}}
 {{- else if .Values.ingress.enabled -}}
 {{- $scheme := "http" -}}
 {{- if .Values.ingress.tls -}}
 {{- $scheme = "https" -}}
 {{- end -}}
-{{- if .Values.frontend.enableSubpathBasedAccess -}}
+{{- if .Values.hoppscotch.frontend.enableSubpathBasedAccess -}}
 {{- printf "%s://%s/backend/graphql" $scheme .Values.ingress.hostname -}}
 {{- else -}}
 {{- printf "%s://%s/backend/graphql" $scheme .Values.ingress.hostname -}}
@@ -284,14 +284,14 @@ Generate the backend GraphQL URL for the frontend based on ingress configuration
 Generate the backend WebSocket URL for the frontend based on ingress configuration
 */}}
 {{- define "hoppscotch.frontend.backendWsUrl" -}}
-{{- if .Values.frontend.backendWsUrl -}}
-{{- .Values.frontend.backendWsUrl -}}
+{{- if .Values.hoppscotch.frontend.backendWsUrl -}}
+{{- .Values.hoppscotch.frontend.backendWsUrl -}}
 {{- else if .Values.ingress.enabled -}}
 {{- $scheme := "ws" -}}
 {{- if .Values.ingress.tls -}}
 {{- $scheme = "wss" -}}
 {{- end -}}
-{{- if .Values.frontend.enableSubpathBasedAccess -}}
+{{- if .Values.hoppscotch.frontend.enableSubpathBasedAccess -}}
 {{- printf "%s://%s/backend/graphql" $scheme .Values.ingress.hostname -}}
 {{- else -}}
 {{- printf "%s://%s/backend/graphql" $scheme .Values.ingress.hostname -}}
@@ -303,14 +303,14 @@ Generate the backend WebSocket URL for the frontend based on ingress configurati
 Generate the backend API URL for the frontend based on ingress configuration
 */}}
 {{- define "hoppscotch.frontend.backendApiUrl" -}}
-{{- if .Values.frontend.backendApiUrl -}}
-{{- .Values.frontend.backendApiUrl -}}
+{{- if .Values.hoppscotch.frontend.backendApiUrl -}}
+{{- .Values.hoppscotch.frontend.backendApiUrl -}}
 {{- else if .Values.ingress.enabled -}}
 {{- $scheme := "http" -}}
 {{- if .Values.ingress.tls -}}
 {{- $scheme = "https" -}}
 {{- end -}}
-{{- if .Values.frontend.enableSubpathBasedAccess -}}
+{{- if .Values.hoppscotch.frontend.enableSubpathBasedAccess -}}
 {{- printf "%s://%s/backend/v1" $scheme .Values.ingress.hostname -}}
 {{- else -}}
 {{- printf "%s://%s/backend/v1" $scheme .Values.ingress.hostname -}}
@@ -322,8 +322,8 @@ Generate the backend API URL for the frontend based on ingress configuration
 Generate the redirect URL for the backend based on ingress configuration
 */}}
 {{- define "hoppscotch.backend.redirectUrl" -}}
-{{- if .Values.backend.redirectUrl -}}
-{{- .Values.backend.redirectUrl -}}
+{{- if .Values.hoppscotch.backend.redirectUrl -}}
+{{- .Values.hoppscotch.backend.redirectUrl -}}
 {{- else if .Values.ingress.enabled -}}
 {{- $scheme := "http" -}}
 {{- if .Values.ingress.tls -}}
@@ -337,8 +337,8 @@ Generate the redirect URL for the backend based on ingress configuration
 Generate whitelisted origins for the backend based on ingress configuration
 */}}
 {{- define "hoppscotch.backend.whitelistedOrigins" -}}
-{{- if .Values.backend.whitelistedOrigins -}}
-{{- .Values.backend.whitelistedOrigins | join "," -}}
+{{- if .Values.hoppscotch.backend.whitelistedOrigins -}}
+{{- .Values.hoppscotch.backend.whitelistedOrigins | join "," -}}
 {{- else if .Values.ingress.enabled -}}
 {{- $scheme := "http" -}}
 {{- if .Values.ingress.tls -}}
@@ -353,15 +353,15 @@ Generate whitelisted origins for the backend based on ingress configuration
 Generate Google auth callback URL based on ingress configuration
 */}}
 {{- define "hoppscotch.backend.auth.google.callbackUrl" -}}
-{{- if .Values.backend.auth.google.callbackUrl -}}
-{{- .Values.backend.auth.google.callbackUrl -}}
+{{- if .Values.hoppscotch.backend.auth.google.callbackUrl -}}
+{{- .Values.hoppscotch.backend.auth.google.callbackUrl -}}
 {{- else if .Values.ingress.enabled -}}
 {{- $scheme := "http" -}}
 {{- if .Values.ingress.tls -}}
 {{- $scheme = "https" -}}
 {{- end -}}
 {{- $baseUrl := printf "%s://%s" $scheme .Values.ingress.hostname -}}
-{{- if .Values.frontend.enableSubpathBasedAccess -}}
+{{- if .Values.hoppscotch.frontend.enableSubpathBasedAccess -}}
 {{- printf "%s/backend/v1/auth/google/callback" $baseUrl -}}
 {{- else -}}
 {{- printf "%s/v1/auth/google/callback" $baseUrl -}}
@@ -373,15 +373,15 @@ Generate Google auth callback URL based on ingress configuration
 Generate GitHub auth callback URL based on ingress configuration
 */}}
 {{- define "hoppscotch.backend.auth.github.callbackUrl" -}}
-{{- if .Values.backend.auth.github.callbackUrl -}}
-{{- .Values.backend.auth.github.callbackUrl -}}
+{{- if .Values.hoppscotch.backend.auth.github.callbackUrl -}}
+{{- .Values.hoppscotch.backend.auth.github.callbackUrl -}}
 {{- else if .Values.ingress.enabled -}}
 {{- $scheme := "http" -}}
 {{- if .Values.ingress.tls -}}
 {{- $scheme = "https" -}}
 {{- end -}}
 {{- $baseUrl := printf "%s://%s" $scheme .Values.ingress.hostname -}}
-{{- if .Values.frontend.enableSubpathBasedAccess -}}
+{{- if .Values.hoppscotch.frontend.enableSubpathBasedAccess -}}
 {{- printf "%s/backend/v1/auth/github/callback" $baseUrl -}}
 {{- else -}}
 {{- printf "%s/v1/auth/github/callback" $baseUrl -}}
@@ -393,15 +393,15 @@ Generate GitHub auth callback URL based on ingress configuration
 Generate Microsoft auth callback URL based on ingress configuration
 */}}
 {{- define "hoppscotch.backend.auth.microsoft.callbackUrl" -}}
-{{- if .Values.backend.auth.microsoft.callbackUrl -}}
-{{- .Values.backend.auth.microsoft.callbackUrl -}}
+{{- if .Values.hoppscotch.backend.auth.microsoft.callbackUrl -}}
+{{- .Values.hoppscotch.backend.auth.microsoft.callbackUrl -}}
 {{- else if .Values.ingress.enabled -}}
 {{- $scheme := "http" -}}
 {{- if .Values.ingress.tls -}}
 {{- $scheme = "https" -}}
 {{- end -}}
 {{- $baseUrl := printf "%s://%s" $scheme .Values.ingress.hostname -}}
-{{- if .Values.frontend.enableSubpathBasedAccess -}}
+{{- if .Values.hoppscotch.frontend.enableSubpathBasedAccess -}}
 {{- printf "%s/backend/v1/auth/microsoft/callback" $baseUrl -}}
 {{- else -}}
 {{- printf "%s/v1/auth/microsoft/callback" $baseUrl -}}
@@ -413,15 +413,15 @@ Generate Microsoft auth callback URL based on ingress configuration
 Generate SAML auth callback URL based on ingress configuration
 */}}
 {{- define "hoppscotch.backend.auth.saml.callbackUrl" -}}
-{{- if .Values.backend.auth.saml.callbackUrl -}}
-{{- .Values.backend.auth.saml.callbackUrl -}}
+{{- if .Values.hoppscotch.backend.auth.saml.callbackUrl -}}
+{{- .Values.hoppscotch.backend.auth.saml.callbackUrl -}}
 {{- else if .Values.ingress.enabled -}}
 {{- $scheme := "http" -}}
 {{- if .Values.ingress.tls -}}
 {{- $scheme = "https" -}}
 {{- end -}}
 {{- $baseUrl := printf "%s://%s" $scheme .Values.ingress.hostname -}}
-{{- if .Values.frontend.enableSubpathBasedAccess -}}
+{{- if .Values.hoppscotch.frontend.enableSubpathBasedAccess -}}
 {{- printf "%s/backend/v1/auth/saml/callback" $baseUrl -}}
 {{- else -}}
 {{- printf "%s/v1/auth/saml/callback" $baseUrl -}}
@@ -433,15 +433,15 @@ Generate SAML auth callback URL based on ingress configuration
 Generate OIDC auth callback URL based on ingress configuration
 */}}
 {{- define "hoppscotch.backend.auth.oidc.callbackUrl" -}}
-{{- if .Values.backend.auth.oidc.callbackUrl -}}
-{{- .Values.backend.auth.oidc.callbackUrl -}}
+{{- if .Values.hoppscotch.backend.auth.oidc.callbackUrl -}}
+{{- .Values.hoppscotch.backend.auth.oidc.callbackUrl -}}
 {{- else if .Values.ingress.enabled -}}
 {{- $scheme := "http" -}}
 {{- if .Values.ingress.tls -}}
 {{- $scheme = "https" -}}
 {{- end -}}
 {{- $baseUrl := printf "%s://%s" $scheme .Values.ingress.hostname -}}
-{{- if .Values.frontend.enableSubpathBasedAccess -}}
+{{- if .Values.hoppscotch.frontend.enableSubpathBasedAccess -}}
 {{- printf "%s/backend/v1/auth/oidc/callback" $baseUrl -}}
 {{- else -}}
 {{- printf "%s/v1/auth/oidc/callback" $baseUrl -}}
