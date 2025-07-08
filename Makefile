@@ -23,7 +23,7 @@ helm-docs: ## Generate Helm docs
 .PHONY: helm-install
 helm-install: kind-create-cluster ## Install chart
 	@echo "${GREEN}Installing chart ${CHART_NAME}...${RESET}"
-	helm install ${CHART_NAME} charts/${CHART_NAME} -n ${CHART_NAME} --values ${TEST_E2E_DIR}/values.yaml --create-namespace --wait --debug
+	helm install ${CHART_NAME} charts/${CHART_NAME} -n ${CHART_NAME} --values ${TEST_E2E_DIR}/values.yaml --create-namespace --wait
 
 .PHONY: helm-template
 helm-template: clean ## Render Helm templates
@@ -49,7 +49,7 @@ helm-uninstall: ## Uninstall chart
 .PHONY: helm-upgrade
 helm-upgrade: ## Upgrade chart
 	@echo "${GREEN}Upgrading chart ${CHART_NAME}...${RESET}"
-	helm upgrade ${CHART_NAME} charts/${CHART_NAME} -n ${CHART_NAME} --wait --debug
+	helm upgrade ${CHART_NAME} charts/${CHART_NAME} -n ${CHART_NAME} --values ${TEST_E2E_DIR}/values.yaml --wait
 
 .PHONY: help
 help: ## Show this help message
