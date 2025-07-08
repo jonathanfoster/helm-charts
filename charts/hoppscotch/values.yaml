@@ -90,7 +90,10 @@ resources: {}
 livenessProbe: {}
 # -- Configure Hoppscotch readiness probe
 # @section -- Hoppscotch Common Parameters
-readinessProbe: {}
+readinessProbe:
+  httpGet:
+    path: /backend/ping
+    port: 80
 
 # -- Annotations to add to Hoppscotch pods
 # @section -- Hoppscotch Common Parameters
