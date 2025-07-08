@@ -1,5 +1,9 @@
 # Hoppscotch Helm Chart
 
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.versionBadge" . }}{{ template "chart.appVersionBadge" . }}
+
 {{ template "chart.description" . }}
 
 ## TL;DR
@@ -21,11 +25,11 @@ This chart bootstraps a [Hoppscotch](https://github.com/hoppscotch/hoppscotch) d
 
 ## Installing the Chart
 
-To install the chart with the release name `my-release`:
+To install the chart with the release name `hoppscotch`:
 
 ```bash
-helm repo add jonathanfoster http://jonathanfoster.github.io/helm-charts
-helm install my-release jonathanfoster/{{ template "chart.name" . }}
+helm repo add jonathanfoster https://jonathanfoster.github.io/helm-charts
+helm install hoppscotch jonathanfoster/{{ template "chart.name" . }}
 ```
 
 ## Parameters
