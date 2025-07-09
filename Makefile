@@ -4,6 +4,7 @@ BUILD_DIR:=build
 CHART_NAME?=hoppscotch
 CLUSTER_NAME?=helm-charts
 TEST_E2E_DIR:=test/e2e
+TEST_E2E_VALUES?=${TEST_E2E_DIR}/data/${CHART_NAME}-values.yaml
 
 GREEN=\033[0;32m
 YELLOW=\033[0;33m
@@ -22,23 +23,18 @@ helm-docs: ## Generate Helm docs
 
 .PHONY: helm-install
 helm-install: kind-create-cluster ## Install chart
-	@echo "${GREEN}Installing chart ${CHART_NAME}...${RESET}"
-	helm install ${CHART_NAME} charts/${CHART_NAME} -n ${CHART_NAME} --values ${TEST_E2E_DIR}/values.yaml --create-namespace --wait
+	@echo "${GREEN}Installing ${CHART_NAME} chart...${RESET}"
+	helm install ${CHART_NAME} charts/${CHART_NAME} -n ${CHART_NAME} --values ${TEST_E2E_VALUES} --create-namespace --wait
 
 .PHONY: helm-template
-helm-template: clean ## Render Helm templates
-	@echo "${GREEN}Rendering Helm templates...${RESET}"
+helm-template: clean ## Render chart templates
+	@echo "${GREEN}Rendering ${CHART_NAME} chart templates...${RESET}"
 	@mkdir -p ${BUILD_DIR}
-	@for chart in charts/*/; do \
-		if [ -d "$${chart}" ]; then \
-			chart_name=$$(basename "$${chart}"); \
-			helm template "$${chart_name}" "$${chart}" > "${BUILD_DIR}/$${chart_name}.yaml"; \
-		fi; \
-	done
+	helm template ${CHART_NAME} charts/${CHART_NAME} > "${BUILD_DIR}/${CHART_NAME}.yaml"
 
 .PHONY: helm-uninstall
 helm-uninstall: ## Uninstall chart
-	@echo "${GREEN}Uninstalling chart ${CHART_NAME}...${RESET}"
+	@echo "${GREEN}Uninstalling ${CHART_NAME} chart...${RESET}"
 	@if ! helm list -n ${CHART_NAME} | grep -q ${CHART_NAME}; then \
 		echo "${YELLOW}Warning:${RESET} Chart ${CHART_NAME} is not installed"; \
 		exit 0; \
@@ -48,8 +44,8 @@ helm-uninstall: ## Uninstall chart
 
 .PHONY: helm-upgrade
 helm-upgrade: ## Upgrade chart
-	@echo "${GREEN}Upgrading chart ${CHART_NAME}...${RESET}"
-	helm upgrade ${CHART_NAME} charts/${CHART_NAME} -n ${CHART_NAME} --values ${TEST_E2E_DIR}/values.yaml --wait
+	@echo "${GREEN}Upgrading ${CHART_NAME} chart...${RESET}"
+	helm upgrade ${CHART_NAME} charts/${CHART_NAME} -n ${CHART_NAME} --values ${TEST_E2E_VALUES} --wait
 
 .PHONY: help
 help: ## Show this help message
@@ -103,8 +99,8 @@ kind-create-cluster: ## Create a Kind cluster
 	fi
 
 .PHONY: kind-delete-cluster
-kind-delete-cluster: ## Delete the Kind cluster
-	@echo "${GREEN}Deleting Kind cluster...${RESET}"
+kind-delete-cluster: ## Delete the kind cluster
+	@echo "${GREEN}Deleting ${CLUSTER_NAME} kind cluster...${RESET}"
 	@if kind get clusters | grep -q "${CLUSTER_NAME}"; then \
 		kind delete cluster --name ${CLUSTER_NAME}; \
 	else \
@@ -144,8 +140,8 @@ pre-commit: helm-docs lint test-unit ## Run pre-commit hooks
 
 .PHONY: test-e2e
 test-e2e: ## Run end-to-end tests
-	@echo "${GREEN}Running end-to-end tests...${RESET}"
-	${TEST_E2E_DIR}/test-e2e.sh --all --debug
+	@echo "${GREEN}Running end-to-end tests for ${CHART_NAME} chart...${RESET}"
+	${TEST_E2E_DIR}/test-e2e.sh --charts=charts/${CHART_NAME} --debug --helm-extra-args="--values=${TEST_E2E_VALUES}"
 
 .PHONY: test-unit
 test-unit: ## Run unit tests

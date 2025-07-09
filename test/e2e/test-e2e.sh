@@ -60,11 +60,11 @@ create_kind_cluster() {
   docker_exec mkdir /root/.kube
   docker cp ~/.kube/config ct:/root/.kube/config
 
-  docker_exec kubectl cluster-info
-  echo
-
-  docker_exec kubectl get nodes
-  echo
+  log_info "Waiting for cluster to be ready..."
+  while ! docker_exec kubectl wait pods -A --for=condition=Ready --timeout=60s; do
+    log_error "Cluster did not become ready within 60s"
+    exit 1
+  done
 
   log_info "Cluster ready!"
   echo
@@ -76,7 +76,7 @@ docker_exec() {
 
 install_charts() {
   log_info "Installing charts..."
-  docker_exec ct install --helm-extra-args="--values=test/e2e/values.yaml" "$@"
+  docker_exec ct install "$@"
 }
 
 log_error() { echo -e "${RED}Error:${RESET} $1" >&2; }
