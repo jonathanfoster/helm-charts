@@ -218,9 +218,9 @@ hoppscotch:
     aioAlternatePort: 80
 
     authToken:
-      # -- Secret key for JWT token generation and validation
+      # -- Secret key for JWT token generation and validation (auto-generated if empty)
       # @section -- Hoppscotch Application Parameters
-      jwtSecret: "secret"
+      jwtSecret: ""
       # -- Complexity of the SALT used for hashing (higher = more secure)
       # @section -- Hoppscotch Application Parameters
       tokenSaltComplexity: 10
@@ -233,16 +233,16 @@ hoppscotch:
       # -- Validity of access token for authentication (in milliseconds)
       # @section -- Hoppscotch Application Parameters
       accessTokenValidity: "86400000"
-      # -- Secret key for session management
+      # -- Secret key for session management (auto-generated if empty)
       # @section -- Hoppscotch Application Parameters
-      sessionSecret: "secret"
+      sessionSecret: ""
 
     # -- Allow secure cookies (recommended for HTTPS deployments)
     # @section -- Hoppscotch Application Parameters
     allowSecureCookies: true
-    # -- 32-character key for encrypting sensitive data stored in database
+    # -- 32-character key for encrypting sensitive data stored in database (auto-generated if empty)
     # @section -- Hoppscotch Application Parameters
-    dataEncryptionKey: "12345678901234567890123456789012"
+    dataEncryptionKey: ""
 
     # -- Fallback URL for debugging when redirects fail
     # @section -- Hoppscotch Application Parameters
@@ -703,13 +703,13 @@ postgresql:
     enablePostgresUser: true
     # -- PostgreSQL application username
     # @section -- Database Parameters
-    username: hoppscotch
+    username: ""
     # -- PostgreSQL application password
     # @section -- Database Parameters
-    password: secret
+    password: ""
     # -- PostgreSQL application database name
     # @section -- Database Parameters
-    database: hoppscotch
+    database: ""
     # -- Existing secret containing PostgreSQL credentials
     # @section -- Database Parameters
     existingSecret: ""
@@ -727,16 +727,16 @@ postgresql:
 externalDatabase:
   # -- External PostgreSQL host
   # @section -- Database Parameters
-  host: localhost
+  host: ""
   # -- External PostgreSQL port
   # @section -- Database Parameters
   port: 5432
   # -- External PostgreSQL username
   # @section -- Database Parameters
-  user: hoppscotch
+  user: ""
   # -- External PostgreSQL database name
   # @section -- Database Parameters
-  database: hoppscotch
+  database: ""
   # -- External PostgreSQL password
   # @section -- Database Parameters
   password: ""
@@ -765,7 +765,7 @@ redis:
     enabled: true
     # -- Redis password
     # @section -- Redis Parameters
-    password: secret
+    password: ""
     # -- Existing secret containing Redis credentials
     # @section -- Redis Parameters
     existingSecret: ""
@@ -806,10 +806,10 @@ clickhouse:
   auth:
     # -- ClickHouse username
     # @section -- ClickHouse Parameters
-    username: hoppscotch
+    username: ""
     # -- ClickHouse password
     # @section -- ClickHouse Parameters
-    password: secret
+    password: ""
     # -- Existing secret containing ClickHouse credentials
     # @section -- ClickHouse Parameters
     existingSecret: ""

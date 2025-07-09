@@ -139,14 +139,15 @@ Return the database URL based on the PostgreSQL chart or external database setti
 */}}
 {{- define "hoppscotch.secret.databaseUrl" -}}
 {{- if .Values.postgresql.enabled -}}
-{{- $host := printf "%s-postgresql.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
+{{- $namespace := include "hoppscotch.namespace" . -}}
+{{- $host := printf "%s-postgresql.%s.svc.%s" .Release.Name $namespace .Values.clusterDomain -}}
 {{- $port := 5432 -}}
 {{- $user := .Values.postgresql.auth.username -}}
 {{- $database := .Values.postgresql.auth.database -}}
 {{- $password := .Values.postgresql.auth.password -}}
 {{- if not $password -}}
 {{- $postgresSecretName := printf "%s-postgresql" .Release.Name -}}
-{{- $password = include "hoppscotch.secret.lookupValue" (dict "name" $postgresSecretName "namespace" .Release.Namespace "key" "password") -}}
+{{- $password = include "hoppscotch.secret.lookupValue" (dict "name" $postgresSecretName "namespace" $namespace "key" "password") -}}
 {{- end -}}
 {{- include "hoppscotch.secret.formatPostgresUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
 {{- else if .Values.externalDatabase.sqlConnection -}}
@@ -157,6 +158,11 @@ Return the database URL based on the PostgreSQL chart or external database setti
 {{- $user := .Values.externalDatabase.user -}}
 {{- $database := .Values.externalDatabase.database -}}
 {{- $password := .Values.externalDatabase.password -}}
+{{- if and (not $password) .Values.externalDatabase.existingSecret -}}
+{{- $namespace := include "hoppscotch.namespace" . -}}
+{{- $secretKey := .Values.externalDatabase.existingSecretPasswordKey | default "password" -}}
+{{- $password = include "hoppscotch.secret.lookupValue" (dict "name" .Values.externalDatabase.existingSecret "namespace" $namespace "key" $secretKey) -}}
+{{- end -}}
 {{- include "hoppscotch.secret.formatPostgresUrl" (dict "host" $host "port" $port "user" $user "password" $password "database" $database) -}}
 {{- end -}}
 {{- end -}}
@@ -459,18 +465,24 @@ Return the Redis URL based on the Redis chart or external Redis settings
 */}}
 {{- define "hoppscotch.secret.redisUrl" -}}
 {{- if .Values.redis.enabled -}}
-{{- $host := printf "%s-redis-master.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
+{{- $namespace := include "hoppscotch.namespace" . -}}
+{{- $host := printf "%s-redis-master.%s.svc.%s" .Release.Name $namespace .Values.clusterDomain -}}
 {{- $port := 6379 -}}
 {{- $password := .Values.redis.auth.password -}}
 {{- if not $password -}}
 {{- $redisSecretName := printf "%s-redis" .Release.Name -}}
-{{- $password = include "hoppscotch.secret.lookupValue" (dict "name" $redisSecretName "namespace" .Release.Namespace "key" "redis-password") -}}
+{{- $password = include "hoppscotch.secret.lookupValue" (dict "name" $redisSecretName "namespace" $namespace "key" "redis-password") -}}
 {{- end -}}
 {{- include "hoppscotch.secret.formatRedisUrl" (dict "host" $host "port" $port "password" $password) -}}
 {{- else -}}
 {{- $host := .Values.externalRedis.host -}}
 {{- $port := .Values.externalRedis.port | default 6379 | int -}}
 {{- $password := .Values.externalRedis.password -}}
+{{- if and (not $password) .Values.externalRedis.existingSecret -}}
+{{- $namespace := include "hoppscotch.namespace" . -}}
+{{- $secretKey := .Values.externalRedis.existingSecretPasswordKey | default "password" -}}
+{{- $password = include "hoppscotch.secret.lookupValue" (dict "name" .Values.externalRedis.existingSecret "namespace" $namespace "key" $secretKey) -}}
+{{- end -}}
 {{- include "hoppscotch.secret.formatRedisUrl" (dict "host" $host "port" $port "password" $password) -}}
 {{- end -}}
 {{- end -}}
@@ -496,7 +508,8 @@ Return the ClickHouse host based on the ClickHouse chart or external ClickHouse 
 */}}
 {{- define "hoppscotch.secret.clickhouseHost" -}}
 {{- if .Values.clickhouse.enabled -}}
-{{- printf "%s-clickhouse.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
+{{- $namespace := include "hoppscotch.namespace" . -}}
+{{- printf "%s-clickhouse.%s.svc.%s" .Release.Name $namespace .Values.clusterDomain -}}
 {{- else -}}
 {{- .Values.externalClickhouse.host -}}
 {{- end -}}
@@ -531,12 +544,19 @@ Return the ClickHouse password based on the ClickHouse chart or external ClickHo
 {{- if .Values.clickhouse.enabled -}}
 {{- $password := .Values.clickhouse.auth.password -}}
 {{- if not $password -}}
+{{- $namespace := include "hoppscotch.namespace" . -}}
 {{- $clickhouseSecretName := printf "%s-clickhouse" .Release.Name -}}
-{{- $password = include "hoppscotch.secret.lookupValue" (dict "name" $clickhouseSecretName "namespace" .Release.Namespace "key" "admin-password") -}}
+{{- $password = include "hoppscotch.secret.lookupValue" (dict "name" $clickhouseSecretName "namespace" $namespace "key" "admin-password") -}}
 {{- end -}}
 {{- $password -}}
 {{- else -}}
-{{- .Values.externalClickhouse.password -}}
+{{- $password := .Values.externalClickhouse.password -}}
+{{- if and (not $password) .Values.externalClickhouse.existingSecret -}}
+{{- $namespace := include "hoppscotch.namespace" . -}}
+{{- $secretKey := .Values.externalClickhouse.existingSecretPasswordKey | default "password" -}}
+{{- $password = include "hoppscotch.secret.lookupValue" (dict "name" .Values.externalClickhouse.existingSecret "namespace" $namespace "key" $secretKey) -}}
+{{- end -}}
+{{- $password -}}
 {{- end -}}
 {{- end -}}
 
@@ -634,5 +654,50 @@ requests:
   cpu: 100m
   ephemeral-storage: 50Mi
   memory: 128Mi
+{{- end -}}
+{{- end -}}
+
+{{/*
+Generate a secure JWT secret that persists across upgrades
+*/}}
+{{- define "hoppscotch.secret.jwtSecret" -}}
+{{- $secretName := include "hoppscotch.fullname" . -}}
+{{- $existingSecret := include "hoppscotch.secret.lookupValue" (dict "namespace" .Release.Namespace "name" $secretName "key" "JWT_SECRET") -}}
+{{- if $existingSecret -}}
+{{- $existingSecret -}}
+{{- else if .Values.hoppscotch.backend.authToken.jwtSecret -}}
+{{- .Values.hoppscotch.backend.authToken.jwtSecret -}}
+{{- else -}}
+{{- randAlphaNum 64 -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Generate a secure session secret that persists across upgrades
+*/}}
+{{- define "hoppscotch.secret.sessionSecret" -}}
+{{- $secretName := include "hoppscotch.fullname" . -}}
+{{- $existingSecret := include "hoppscotch.secret.lookupValue" (dict "namespace" .Release.Namespace "name" $secretName "key" "SESSION_SECRET") -}}
+{{- if $existingSecret -}}
+{{- $existingSecret -}}
+{{- else if .Values.hoppscotch.backend.authToken.sessionSecret -}}
+{{- .Values.hoppscotch.backend.authToken.sessionSecret -}}
+{{- else -}}
+{{- randAlphaNum 64 -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Generate a secure data encryption key that persists across upgrades
+*/}}
+{{- define "hoppscotch.secret.dataEncryptionKey" -}}
+{{- $secretName := include "hoppscotch.fullname" . -}}
+{{- $existingSecret := include "hoppscotch.secret.lookupValue" (dict "namespace" .Release.Namespace "name" $secretName "key" "DATA_ENCRYPTION_KEY") -}}
+{{- if $existingSecret -}}
+{{- $existingSecret -}}
+{{- else if .Values.hoppscotch.backend.dataEncryptionKey -}}
+{{- .Values.hoppscotch.backend.dataEncryptionKey -}}
+{{- else -}}
+{{- randAlphaNum 32 -}}
 {{- end -}}
 {{- end -}}

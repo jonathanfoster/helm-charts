@@ -1,6 +1,6 @@
 # Hoppscotch Helm Chart
 
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![AppVersion: 2025.6.0](https://img.shields.io/badge/AppVersion-2025.6.0-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![AppVersion: 2025.6.0](https://img.shields.io/badge/AppVersion-2025.6.0-informational?style=flat-square)
 
 Hoppscotch is a lightweight, web-based API development suite. It was built from the ground up with ease of use and
 accessibility in mind providing all the functionality needed for developers with minimalist, unobtrusive UI.
@@ -73,7 +73,7 @@ helm install hoppscotch jonathanfoster/hoppscotch
 | resourcesPreset | string | `"nano"` | Set container resources according to one common preset (allowed values: nano, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production). |
 | resources | object | `{}` | Set container resources for Hoppscotch (overrides resourcesPreset) |
 | livenessProbe | object | `{}` | Configure Hoppscotch liveness probe |
-| readinessProbe | object | `{}` | Configure Hoppscotch readiness probe |
+| readinessProbe | object | `{"httpGet":{"path":"/backend/ping","port":80}}` | Configure Hoppscotch readiness probe |
 | podAnnotations | object | `{}` | Annotations to add to Hoppscotch pods |
 | podLabels | object | `{}` | Labels to add to Hoppscotch pods |
 | podSecurityContext | object | `{}` | Security context for Hoppscotch pods |
@@ -111,14 +111,14 @@ helm install hoppscotch jonathanfoster/hoppscotch
 | hoppscotch.frontend.localProxyServerEnabled | bool | `false` | Enable local proxy server for routing API requests (requires subpath access). Enterprise Edition required. |
 | hoppscotch.frontend.proxyAppUrl | string | `""` | URL of proxy server for routing API requests (optional). Enterprise Edition required. |
 | hoppscotch.backend.aioAlternatePort | int | `80` | Alternate port for AIO container endpoint when using subpath access mode |
-| hoppscotch.backend.authToken.jwtSecret | string | `"secret"` | Secret key for JWT token generation and validation |
+| hoppscotch.backend.authToken.jwtSecret | string | `""` | Secret key for JWT token generation and validation (auto-generated if empty) |
 | hoppscotch.backend.authToken.tokenSaltComplexity | int | `10` | Complexity of the SALT used for hashing (higher = more secure) |
 | hoppscotch.backend.authToken.magicLinkTokenValidity | int | `3` | Duration of magic link token validity for sign-in (in days) |
 | hoppscotch.backend.authToken.refreshTokenValidity | string | `"604800000"` | Validity of refresh token for authentication (in milliseconds) |
 | hoppscotch.backend.authToken.accessTokenValidity | string | `"86400000"` | Validity of access token for authentication (in milliseconds) |
-| hoppscotch.backend.authToken.sessionSecret | string | `"secret"` | Secret key for session management |
+| hoppscotch.backend.authToken.sessionSecret | string | `""` | Secret key for session management (auto-generated if empty) |
 | hoppscotch.backend.allowSecureCookies | bool | `true` | Allow secure cookies (recommended for HTTPS deployments) |
-| hoppscotch.backend.dataEncryptionKey | string | `"12345678901234567890123456789012"` | 32-character key for encrypting sensitive data stored in database |
+| hoppscotch.backend.dataEncryptionKey | string | `""` | 32-character key for encrypting sensitive data stored in database (auto-generated if empty) |
 | hoppscotch.backend.redirectUrl | string | `""` | Fallback URL for debugging when redirects fail |
 | hoppscotch.backend.whitelistedOrigins | list | `[]` | List of origins allowed to interact with the app through cross-origin requests |
 | hoppscotch.backend.auth.allowedProviders | list | `["email"]` | List of allowed authentication providers (email, google, github, microsoft, oidc, saml) |
@@ -274,17 +274,17 @@ helm install hoppscotch jonathanfoster/hoppscotch
 |-----|------|---------|-------------|
 | postgresql.enabled | bool | `true` | Enable PostgreSQL subchart |
 | postgresql.auth.enablePostgresUser | bool | `true` | Enable PostgreSQL default postgres user |
-| postgresql.auth.username | string | `"hoppscotch"` | PostgreSQL application username |
-| postgresql.auth.password | string | `"secret"` | PostgreSQL application password |
-| postgresql.auth.database | string | `"hoppscotch"` | PostgreSQL application database name |
+| postgresql.auth.username | string | `""` | PostgreSQL application username |
+| postgresql.auth.password | string | `""` | PostgreSQL application password |
+| postgresql.auth.database | string | `""` | PostgreSQL application database name |
 | postgresql.auth.existingSecret | string | `""` | Existing secret containing PostgreSQL credentials |
 | postgresql.architecture | string | `"standalone"` | PostgreSQL architecture (standalone or replication) |
 | postgresql.primary.resourcesPreset | string | `"nano"` | PostgreSQL primary resource preset |
 | postgresql.primary.resources | object | `{}` | PostgreSQL primary resource limits/requests |
-| externalDatabase.host | string | `"localhost"` | External PostgreSQL host |
+| externalDatabase.host | string | `""` | External PostgreSQL host |
 | externalDatabase.port | int | `5432` | External PostgreSQL port |
-| externalDatabase.user | string | `"hoppscotch"` | External PostgreSQL username |
-| externalDatabase.database | string | `"hoppscotch"` | External PostgreSQL database name |
+| externalDatabase.user | string | `""` | External PostgreSQL username |
+| externalDatabase.database | string | `""` | External PostgreSQL database name |
 | externalDatabase.password | string | `""` | External PostgreSQL password |
 | externalDatabase.sqlConnection | string | `""` | External PostgreSQL full connection string (overrides other settings) |
 | externalDatabase.existingSecret | string | `""` | Existing secret containing external PostgreSQL credentials |
@@ -297,7 +297,7 @@ helm install hoppscotch jonathanfoster/hoppscotch
 |-----|------|---------|-------------|
 | redis.enabled | bool | `false` | Enable Redis subchart |
 | redis.auth.enabled | bool | `true` | Enable Redis authentication |
-| redis.auth.password | string | `"secret"` | Redis password |
+| redis.auth.password | string | `""` | Redis password |
 | redis.auth.existingSecret | string | `""` | Existing secret containing Redis credentials |
 | redis.architecture | string | `"standalone"` | Redis architecture (standalone or replication) |
 | redis.master.resourcesPreset | string | `"nano"` | Redis master resource preset |
@@ -313,8 +313,8 @@ helm install hoppscotch jonathanfoster/hoppscotch
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | clickhouse.enabled | bool | `false` | Enable ClickHouse subchart |
-| clickhouse.auth.username | string | `"hoppscotch"` | ClickHouse username |
-| clickhouse.auth.password | string | `"secret"` | ClickHouse password |
+| clickhouse.auth.username | string | `""` | ClickHouse username |
+| clickhouse.auth.password | string | `""` | ClickHouse password |
 | clickhouse.auth.existingSecret | string | `""` | Existing secret containing ClickHouse credentials |
 | clickhouse.resourcesPreset | string | `"nano"` | ClickHouse resource preset |
 | clickhouse.resources | object | `{}` | ClickHouse resource limits/requests |

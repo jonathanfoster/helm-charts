@@ -146,3 +146,73 @@ tests:
       - equal:
           path: data.DATABASE_URL
           value: cG9zdGdyZXM6Ly9ob3Bwc2NvdGNoQFJFTEVBU0UtTkFNRS1wb3N0Z3Jlc3FsLk5BTUVTUEFDRS5zdmMuY2x1c3Rlci5sb2NhbDo1NDMyL2hvcHBzY290Y2g= # echo -n 'postgres://hoppscotch@release-name-postgresql.NAMESPACE.svc.cluster.local:5432/hoppscotch' | base64
+
+  - it: should use correct namespace in database URL
+    set:
+      namespaceOverride: "custom-namespace"
+      postgresql:
+        auth:
+          username: hoppscotch
+          password: testpass123
+          database: hoppscotch
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Secret
+      - exists:
+          path: data.DATABASE_URL
+      - equal:
+          path: data.DATABASE_URL
+          value: cG9zdGdyZXM6Ly9ob3Bwc2NvdGNoOnRlc3RwYXNzMTIzQFJFTEVBU0UtTkFNRS1wb3N0Z3Jlc3FsLmN1c3RvbS1uYW1lc3BhY2Uuc3ZjLmNsdXN0ZXIubG9jYWw6NTQzMi9ob3Bwc2NvdGNo
+
+  - it: should generate external database URL correctly
+    set:
+      postgresql.enabled: false
+      externalDatabase:
+        host: external-db.example.com
+        user: testuser
+        password: testpass
+        database: testdb
+        port: 5433
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Secret
+      - equal:
+          path: data.DATABASE_URL
+          value: cG9zdGdyZXM6Ly90ZXN0dXNlcjp0ZXN0cGFzc0BleHRlcm5hbC1kYi5leGFtcGxlLmNvbTo1NDMzL3Rlc3RkYg==
+
+  - it: should use sqlConnection when provided
+    set:
+      postgresql:
+        enabled: false
+      externalDatabase:
+        sqlConnection: postgres://customuser:custompass@custom-host:5432/customdb
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Secret
+      - equal:
+          path: data.DATABASE_URL
+          value: cG9zdGdyZXM6Ly9jdXN0b211c2VyOmN1c3RvbXBhc3NAY3VzdG9tLWhvc3Q6NTQzMi9jdXN0b21kYg==
+
+  - it: should handle external database with existing secret (simulated)
+    set:
+      postgresql.enabled: false
+      externalDatabase:
+        host: external-db.example.com
+        user: testuser
+        password: ""
+        database: testdb
+        existingSecret: my-db-secret
+        existingSecretPasswordKey: db-password
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Secret
+      - exists:
+          path: data.DATABASE_URL
