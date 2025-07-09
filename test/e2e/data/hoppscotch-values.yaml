@@ -1,3 +1,7 @@
+hoppscotch:
+  backend:
+    mailer:
+      smtpUrl: smtp://mailpit-smtp.mailpit.svc.cluster.local:25
 ingress:
   enabled: true
   hostname: localhost
