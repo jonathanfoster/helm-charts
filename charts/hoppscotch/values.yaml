@@ -696,7 +696,7 @@ metrics:
 postgresql:
   # -- Enable PostgreSQL subchart
   # @section -- Database Parameters
-  enabled: true
+  enabled: false
   auth:
     # -- Enable PostgreSQL default postgres user
     # @section -- Database Parameters
