@@ -396,7 +396,7 @@ hoppscotch:
       smtpHost: ""
       # -- SMTP port (used when useCustomConfigs is true)
       # @section -- Hoppscotch Application Parameters
-      smtpPort: 465
+      smtpPort: 587
       # -- Use secure connection for SMTP (used when useCustomConfigs is true)
       # @section -- Hoppscotch Application Parameters
       smtpSecure: true

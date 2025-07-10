@@ -161,7 +161,7 @@ helm install hoppscotch jonathanfoster/hoppscotch
 | hoppscotch.backend.mailer.addressFrom | string | `"no-reply@example.com"` | Email address to use as sender |
 | hoppscotch.backend.mailer.smtpUrl | string | `"smtps://user:pass@smtp.example.com"` | SMTP URL for email delivery (used when useCustomConfigs is false) |
 | hoppscotch.backend.mailer.smtpHost | string | `""` | SMTP host (used when useCustomConfigs is true) |
-| hoppscotch.backend.mailer.smtpPort | int | `465` | SMTP port (used when useCustomConfigs is true) |
+| hoppscotch.backend.mailer.smtpPort | int | `587` | SMTP port (used when useCustomConfigs is true) |
 | hoppscotch.backend.mailer.smtpSecure | bool | `true` | Use secure connection for SMTP (used when useCustomConfigs is true) |
 | hoppscotch.backend.mailer.smtpUser | string | `""` | SMTP username (used when useCustomConfigs is true) |
 | hoppscotch.backend.mailer.smtpPassword | string | `""` | SMTP password (used when useCustomConfigs is true) |
@@ -272,7 +272,7 @@ helm install hoppscotch jonathanfoster/hoppscotch
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| postgresql.enabled | bool | `true` | Enable PostgreSQL subchart |
+| postgresql.enabled | bool | `false` | Enable PostgreSQL subchart |
 | postgresql.auth.enablePostgresUser | bool | `true` | Enable PostgreSQL default postgres user |
 | postgresql.auth.username | string | `""` | PostgreSQL application username |
 | postgresql.auth.password | string | `""` | PostgreSQL application password |

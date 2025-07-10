@@ -318,3 +318,18 @@ tests:
           value: "true"
       - notExists:
           path: data.REDIS_URL
+  - it: should default custom SMTP port to 587
+    template: configmap.yaml
+    set:
+      hoppscotch:
+        backend:
+          mailer:
+            smtpPort: 587
+    documentIndex: 0
+    asserts:
+      - containsDocument:
+          apiVersion: v1
+          kind: ConfigMap
+      - equal:
+          path: data.MAILER_SMTP_PORT
+          value: "587"
