@@ -16,6 +16,42 @@ clean: ## Clean up temporary resources
 	rm -rf ${BUILD_DIR}
 	rm -rf .cr-release-packages
 
+.PHONY: fmt
+fmt: fmt-markdown fmt-shell fmt-yaml ## Check all files formatting
+
+.PHONY: fmt-fix
+fmt-fix: fmt-markdown-fix fmt-shell-fix fmt-yaml-fix ## Fix all files formatting
+
+.PHONY: fmt-markdown
+fmt-markdown: ## Check Markdown files formatting
+	@echo "${GREEN}Checking Markdown files formatting...${RESET}"
+	prettier -c **/*.md
+
+.PHONY: fmt-markdown-fix
+fmt-markdown-fix: ## Fix Markdown files formatting
+	@echo "${GREEN}Fixing Markdown files formatting...${RESET}"
+	prettier -w **/*.md
+
+.PHONY: fmt-shell
+fmt-shell: ## Check shell scripts formatting
+	@echo "${GREEN}Checking shell scripts formatting...${RESET}"
+	shfmt -l -d .
+
+.PHONY: fmt-shell-fix
+fmt-shell-fix: ## Fix shell scripts formatting
+	@echo "${GREEN}Fixing shell scripts formatting...${RESET}"
+	shfmt -l -w .
+
+.PHONY: fmt-yaml
+fmt-yaml: ## Check YAML files formatting
+	@echo "${GREEN}Checking YAML files formatting...${RESET}"
+	prettier -c **/*.yaml
+
+.PHONY: fmt-yaml-fix
+fmt-yaml-fix: ## Fix YAML files formatting
+	@echo "${GREEN}Fixing YAML files formatting...${RESET}"
+	prettier -w **/*.yaml
+
 .PHONY: helm-docs
 helm-docs: ## Generate Helm docs
 	@echo "${GREEN}Generating Helm docs...${RESET}"
@@ -80,7 +116,9 @@ install-deps-macos: ## Install dependencies for MacOS
 	brew install kind
 	brew install kubectl
 	brew install markdownlint-cli
+	brew install prettier
 	brew install shellcheck
+	brew install shfmt
 	brew install yamllint
 	@if ! helm plugin list | grep -q 'unittest'; then \
 		helm plugin install https://github.com/helm-unittest/helm-unittest; \
@@ -136,7 +174,7 @@ package: clean ## Package charts
 	cr package charts/*
 
 .PHONY: pre-commit
-pre-commit: helm-docs lint test-unit ## Run pre-commit hooks
+pre-commit: fmt lint test-unit ## Run pre-commit hooks
 
 .PHONY: test-e2e
 test-e2e: ## Run end-to-end tests
