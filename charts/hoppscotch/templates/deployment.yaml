@@ -105,42 +105,7 @@ spec:
         {{- include "hoppscotch.defaultInitContainers.waitForDatabase" . | nindent 8 }}
         {{- end }}
         {{- if .Values.defaultInitContainers.waitForDatabaseSetup.enabled }}
-        - name: wait-for-database-setup
-          image: {{ include "hoppscotch.image" . }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command:
-            - /bin/sh
-          args:
-            - -c
-            - |
-              end_time=$(($(date +%s) + $0))
-              until ./node_modules/.bin/prisma migrate status; do
-                if [ $(date +%s) -ge $end_time ]; then
-                  exit 1
-                fi
-                sleep 2
-              done
-            - {{ .Values.defaultInitContainers.waitForDatabaseSetup.timeout | default 60 | quote}}
-          {{- $resources := include "hoppscotch.resources" (dict "preset" .Values.defaultInitContainers.waitForDatabaseSetup.resourcesPreset "resources" .Values.defaultInitContainers.waitForDatabaseSetup.resources) }}
-          {{- if $resources }}
-          resources:
-            {{- $resources | nindent 12 }}
-          {{- end }}
-          {{- if .Values.extraEnvVars }}
-          env:
-            {{- toYaml .Values.extraEnvVars | nindent 12 }}
-          {{- end }}
-          envFrom:
-            - secretRef:
-                name: {{ include "hoppscotch.secretName" . }}
-            {{- if .Values.extraEnvVarsCM }}
-            - configMapRef:
-                name: {{ .Values.extraEnvVarsCM }}
-            {{- end }}
-            {{- if .Values.extraEnvVarsSecret }}
-            - secretRef:
-                name: {{ .Values.extraEnvVarsSecret }}
-            {{- end }}
+        {{- include "hoppscotch.defaultInitContainers.waitForDatabaseSetup" . | nindent 8 }}
         {{- end }}
       {{- if or .Values.volumes .Values.persistence.enabled }}
       volumes:
