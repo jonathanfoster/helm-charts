@@ -66,25 +66,24 @@ Allow the release namespace to be overridden.
 
 {{/*
 Return the appropriate resource configuration based on resourcesPreset or custom resources
-Usage: {{ include "hoppscotch.resources" (dict "preset" .Values.resourcesPreset "resources" .Values.resources "component" "hoppscotch") }}
+Usage: {{ include "hoppscotch.resources" (dict "preset" .Values.resourcesPreset "resources" .Values.resources) }}
 */}}
 {{- define "hoppscotch.resources" -}}
 {{- $preset := .preset -}}
 {{- $resources := .resources -}}
-{{- $component := .component | default "default" -}}
 {{- if $resources -}}
 {{- toYaml $resources -}}
 {{- else if $preset -}}
-{{- include "hoppscotch.resourcesPreset" (dict "preset" $preset "component" $component) -}}
+{{- include "hoppscotch.resourcesPreset" (dict "preset" $preset) -}}
 {{- end -}}
 {{- end -}}
 
 {{/*
 Return predefined resource configurations based on preset name
+Usage: {{ include "hoppscotch.resourcesPreset" (dict "preset" .Values.resourcesPreset) }}
 */}}
 {{- define "hoppscotch.resourcesPreset" -}}
 {{- $preset := .preset -}}
-{{- $component := .component | default "default" -}}
 {{- if eq $preset "nano" -}}
 limits:
   cpu: 150m
@@ -204,7 +203,7 @@ Returns a default init container that waits for the database to be ready.
         sleep 2
       done
     - {{ .Values.defaultInitContainers.waitForDatabase.timeout | default 60 | quote}}
-  {{- $resources := include "hoppscotch.resources" (dict "preset" .Values.defaultInitContainers.waitForDatabase.resourcesPreset "resources" .Values.defaultInitContainers.waitForDatabase.resources "component" "wait-for-db") }}
+  {{- $resources := include "hoppscotch.resources" (dict "preset" .Values.defaultInitContainers.waitForDatabase.resourcesPreset "resources" .Values.defaultInitContainers.waitForDatabase.resources) }}
   {{- if $resources }}
   resources:
     {{- $resources | nindent 4 }}
