@@ -3,4 +3,4 @@
 .vscode/
 build/
 charts/*/charts/
-charts/*/tests/__snapshots/
+charts/*/tests/__snapshot__/

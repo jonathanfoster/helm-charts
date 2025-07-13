@@ -61,8 +61,9 @@ create_kind_cluster() {
   docker cp ~/.kube/config ct:/root/.kube/config
 
   log_info "Waiting for cluster to be ready..."
-  while ! docker_exec kubectl wait pods -A --for=condition=Ready --timeout=60s; do
-    log_error "Cluster did not become ready within 60s"
+  timeout=60s
+  while ! kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=${timeout}; do
+    log_error "Cluster did not become ready within ${timeout}"
     exit 1
   done
 

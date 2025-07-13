@@ -56,6 +56,7 @@ fmt-yaml-fix: ## Fix YAML files formatting
 helm-docs: ## Generate Helm docs
 	@echo "${GREEN}Generating Helm docs...${RESET}"
 	helm-docs --sort-values-order=file
+	$(MAKE) fmt-markdown-fix
 
 .PHONY: helm-install
 helm-install: kind-create-cluster ## Install chart
@@ -134,6 +135,9 @@ kind-create-cluster: ## Create a Kind cluster
 	else \
 		kind create cluster --name ${CLUSTER_NAME} --config ${TEST_E2E_DIR}/kind.yaml; \
 		kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/deploy-ingress-nginx.yaml; \
+		echo "${GREEN}Waiting for cluster to be ready...${RESET}"; \
+		sleep 5; \
+		kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=60s; \
 	fi
 
 .PHONY: kind-delete-cluster
@@ -146,10 +150,10 @@ kind-delete-cluster: ## Delete the kind cluster
 	fi
 
 .PHONY: lint
-lint: lint-charts lint-markdown lint-shell lint-yaml ## Run all linters
+lint: lint-helm lint-markdown lint-shell lint-yaml ## Run all linters
 
-.PHONY: lint-charts
-lint-charts: ## Lint charts
+.PHONY: lint-helm
+lint-helm: ## Lint Helm charts
 	@echo "${GREEN}Linting Helm charts...${RESET}"
 	ct lint --config ct.yaml --lint-conf lintconf.yaml --all
 
@@ -169,9 +173,9 @@ lint-yaml: ## Lint YAML files
 	yamllint .
 
 .PHONY: package
-package: clean ## Package charts
+package: clean ## Package Helm charts
 	@echo "${GREEN}Packaging Helm charts...${RESET}"
-	cr package charts/*
+	cr package charts/${CHART_NAME}
 
 .PHONY: pre-commit
 pre-commit: fmt lint test-unit ## Run pre-commit hooks
