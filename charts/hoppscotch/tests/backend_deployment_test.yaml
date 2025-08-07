@@ -1,0 +1,147 @@
+suite: Backend Deployment
+templates:
+  - backend/deployment.yaml
+  - configmap.yaml
+  - secrets.yaml
+values:
+  - ../values.yaml
+tests:
+  - it: should generate deployment when deployment mode is distributed
+    template: backend/deployment.yaml
+    set:
+      deploymentMode: distributed
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - hasDocuments:
+          count: 1
+
+  - it: should not generate deployment when deployment mode is aio
+    template: backend/deployment.yaml
+    set:
+      deploymentMode: aio
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should use generated secret when existing secret is not specified
+    template: backend/deployment.yaml
+    set:
+      deploymentMode: distributed
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - contains:
+          path: spec.template.spec.containers[0].envFrom
+          content:
+            secretRef:
+              name: release-name-hoppscotch
+
+  - it: should use existing secret when existing secret is specified
+    template: backend/deployment.yaml
+    set:
+      deploymentMode: distributed
+      existingSecret: existing-secret
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - contains:
+          path: spec.template.spec.containers[0].envFrom
+          content:
+            secretRef:
+              name: existing-secret
+          any: true
+
+  - it: should add extra env vars
+    template: backend/deployment.yaml
+    set:
+      deploymentMode: distributed
+      backend:
+        extraEnvVars:
+          - name: TEST_ENV_VAR
+            value: test
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: TEST_ENV_VAR
+            value: test
+          any: true
+
+  - it: should add extra env vars config map reference
+    template: backend/deployment.yaml
+    set:
+      deploymentMode: distributed
+      backend:
+        extraEnvVarsCM: test-config-map
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - contains:
+          path: spec.template.spec.containers[0].envFrom
+          content:
+            configMapRef:
+              name: test-config-map
+          any: true
+
+  - it: should add extra env vars secret reference
+    template: backend/deployment.yaml
+    set:
+      deploymentMode: distributed
+      backend:
+        extraEnvVarsSecret: test-secret
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - contains:
+          path: spec.template.spec.containers[0].envFrom
+          content:
+            secretRef:
+              name: test-secret
+          any: true
+
+  - it: should use generated PVC when persistence is enabled
+    template: backend/deployment.yaml
+    set:
+      deploymentMode: distributed
+      backend:
+        persistence:
+          enabled: true
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: data
+            persistentVolumeClaim:
+              claimName: release-name-hoppscotch-backend
+          any: true
+
+  - it: should use existing PVC when persistence is enabled and existing PVC specified
+    template: backend/deployment.yaml
+    set:
+      deploymentMode: distributed
+      backend:
+        persistence:
+          enabled: true
+          existingClaim: existing-pvc
+    asserts:
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            persistentVolumeClaim:
+              claimName: existing-pvc
+          any: true

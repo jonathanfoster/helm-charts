@@ -1,0 +1,41 @@
+deploymentMode: distributed
+frontend:
+  ingress:
+    enabled: true
+    hostname: hoppscotch.local
+    path: /
+    tls: true
+    selfSigned: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+backend:
+  ingress:
+    enabled: true
+    hostname: hoppscotch.local
+    path: /backend
+    tls: true
+    selfSigned: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+admin:
+  ingress:
+    enabled: true
+    hostname: hoppscotch.local
+    path: /admin
+    tls: true
+    selfSigned: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+postgresql:
+  enabled: true
+  auth:
+    username: hoppscotch
+    password: hoppscotch
+    database: hoppscotch
+  primary:
+    persistentVolumeClaimRetentionPolicy:
+      enabled: true
+      whenDeleted: Delete
